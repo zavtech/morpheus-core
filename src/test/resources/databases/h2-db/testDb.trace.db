@@ -1,0 +1,540 @@
+09-19 21:28:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PROCESSLOG" not found; SQL statement:
+INSERT INTO ProcessLog (Node, Caption, CommandLine, CreationClassName, CreationDate, CSCreationClassName, CSName, Description, ExecutablePath, ExecutionState, Handle, HandleCount, InstallDate, KernelModeTime, MaximumWorkingSetSize, MinimumWorkingSetSize, Name, OSCreationClassName, OSName, OtherOperationCount, OtherTransferCount, PageFaults, PageFileUsage, ParentProcessId, PeakPageFileUsage, PeakVirtualSize, PeakWorkingSetSize, Priority, PrivatePageCount, ProcessId,	QuotaNonPagedPoolUsage, QuotaPagedPoolUsage, QuotaPeakNonPagedPoolUsage, QuotaPeakPagedPoolUsage, ReadOperationCount, ReadTransferCount, SessionId, Status, TerminationDate, ThreadCount, UserModeTime, VirtualSize, WindowsVersion, WorkingSetSize, WriteOperationCount, WriteTransferCount)
+  VALUES ('XAVIERWITDO7B6A','System',null,'Win32_Process', '2014-06-22 13:34:00.000','Win32_ComputerSystem','XAVIERWITDO7B6A','System',null,null,4,460,null,108576696,null,null,'System','Win32_OperatingSystem','Microsoft Windows 7 Home Premium',3212,285364,11980,48,0,192,7585792,5896,8,49152,4,0,0,0,0,115,35188632,0,null,null,102,0,2248704,'6.1.7601',704512,138,12520184) [42102-176]
+09-19 21:29:11 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "NODE" not found; SQL statement:
+INSERT INTO "ProcessLog" (Node, Caption, CommandLine, CreationClassName, CreationDate, CSCreationClassName, CSName, Description, ExecutablePath, ExecutionState, Handle, HandleCount, InstallDate, KernelModeTime, MaximumWorkingSetSize, MinimumWorkingSetSize, Name, OSCreationClassName, OSName, OtherOperationCount, OtherTransferCount, PageFaults, PageFileUsage, ParentProcessId, PeakPageFileUsage, PeakVirtualSize, PeakWorkingSetSize, Priority, PrivatePageCount, ProcessId,	QuotaNonPagedPoolUsage, QuotaPagedPoolUsage, QuotaPeakNonPagedPoolUsage, QuotaPeakPagedPoolUsage, ReadOperationCount, ReadTransferCount, SessionId, Status, TerminationDate, ThreadCount, UserModeTime, VirtualSize, WindowsVersion, WorkingSetSize, WriteOperationCount, WriteTransferCount)
+  VALUES ('XAVIERWITDO7B6A','System',null,'Win32_Process', '2014-06-22 13:34:00.000','Win32_ComputerSystem','XAVIERWITDO7B6A','System',null,null,4,460,null,108576696,null,null,'System','Win32_OperatingSystem','Microsoft Windows 7 Home Premium',3212,285364,11980,48,0,192,7585792,5896,8,49152,4,0,0,0,0,115,35188632,0,null,null,102,0,2248704,'6.1.7601',704512,138,12520184) [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.table.Table.getColumn(Table.java:637)
+	at org.h2.command.Parser.parseColumn(Parser.java:849)
+	at org.h2.command.Parser.parseColumnList(Parser.java:833)
+	at org.h2.command.Parser.parseInsert(Parser.java:1033)
+	at org.h2.command.Parser.parsePrepared(Parser.java:402)
+	at org.h2.command.Parser.parse(Parser.java:306)
+	at org.h2.command.Parser.parse(Parser.java:278)
+	at org.h2.command.Parser.prepareCommand(Parser.java:243)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-19 21:33:03 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "ProcessId" not found; SQL statement:
+INSERT INTO "ProcessLog" ("Node", "Caption", "CommandLine", "CreationClassName", "CreationDate", "CSCreationClassName", "CSName", "Description", "ExecutablePath", "ExecutionState", "Handle", "HandleCount", "InstallDate", "KernelModeTime", "MaximumWorkingSetSize", "MinimumWorkingSetSize", "Name", "OSCreationClassName", "OSName", "OtherOperationCount", "OtherTransferCount", "PageFaults", "PageFileUsage", "ParentProcessId", "PeakPageFileUsage", "PeakVirtualSize", "PeakWorkingSetSize", "Priority", "PrivatePageCount", "ProcessId",	"QuotaNonPagedPoolUsage", "QuotaPagedPoolUsage", "QuotaPeakNonPagedPoolUsage", "QuotaPeakPagedPoolUsage", "ReadOperationCount", "ReadTransferCount", "SessionId", "Status", "TerminationDate", "ThreadCount", "UserModeTime", "VirtualSize", "WindowsVersion", "WorkingSetSize", "WriteOperationCount", "WriteTransferCount")
+  VALUES ('XAVIERWITDO7B6A','System',null,'Win32_Process', '2014-06-22 13:34:00','Win32_ComputerSystem','XAVIERWITDO7B6A','System',null,null,4,460,null,108576696,null,null,'System','Win32_OperatingSystem','Microsoft Windows 7 Home Premium',3212,285364,11980,48,0,192,7585792,5896,8,49152,4,0,0,0,0,115,35188632,0,null,null,102,0,2248704,'6.1.7601',704512,138,12520184) [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.table.Table.getColumn(Table.java:637)
+	at org.h2.command.Parser.parseColumn(Parser.java:849)
+	at org.h2.command.Parser.parseColumnList(Parser.java:833)
+	at org.h2.command.Parser.parseInsert(Parser.java:1033)
+	at org.h2.command.Parser.parsePrepared(Parser.java:402)
+	at org.h2.command.Parser.parse(Parser.java:306)
+	at org.h2.command.Parser.parse(Parser.java:278)
+	at org.h2.command.Parser.prepareCommand(Parser.java:243)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-19 21:33:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "ProcessId" not found; SQL statement:
+INSERT INTO "ProcessLog" ("Node", "Caption", "CommandLine", "CreationClassName", "CreationDate", "CSCreationClassName", "CSName", "Description", "ExecutablePath", "ExecutionState", "Handle", "HandleCount", "InstallDate", "KernelModeTime", "MaximumWorkingSetSize", "MinimumWorkingSetSize", "Name", "OSCreationClassName", "OSName", "OtherOperationCount", "OtherTransferCount", "PageFaults", "PageFileUsage", "ParentProcessId", "PeakPageFileUsage", "PeakVirtualSize", "PeakWorkingSetSize", "Priority", "PrivatePageCount", "ProcessId",	"QuotaNonPagedPoolUsage", "QuotaPagedPoolUsage", "QuotaPeakNonPagedPoolUsage", "QuotaPeakPagedPoolUsage", "ReadOperationCount", "ReadTransferCount", "SessionId", "Status", "TerminationDate", "ThreadCount", "UserModeTime", "VirtualSize", "WindowsVersion", "WorkingSetSize", "WriteOperationCount", "WriteTransferCount")
+  VALUES ('XAVIERWITDO7B6A','System',null,'Win32_Process', '2014-06-22 13:34:00','Win32_ComputerSystem','XAVIERWITDO7B6A','System',null,null,4,460,null,108576696,null,null,'System','Win32_OperatingSystem','Microsoft Windows 7 Home Premium',3212,285364,11980,48,0,192,7585792,5896,8,49152,4,0,0,0,0,115,35188632,0,null,null,102,0,2248704,'6.1.7601',704512,138,12520184) [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.table.Table.getColumn(Table.java:637)
+	at org.h2.command.Parser.parseColumn(Parser.java:849)
+	at org.h2.command.Parser.parseColumnList(Parser.java:833)
+	at org.h2.command.Parser.parseInsert(Parser.java:1033)
+	at org.h2.command.Parser.parsePrepared(Parser.java:402)
+	at org.h2.command.Parser.parse(Parser.java:306)
+	at org.h2.command.Parser.parse(Parser.java:278)
+	at org.h2.command.Parser.prepareCommand(Parser.java:243)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-19 21:36:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "ProcessLog" already exists; SQL statement:
+CREATE TABLE "ProcessLog" (
+    "RecordId" INTEGER AUTO_INCREMENT PRIMARY KEY,
+    "Node" VARCHAR(255) NULL,
+    "Caption" VARCHAR(255) NULL,
+    "CommandLine" VARCHAR(255) NULL,
+    "CreationClassName" VARCHAR(255) NULL,
+    "CreationDate" VARCHAR(255) NULL,
+    "CSCreationClassName" VARCHAR(255) NULL,
+    "CSName" VARCHAR(255) NULL,
+    "Description" VARCHAR(255) NULL,
+    "ExecutablePath" VARCHAR(255) NULL,
+    "ExecutionState" VARCHAR(255) NULL,
+    "Handle" BIGINT NULL,
+    "HandleCount" BIGINT NULL,
+    "InstallDate" DATE NULL,
+    "KernelModeTime" BIGINT NULL,
+    "MaximumWorkingSetSize" BIGINT NULL,
+    "MinimumWorkingSetSize" BIGINT NULL,
+    "Name" VARCHAR(255) NULL,
+    "OSCreationClassName" VARCHAR(255) NULL,
+    "OSName" VARCHAR(255) NULL,
+    "OtherOperationCount" BIGINT NULL,
+    "OtherTransferCount" BIGINT NULL,
+    "PageFaults" BIGINT NULL,
+    "PageFileUsage" BIGINT NULL,
+    "ParentProcessId" BIGINT NULL,
+    "PeakPageFileUsage" BIGINT NULL,
+    "PeakVirtualSize" BIGINT NULL,
+    "PeakWorkingSetSize" BIGINT NULL,
+    "Priority" BIGINT NULL,
+    "PrivatePageCount" BIGINT NULL,
+    "ProcessId" INTEGER NULL,
+    "QuotaNonPagedPoolUsage" BIGINT NULL,
+    "QuotaPagedPoolUsage" BIGINT NULL,
+    "QuotaPeakNonPagedPoolUsage" BIGINT NULL,
+    "QuotaPeakPagedPoolUsage" BIGINT NULL,
+    "ReadOperationCount" BIGINT NULL,
+    "ReadTransferCount" BIGINT NULL,
+    "SessionId" BIGINT NULL,
+    "Status" VARCHAR(255) NULL,
+    "TerminationDate" DATE NULL,
+    "ThreadCount" BIGINT NULL,
+    "UserModeTime" BIGINT NULL,
+    "VirtualSize" BIGINT NULL,
+    "WindowsVersion" VARCHAR(255) NULL,
+    "WorkingSetSize" BIGINT NULL,
+    "WriteOperationCount" BIGINT NULL,
+    "WriteTransferCount" BIGINT NULL
+) [42101-176]
+09-19 21:39:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1443)
+	at org.h2.jdbc.JdbcConnection.getWarnings(JdbcConnection.java:619)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.getWarnings(SQLConnection.java:486)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.handleAllWarnings(SQLExecuterTask.java:582)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:373)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-19 21:39:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:987)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:961)
+	at org.h2.jdbc.JdbcStatement.getWarnings(JdbcStatement.java:280)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.getWarnings(StatementWrapper.java:155)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.handleAllWarnings(SQLExecuterTask.java:594)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:373)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-19 21:39:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:987)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:961)
+	at org.h2.jdbc.JdbcStatement.getUpdateCount(JdbcStatement.java:232)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.getUpdateCount(StatementWrapper.java:176)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:389)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-19 21:39:31 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1443)
+	at org.h2.jdbc.JdbcConnection.getAutoCommit(JdbcConnection.java:446)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection._closeIntern(SQLConnection.java:158)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.access$000(SQLConnection.java:48)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection$1.run(SQLConnection.java:123)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+2016-09-19 22:09:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PROCESSLOG" not found; SQL statement:
+Select * from ProcessLog [42102-191]
+2016-09-19 22:10:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PROCESSLOG" not found; SQL statement:
+Select * from ProcessLog [42102-191]
+2016-09-19 22:10:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PROCESSLOG" not found; SQL statement:
+Select * from ProcessLog [42102-191]
+09-20 20:28:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1443)
+	at org.h2.jdbc.JdbcConnection.getWarnings(JdbcConnection.java:619)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.getWarnings(SQLConnection.java:486)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.handleAllWarnings(SQLExecuterTask.java:582)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:373)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:28:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:987)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:961)
+	at org.h2.jdbc.JdbcStatement.getWarnings(JdbcStatement.java:280)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.getWarnings(StatementWrapper.java:155)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.handleAllWarnings(SQLExecuterTask.java:594)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:373)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:28:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:987)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:961)
+	at org.h2.jdbc.JdbcStatement.getUpdateCount(JdbcStatement.java:232)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.getUpdateCount(StatementWrapper.java:176)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:389)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:29:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1443)
+	at org.h2.jdbc.JdbcConnection.getAutoCommit(JdbcConnection.java:446)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection._closeIntern(SQLConnection.java:158)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.access$000(SQLConnection.java:48)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection$1.run(SQLConnection.java:123)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:34:48 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "TICKER" not found; SQL statement:
+select Ticker, FundName, Issuer from ETF [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Select.prepare(Select.java:831)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:35:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "FundName" not found; SQL statement:
+select "Ticker", "FundName", "Issuer" from "ETF" [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Select.prepare(Select.java:831)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:51:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "RECORDID" not found; SQL statement:
+delete from "ProcessLog" where recordId = 40 [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.expression.Comparison.optimize(Comparison.java:179)
+	at org.h2.command.dml.Delete.prepare(Delete.java:131)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:51:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "recordId" not found; SQL statement:
+delete from "ProcessLog" where "recordId" = 40 [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.expression.Comparison.optimize(Comparison.java:179)
+	at org.h2.command.dml.Delete.prepare(Delete.java:131)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:51:33 database: close
+org.h2.message.DbException: IO Exception: "java.io.EOFException"; "/Users/witdxav/Dropbox/projects/morpheus/morpheus-core/src/test/resources/databases/h2-db/testDb.h2.db" [90031-176]
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.convertIOException(DbException.java:329)
+	at org.h2.store.FileStore.readFully(FileStore.java:276)
+	at org.h2.store.PageStore.readPage(PageStore.java:1326)
+	at org.h2.store.PageStore.getPage(PageStore.java:750)
+	at org.h2.store.PageStreamTrunk$Iterator.next(PageStreamTrunk.java:252)
+	at org.h2.store.PageLog.free(PageLog.java:214)
+	at org.h2.store.PageStore.compact(PageStore.java:499)
+	at org.h2.engine.Database.closeOpenFilesAndUnlock(Database.java:1301)
+	at org.h2.engine.Database.close(Database.java:1251)
+	at org.h2.engine.Database.removeSession(Database.java:1122)
+	at org.h2.engine.Session.close(Session.java:672)
+	at org.h2.command.dml.TransactionCommand.update(TransactionCommand.java:112)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:79)
+	at org.h2.command.Command.executeUpdate(Command.java:254)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:186)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.EOFException"; "/Users/witdxav/Dropbox/projects/morpheus/morpheus-core/src/test/resources/databases/h2-db/testDb.h2.db" [90031-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	... 22 more
+Caused by: java.io.EOFException
+	at org.h2.store.fs.FileUtils.readFully(FileUtils.java:347)
+	at org.h2.store.FileStore.readFully(FileStore.java:274)
+	... 19 more
+09-20 20:51:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1443)
+	at org.h2.jdbc.JdbcConnection.getWarnings(JdbcConnection.java:619)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.getWarnings(SQLConnection.java:486)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.handleAllWarnings(SQLExecuterTask.java:582)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:373)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:51:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:987)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:961)
+	at org.h2.jdbc.JdbcStatement.getWarnings(JdbcStatement.java:280)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.getWarnings(StatementWrapper.java:155)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.handleAllWarnings(SQLExecuterTask.java:594)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:373)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:51:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:987)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:961)
+	at org.h2.jdbc.JdbcStatement.getUpdateCount(JdbcStatement.java:232)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.getUpdateCount(StatementWrapper.java:176)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:389)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:51:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1443)
+	at org.h2.jdbc.JdbcConnection.createStatement(JdbcConnection.java:191)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.createStatement(SQLConnection.java:283)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:154)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 20:51:46 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.message.DbException.get(DbException.java:143)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1468)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1443)
+	at org.h2.jdbc.JdbcConnection.getAutoCommit(JdbcConnection.java:446)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection._closeIntern(SQLConnection.java:158)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.access$000(SQLConnection.java:48)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection$1.run(SQLConnection.java:123)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 21:17:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "S&P 500 Spider" not found; SQL statement:
+insert into "TestTable" ("RecordId", "Name", "IsNew", "Size", "Price", "Volume", "SomeTimestamp", "SomeDateTime", "SomeDate", "CharData", "TinyIntData", "SmallIntData", "RealData")
+	values (1, "S&P 500 Spider", 1, 100, 102.34, 2340000, "2014-05-30 06:44:00", "2014-05-31 08:01:00", "2014-05-01", "XX", 2, 3, 3.53556) [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Insert.prepare(Insert.java:271)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 21:17:27 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "SP 500 Spider" not found; SQL statement:
+insert into "TestTable" ("RecordId", "Name", "IsNew", "Size", "Price", "Volume", "SomeTimestamp", "SomeDateTime", "SomeDate", "CharData", "TinyIntData", "SmallIntData", "RealData")
+	values (1, "SP 500 Spider", 1, 100, 102.34, 2340000, "2014-05-30 06:44:00", "2014-05-31 08:01:00", "2014-05-01", "XX", 2, 3, 3.53556) [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Insert.prepare(Insert.java:271)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 21:17:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Column "2014-05-30 06:44:00" not found; SQL statement:
+insert into "TestTable" ("RecordId", "Name", "IsNew", "Size", "Price", "Volume", "SomeTimestamp", "SomeDateTime", "SomeDate", "CharData", "TinyIntData", "SmallIntData", "RealData")
+	values (1, 'SP 500 Spider', 1, 100, 102.34, 2340000, "2014-05-30 06:44:00", "2014-05-31 08:01:00", "2014-05-01", "XX", 2, 3, 3.53556) [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Insert.prepare(Insert.java:271)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:172)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:160)
+	at net.sourceforge.squirrel_sql.client.session.StatementWrapper.execute(StatementWrapper.java:165)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.processQuery(SQLExecuterTask.java:369)
+	at net.sourceforge.squirrel_sql.client.session.SQLExecuterTask.run(SQLExecuterTask.java:212)
+	at net.sourceforge.squirrel_sql.fw.util.TaskExecuter.run(TaskExecuter.java:82)
+	at java.lang.Thread.run(Thread.java:745)
+09-20 21:32:16 database: close
+org.h2.message.DbException: IO Exception: "java.io.EOFException"; "/Users/witdxav/Dropbox/projects/morpheus/morpheus-core/src/test/resources/databases/h2-db/testDb.h2.db" [90031-176]
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.convertIOException(DbException.java:329)
+	at org.h2.store.FileStore.readFully(FileStore.java:276)
+	at org.h2.store.PageStore.readPage(PageStore.java:1326)
+	at org.h2.store.PageStore.getPage(PageStore.java:750)
+	at org.h2.store.PageStreamTrunk$Iterator.next(PageStreamTrunk.java:252)
+	at org.h2.store.PageLog.free(PageLog.java:214)
+	at org.h2.store.PageStore.compact(PageStore.java:499)
+	at org.h2.engine.Database.closeOpenFilesAndUnlock(Database.java:1301)
+	at org.h2.engine.Database.close(Database.java:1251)
+	at org.h2.engine.Database.removeSession(Database.java:1122)
+	at org.h2.engine.Session.close(Session.java:672)
+	at org.h2.jdbc.JdbcConnection.close(JdbcConnection.java:383)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection._closeIntern(SQLConnection.java:174)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection.access$000(SQLConnection.java:48)
+	at net.sourceforge.squirrel_sql.fw.sql.SQLConnection$1.run(SQLConnection.java:123)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.h2.jdbc.JdbcSQLException: IO Exception: "java.io.EOFException"; "/Users/witdxav/Dropbox/projects/morpheus/morpheus-core/src/test/resources/databases/h2-db/testDb.h2.db" [90031-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	... 21 more
+Caused by: java.io.EOFException
+	at org.h2.store.fs.FileUtils.readFully(FileUtils.java:347)
+	at org.h2.store.FileStore.readFully(FileStore.java:274)
+	... 18 more

@@ -1,0 +1,187 @@
+{
+  "DataFrame": {
+    "rowCount": 10,
+    "colCount": 9,
+    "rowKeyType": "",
+    "colKeyType": "",
+    "rowKeys": {
+      "type": "LocalDate",
+      "values": [
+        "2015-12-07",
+        "2015-12-08",
+        "2015-12-09",
+        "2015-12-10",
+        "2015-12-11",
+        "2015-12-12",
+        "2015-12-13",
+        "2015-12-14",
+        "2015-12-15",
+        "2015-12-16"
+      ]
+    },
+    "columns": [
+      {
+        "key": "BooleanColumn",
+        "keyType": "String",
+        "dataType": "boolean",
+        "nullValue": "false",
+        "values": [
+          "true",
+          "false",
+          "true",
+          "true",
+          "true",
+          "true",
+          "true",
+          "true",
+          "false",
+          "true"
+        ]
+      },
+      {
+        "key": "IntegerColumn",
+        "keyType": "String",
+        "dataType": "int",
+        "nullValue": "0",
+        "values": [
+          "884841579",
+          "72476677",
+          "478622964",
+          "-2023724177",
+          "-118703551",
+          "-1385756641",
+          "-864900539",
+          "1668953304",
+          "597831915",
+          "-234257179"
+        ]
+      },
+      {
+        "key": "LongColumn",
+        "keyType": "String",
+        "dataType": "long",
+        "nullValue": "0",
+        "values": [
+          "-8825673883428586997",
+          "-5420737123725795204",
+          "2928447343469607141",
+          "-6578710187413428287",
+          "6381192240331105939",
+          "-3417850860002403647",
+          "2689999051502636832",
+          "-2837147867183290259",
+          "1917297151911270991",
+          "5467988792169312654"
+        ]
+      },
+      {
+        "key": "DoubleColumn",
+        "keyType": "String",
+        "dataType": "double",
+        "nullValue": "NaN",
+        "values": [
+          "0.6563190247845313",
+          "0.5523295690464413",
+          "0.4892066574970533",
+          "0.03689758327751391",
+          "0.8975253363460648",
+          "0.857850011758158",
+          "0.584754111530328",
+          "0.4956641848367971",
+          "0.7141033538351453",
+          "0.588554690922171"
+        ]
+      },
+      {
+        "key": "LocalDateColumn",
+        "keyType": "String",
+        "dataType": "LocalDate",
+        "nullValue": null,
+        "values": [
+          "2015-12-07",
+          "2015-12-08",
+          "2015-12-09",
+          "2015-12-10",
+          "2015-12-11",
+          "2015-12-12",
+          "2015-12-13",
+          "2015-12-14",
+          "2015-12-15",
+          "2015-12-16"
+        ]
+      },
+      {
+        "key": "LocalTimeColumn",
+        "keyType": "String",
+        "dataType": "LocalTime",
+        "nullValue": null,
+        "values": [
+          "12:00:00",
+          "12:01:00",
+          "12:02:00",
+          "12:03:00",
+          "12:04:00",
+          "12:05:00",
+          "12:06:00",
+          "12:07:00",
+          "12:08:00",
+          "12:09:00"
+        ]
+      },
+      {
+        "key": "LocalDateTimeColumn",
+        "keyType": "String",
+        "dataType": "LocalDateTime",
+        "nullValue": null,
+        "values": [
+          "2015-12-07T18:50:27.127",
+          "2015-12-08T18:50:27.127",
+          "2015-12-09T18:50:27.127",
+          "2015-12-10T18:50:27.127",
+          "2015-12-11T18:50:27.127",
+          "2015-12-12T18:50:27.127",
+          "2015-12-13T18:50:27.127",
+          "2015-12-14T18:50:27.127",
+          "2015-12-15T18:50:27.127",
+          "2015-12-16T18:50:27.127"
+        ]
+      },
+      {
+        "key": "ZonedDateTimeColumn",
+        "keyType": "String",
+        "dataType": "ZonedDateTime",
+        "nullValue": null,
+        "values": [
+          "2015-12-07T18:50:27.128-05:00[America/New_York]",
+          "2015-12-08T18:50:27.128-05:00[America/New_York]",
+          "2015-12-09T18:50:27.128-05:00[America/New_York]",
+          "2015-12-10T18:50:27.128-05:00[America/New_York]",
+          "2015-12-11T18:50:27.128-05:00[America/New_York]",
+          "2015-12-12T18:50:27.129-05:00[America/New_York]",
+          "2015-12-13T18:50:27.129-05:00[America/New_York]",
+          "2015-12-14T18:50:27.129-05:00[America/New_York]",
+          "2015-12-15T18:50:27.129-05:00[America/New_York]",
+          "2015-12-16T18:50:27.129-05:00[America/New_York]"
+        ]
+      },
+      {
+        "key": "EnumColumn",
+        "keyType": "String",
+        "dataType": "Month",
+        "nullValue": null,
+        "values": [
+          "JANUARY",
+          "FEBRUARY",
+          "MARCH",
+          "APRIL",
+          "MAY",
+          "JUNE",
+          "JULY",
+          "AUGUST",
+          "SEPTEMBER",
+          "OCTOBER"
+        ]
+      }
+    ]
+  }
+}

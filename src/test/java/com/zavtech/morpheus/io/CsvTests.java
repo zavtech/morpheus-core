@@ -77,7 +77,8 @@ public class CsvTests {
 
     @Test(dataProvider="types")
     public <T> void testLocalDateAxis(Class<T> rowType) throws Exception {
-        final File file = new File("/Users/witdxav/CsvTests", "DataFrame-" + rowType.getSimpleName() + ".csv");
+        final String tmpDir = System.getProperty("java.io.tmpdir");
+        final File file = new File(tmpDir, "DataFrame-" + rowType.getSimpleName() + ".csv");
         final DataFrame<T,String> frame = TestDataFrames.createMixedRandomFrame(rowType, 100);
         frame.out().writeCsv(file);
         frame.out().print();

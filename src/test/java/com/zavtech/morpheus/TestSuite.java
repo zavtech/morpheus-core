@@ -103,8 +103,9 @@ public class TestSuite {
      * Returns the directory for test output
      * @return  directory for test output
      */
-    public static File getOutputDir(String testName) {
-        return new File("/Users/" + System.getProperty("user.name"),  "/test/morpheus-tests/" + testName);
+    static File getOutputDir(String testName) {
+        final String tmpDir = System.getProperty("java.io.tmpdir");
+        return new File(tmpDir,  "morpheus-tests/" + testName);
     }
 
 
@@ -135,78 +136,6 @@ public class TestSuite {
                 formats.copyParser(Double.class, "[MF]\\s+\\d+");
             });
         });
-    }
-
-    /**
-     * Create all tests!
-     * @return  the tests
-     */
-    @Factory()
-    public Object[] createTests() {
-        return new Object[] {
-                new ArrayBoundsTests(),
-                new ArrayBuilderTests(),
-                new ArrayFillTests(),
-                new ArrayFuncTests(),
-                new ArrayIOTests(),
-                new ArrayMappedTests(),
-                new ArraysBasicTests(),
-                new ArraySearchTests(),
-                new ArraySortTests(),
-                new ArrayStatsTests(),
-                new ArrayUpdateTests(),
-                new AccessTests(),
-                new AlgebraTests(),
-                new BinarySearchTests(),
-                new BoundsTests(),
-                new ColumnAccessTests(),
-                new ColumnTests(),
-                new CopyTests(),
-                new CorrelationTests(),
-                new CovarianceTests(),
-                new CreateTests(),
-                new CsvTests(),
-                new DbTests(),
-                new DimensionTests(),
-                new EqualsTest(),
-                new EventTests(),
-                new ExportTests(),
-                new ExpWeightedTests(),
-                new FillTests(),
-                new FilterTests(),
-                new FormatsTest(),
-                new GLSTests(),
-                new GroupingTests(),
-                new IndexBasicTests(),
-                new IndexCreateTests(),
-                new IndexSortTests(),
-                new IteratorTests(),
-                new JsonTests(),
-                new ApplyTests(),
-                new MappingTests(),
-                new MinMaxTests(),
-                new QuoteTests(),
-                new RangeFilterTests(),
-                new RangeBasicTests(),
-                new RankTests(),
-                new RowAccessTests(),
-                new RowTests(),
-                new SelectTests(),
-                new SerializationTests(),
-                new PCATests(),
-                new OLSTests(),
-                new SortAlgorithmTests(),
-                new SortingTests(),
-                new StatsBasicTests(),
-                new StatsExpandingTests(),
-                new StatsRollingTests(),
-                new StatsTest1(),
-                new StreamTests(),
-                new StructureTests(),
-                new TupleTests(),
-                new UpdateTests(),
-                new WLSTests()
-        };
     }
 
 }

@@ -54,7 +54,7 @@ public class FormatsTest {
         assertEquals(formats.getParserOrFail(TimeZone.class).apply("Europe/London"), TimeZone.getTimeZone("Europe/London"));
         assertEquals(formats.getParserOrFail(LocalDate.class).apply("2014-05-22"), LocalDate.of(2014, 5, 22));
         assertEquals(formats.getParserOrFail(LocalDateTime.class).apply("2014-05-22T22:34:00"), LocalDateTime.of(2014, 5, 22, 22, 34, 0));
-        assertEquals(formats.getParserOrFail(ZonedDateTime.class).apply("2014-05-22T22:34:00-04:00[America/New_York]"), ZonedDateTime.of(2014, 5, 22, 22, 34, 0, 0, ZoneId.systemDefault()));
+        assertEquals(formats.getParserOrFail(ZonedDateTime.class).apply("2014-05-22T22:34:00-04:00[America/New_York]"), ZonedDateTime.of(2014, 5, 22, 22, 34, 0, 0, ZoneId.of("America/New_York")));
     }
 
     @Test()
@@ -75,7 +75,7 @@ public class FormatsTest {
         assertEquals(formats.getPrinterOrFail(TimeZone.class).apply(TimeZone.getTimeZone("Europe/London")), "Europe/London");
         assertEquals(formats.getPrinterOrFail(LocalDate.class).apply(LocalDate.of(2014, 5, 22)), "2014-05-22");
         assertEquals(formats.getPrinterOrFail(LocalDateTime.class).apply(LocalDateTime.of(2014, 5, 22, 22, 34, 0)), "2014-05-22T22:34:00");
-        assertEquals(formats.getPrinterOrFail(ZonedDateTime.class).apply(ZonedDateTime.of(2014, 5, 22, 22, 34, 0, 0, ZoneId.systemDefault())), "2014-05-22T22:34:00-04:00[America/New_York]");
+        assertEquals(formats.getPrinterOrFail(ZonedDateTime.class).apply(ZonedDateTime.of(2014, 5, 22, 22, 34, 0, 0, ZoneId.of("America/New_York"))), "2014-05-22T22:34:00-04:00[America/New_York]");
     }
 
     @Test

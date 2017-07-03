@@ -22,7 +22,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
@@ -33,11 +35,14 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import com.zavtech.morpheus.TestSuite;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.reference.DataFrameAsserts;
 import com.zavtech.morpheus.reference.TestDataFrames;
 import com.zavtech.morpheus.util.Predicates;
 import com.zavtech.morpheus.util.text.Formats;
+import com.zavtech.morpheus.util.text.parser.Parser;
+import com.zavtech.morpheus.util.text.printer.Printer;
 
 /**
  * A unit test of the DataFrame CSV reader
@@ -48,7 +53,7 @@ import com.zavtech.morpheus.util.text.Formats;
  */
 public class CsvTests {
 
-    private File tmpDir = new File("/Users/" + System.getProperty("user.name") + "/test", "morpheus-test");
+    private File tmpDir = TestSuite.getOutputDir("csv-tests");
     private String[] quoteFields = {"Date", "Open", "High", "Low", "Close", "Volume", "Adj Close"};
 
 
@@ -80,7 +85,14 @@ public class CsvTests {
         final String tmpDir = System.getProperty("java.io.tmpdir");
         final File file = new File(tmpDir, "DataFrame-" + rowType.getSimpleName() + ".csv");
         final DataFrame<T,String> frame = TestDataFrames.createMixedRandomFrame(rowType, 100);
-        frame.out().writeCsv(file);
+        System.out.println("Writing to " + file.getAbsolutePath());
+        frame.write().csv(options -> {
+            options.setFile(file);
+            options.setFormats(formats -> {
+                formats.setPrinter("LocalDateTimeColumn", Printer.ofLocalDateTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                formats.setPrinter("ZonedDateTimeColumn", Printer.ofZonedDateTime(DateTimeFormatter.ISO_ZONED_DATE_TIME));
+            });
+        });
         frame.out().print();
         readAndValidate(frame, rowType, file);
     }
@@ -99,10 +111,12 @@ public class CsvTests {
             options.setFormats(formats);
             options.setRowKeyParser(rowType, values -> parser.apply(values[0]));
             options.setExcludeColumns("DataFrame");
-            options.getFormats().copyParser(Double.class, "DoubleColumn");
-            options.getFormats().copyParser(Month.class, "EnumColumn");
-            options.getFormats().copyParser(Long.class, "LongColumn");
-            options.getFormats().copyParser(Integer.class, "IntegerColumn");
+            options.getFormats().setParser("DoubleColumn", Double.class);
+            options.getFormats().setParser("EnumColumn", Month.class);
+            options.getFormats().setParser("LongColumn", Long.class);
+            options.getFormats().setParser("IntegerColumn", Integer.class);
+            options.getFormats().setParser("LocalDateTimeColumn", Parser.ofLocalDateTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            options.getFormats().setParser("ZonedDateTimeColumn", Parser.ofZonedDateTime(DateTimeFormatter.ISO_ZONED_DATE_TIME));
         });
         original.out().print();
         result.out().print();

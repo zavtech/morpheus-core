@@ -15,6 +15,7 @@
  */
 package com.zavtech.morpheus.reference;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import java.util.Set;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.zavtech.morpheus.TestSuite;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameColumn;
 import com.zavtech.morpheus.index.Index;
@@ -212,12 +214,13 @@ public class QuoteTests {
 
     @Test()
     public void testSimpleMovingAverage() throws Exception {
+        final File file = TestSuite.getOutputFile("quote-tests", "sma.csv");
         final DataFrame<LocalDate,String> quotes = TestDataFrames.getQuotes("blk");
         final DataFrame<LocalDate,String> prices = quotes.cols().select(column -> !column.key().equalsIgnoreCase("Volume"));
         final DataFrame<LocalDate,String> sma = prices.calc().sma(50).cols().mapKeys(col -> col.key() + "(SMA)");
         sma.update(prices, false, true);
         sma.write().csv(options -> {
-            options.setFile("/Users/witdxav/sma.csv");
+            options.setFile(file);
         });
     }
 

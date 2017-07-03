@@ -74,7 +74,7 @@ public class TestDataFrames {
      */
     public static DataFrame<LocalDate,String> getQuotes(String ticker) throws IOException {
         return DataFrame.read().csv(options -> {
-            options.setResource("/quotes/" + ticker + ".csv");
+            options.setResource("/quotes/" + ticker.toLowerCase() + ".csv");
             options.setRowKeyParser(LocalDate.class, values -> LocalDate.parse(values[0]));
             options.setColNamePredicate(Predicates.in("Open", "High", "Low", "Close", "Volume", "Adj Close"));
         });

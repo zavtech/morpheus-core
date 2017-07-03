@@ -103,7 +103,7 @@ public class TestSuite {
      * Returns the directory for test output
      * @return  directory for test output
      */
-    static File getOutputDir(String testName) {
+    public static File getOutputDir(String testName) {
         final String tmpDir = System.getProperty("java.io.tmpdir");
         return new File(tmpDir,  "morpheus-tests/" + testName);
     }

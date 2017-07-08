@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="morpheus-core" basedir=".">
+
+  <target name="build">
+    <exec executable="/Users/witdxav/Dropbox/dev/libs/apache-maven-3.3.9/bin/mvn">
+      <arg value="clean"/>
+      <arg value="javadoc:javadoc"/>
+      <arg value="-P"/>
+      <arg value="release"/>
+    </exec>
+  </target>
+
+
+  <target name="publish-javadocs" depends="build">
+
+    <input message="Please enter the version for these docs" addproperty="version"/>
+
+    <echo message="Creating new docs directory on remote server for version ${version}..."/>
+    <exec executable="ssh" failonerror="true">
+      <arg value="zavtech@zavtech"/>
+      <arg value="mkdir -p zavtech.com/morpheus/versions/${version}/api"/>
+    </exec>
+
+    <echo message="Copying javadocs to remote server..."/>
+    <exec executable="scp" failonerror="true" dir="${basedir}/target/site/apidocs">
+      <arg value="-r"/>
+      <arg value="./"/>
+      <arg value="zavtech@zavtech:zavtech.com/morpheus/versions/${version}/api"/>
+    </exec>
+
+    <echo message="Linking javadocs to version ${version}..."/>
+    <exec executable="ssh" failonerror="true">
+      <arg value="zavtech@zavtech"/>
+      <arg value="cd zavtech.com/morpheus; ln -s versions/${version}/api api"/>
+    </exec>
+
+  </target>
+
+</project>

@@ -1003,10 +1003,10 @@ public class ArraysBasicTests {
     private void assertFirstAndLast(Array<?> actual, Object expected, ArrayType expectedType) {
         Assert.assertEquals(actual.length(), java.lang.reflect.Array.getLength(expected), "Array length");
         Assert.assertEquals(actual.typeCode(), expectedType, "The type codes match");
-        Assert.assertTrue(actual.first().isPresent(), "First value is present");
-        Assert.assertTrue(actual.last().isPresent(), "Last value is present");
-        Assert.assertEquals(actual.first().get(), java.lang.reflect.Array.get(expected, 0), "First value matches");
-        Assert.assertEquals(actual.last().get(), java.lang.reflect.Array.get(expected, actual.length()-1), "Last value is present");
+        Assert.assertTrue(actual.first(v -> true).isPresent(), "First value is present");
+        Assert.assertTrue(actual.last(v -> true).isPresent(), "Last value is present");
+        Assert.assertEquals(actual.first(v -> true).map(ArrayValue::getValue).get(), java.lang.reflect.Array.get(expected, 0), "First value matches");
+        Assert.assertEquals(actual.last(v -> true).map(ArrayValue::getValue).get(), java.lang.reflect.Array.get(expected, actual.length()-1), "Last value is present");
     }
 
 
@@ -1064,8 +1064,8 @@ public class ArraysBasicTests {
         final Array<String> empty = Array.empty(String.class);
         Assert.assertTrue(empty.length() == 0, "Length is zero");
         Assert.assertEquals(empty.typeCode(), ArrayType.of(String.class), "Type is any");
-        Assert.assertTrue(!empty.first().isPresent(), "No first element");
-        Assert.assertTrue(!empty.last().isPresent(), "No last element");
+        Assert.assertTrue(!empty.first(v -> true).isPresent(), "No first element");
+        Assert.assertTrue(!empty.last(v -> true).isPresent(), "No last element");
         empty.getValue(100);
     }
 

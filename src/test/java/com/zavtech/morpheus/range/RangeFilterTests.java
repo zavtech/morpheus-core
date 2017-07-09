@@ -26,6 +26,7 @@ import java.time.ZonedDateTime;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayType;
+import com.zavtech.morpheus.array.ArrayValue;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -145,8 +146,8 @@ public class RangeFilterTests {
         final boolean ascend = start < end;
         final Range<Integer> range = Range.of(start, end, step, (int v) -> v < 10);
         final Array<Integer> array = range.toArray(parallel);
-        final int first = array.first().get();
-        final int last = array.last().get();
+        final int first = array.first(v -> true).map(ArrayValue::getValue).get();
+        final int last = array.last(v -> true).map(ArrayValue::getValue).get();
         Assert.assertTrue(array.length() > 0, "There are elements in the array");
         Assert.assertEquals(array.typeCode(), ArrayType.INTEGER);
         Assert.assertTrue(!array.style().isSparse());
@@ -168,8 +169,8 @@ public class RangeFilterTests {
         final boolean ascend = start < end;
         final Range<Long> range = Range.of(start, end, step, (long v) -> v < 10);
         final Array<Long> array = range.toArray(parallel);
-        final long first = array.first().get();
-        final long last = array.last().get();
+        final long first = array.first(v -> true).map(ArrayValue::getValue).get();
+        final long last = array.last(v -> true).map(ArrayValue::getValue).get();
         Assert.assertTrue(array.length() > 0, "There are elements in the array");
         Assert.assertEquals(array.typeCode(), ArrayType.LONG);
         Assert.assertTrue(!array.style().isSparse());
@@ -191,8 +192,8 @@ public class RangeFilterTests {
         final boolean ascend = start < end;
         final Range<Double> range = Range.of(start, end, step, (double v) -> v < 10);
         final Array<Double> array = range.toArray(parallel);
-        final double first = array.first().get();
-        final double last = array.last().get();
+        final double first = array.first(v -> true).map(ArrayValue::getValue).get();
+        final double last = array.last(v -> true).map(ArrayValue::getValue).get();
         Assert.assertTrue(array.length() > 0, "There are elements in the array");
         Assert.assertEquals(array.typeCode(), ArrayType.DOUBLE);
         Assert.assertTrue(!array.style().isSparse());
@@ -214,8 +215,8 @@ public class RangeFilterTests {
         final boolean ascend = start.isBefore(end);
         final Range<LocalDate> range = Range.of(start, end, step, v -> v.getDayOfWeek() == DayOfWeek.MONDAY);
         final Array<LocalDate> array = range.toArray(parallel);
-        final LocalDate first = array.first().get();
-        final LocalDate last = array.last().get();
+        final LocalDate first = array.first(v -> true).map(ArrayValue::getValue).get();
+        final LocalDate last = array.last(v -> true).map(ArrayValue::getValue).get();
         Assert.assertEquals(array.typeCode(), ArrayType.LOCAL_DATE);
         Assert.assertTrue(!array.style().isSparse());
         Assert.assertEquals(range.start(), start, "The range start");
@@ -237,8 +238,8 @@ public class RangeFilterTests {
         final boolean ascend = start.isBefore(end);
         final Range<LocalTime> range = Range.of(start, end, step, v -> v.getHour() == 6);
         final Array<LocalTime> array = range.toArray(parallel);
-        final LocalTime first = array.first().get();
-        final LocalTime last = array.last().get();
+        final LocalTime first = array.first(v -> true).map(ArrayValue::getValue).get();
+        final LocalTime last = array.last(v -> true).map(ArrayValue::getValue).get();
         Assert.assertEquals(array.typeCode(), ArrayType.LOCAL_TIME);
         Assert.assertTrue(!array.style().isSparse());
         Assert.assertEquals(range.start(), start, "The range start");
@@ -260,8 +261,8 @@ public class RangeFilterTests {
         final boolean ascend = start.isBefore(end);
         final Range<LocalDateTime> range = Range.of(start, end, step, v -> v.getHour() == 6);
         final Array<LocalDateTime> array = range.toArray(parallel);
-        final LocalDateTime first = array.first().get();
-        final LocalDateTime last = array.last().get();
+        final LocalDateTime first = array.first(v -> true).map(ArrayValue::getValue).get();
+        final LocalDateTime last = array.last(v -> true).map(ArrayValue::getValue).get();
         Assert.assertEquals(array.typeCode(), ArrayType.LOCAL_DATETIME);
         Assert.assertTrue(!array.style().isSparse());
         Assert.assertEquals(range.start(), start, "The range start");
@@ -283,8 +284,8 @@ public class RangeFilterTests {
         final boolean ascend = start.isBefore(end);
         final Range<ZonedDateTime> range = Range.of(start, end, step, v -> v.getHour() == 6);
         final Array<ZonedDateTime> array = range.toArray(parallel);
-        final ZonedDateTime first = array.first().get();
-        final ZonedDateTime last = array.last().get();
+        final ZonedDateTime first = array.first(v -> true).map(ArrayValue::getValue).get();
+        final ZonedDateTime last = array.last(v -> true).map(ArrayValue::getValue).get();
         Assert.assertEquals(array.typeCode(), ArrayType.ZONED_DATETIME);
         Assert.assertTrue(!array.style().isSparse());
         Assert.assertEquals(range.start(), start, "The range start");

@@ -29,6 +29,7 @@ import java.util.stream.IntStream;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayUtils;
+import com.zavtech.morpheus.array.ArrayValue;
 import com.zavtech.morpheus.util.Predicates;
 import com.zavtech.morpheus.range.Range;
 import org.testng.Assert;
@@ -94,8 +95,8 @@ public class IndexBasicTests {
         Assert.assertEquals(index.size(), 1000);
         index.addAll(array.copy(1000, array.length()), true);
         Assert.assertEquals(index.size(), array.length());
-        Assert.assertEquals(array.first().get(), index.first().get(), "First key match");
-        Assert.assertEquals(array.last().get(), index.last().get(), "Last key match");
+        Assert.assertEquals(array.first(v -> true).map(ArrayValue::getValue).get(), index.first().get(), "First key match");
+        Assert.assertEquals(array.last(v -> true).map(ArrayValue::getValue).get(), index.last().get(), "Last key match");
         Assert.assertEquals(index.isFilter(), false, "Index is not a filter");
         array.forEachValue(v -> {
             final int i = v.index();
@@ -152,7 +153,7 @@ public class IndexBasicTests {
     @Test(dataProvider = "arrays", expectedExceptions = { IndexException.class })
     public <T> void replaceFailsIfSourceKeyDoesNotExist(Array<T> array) {
         final Index<T> index = Index.of(array.copy(0, array.length() / 2));
-        index.replace(array.last().get(), array.getValue(array.length()-2));
+        index.replace(array.last(v -> true).map(ArrayValue::getValue).get(), array.getValue(array.length()-2));
     }
 
 

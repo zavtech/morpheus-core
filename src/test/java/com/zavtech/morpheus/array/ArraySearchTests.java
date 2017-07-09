@@ -99,7 +99,7 @@ public class ArraySearchTests {
     @Test(dataProvider = "types")
     public <T> void testBinarySearchWithHigherValue(Class<T> type, ArrayStyle style) {
         final Array<T> array = createArray(type, style).sort(true);
-        final T lastValue = array.last().get();
+        final T lastValue = array.last(v -> true).map(ArrayValue::getValue).get();
         if (lastValue instanceof Integer) {
             final int index = array.binarySearch(0, array.length(), (T)new Integer(((Integer)lastValue) + 10));
             Assert.assertEquals(index, -1 * (array.length() + 1), "Index implies length() + 1");
@@ -146,7 +146,7 @@ public class ArraySearchTests {
     @Test(dataProvider = "types")
     public <T> void testBinarySearchWithLowerValue(Class<T> type, ArrayStyle style) {
         final Array<T> array = createArray(type, style).sort(true);
-        final T value = array.first().get();
+        final T value = array.first(v -> true).map(ArrayValue::getValue).get();
         if (value instanceof Integer) {
             final int index = array.binarySearch(0, array.length(), (T)new Integer(((Integer)value) - 10));
             Assert.assertEquals(index, -1, "Index implies length() + 1");

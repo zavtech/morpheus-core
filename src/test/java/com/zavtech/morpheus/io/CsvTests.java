@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -338,7 +337,7 @@ public class CsvTests {
             options.setRowKeyParser(LocalDate.class, values -> LocalDate.parse(values[0]));
             options.getFormats().setParser("Volume", Long.class);
         });
-        frame1.out().writeCsv(file);
+        frame1.write().csv(o -> o.setFile(file));
         final DataFrame<LocalDate,String> frame2 = DataFrame.read().csv(options -> {
             options.setResource(file.getAbsolutePath());
             options.setExcludeColumns("DataFrame");

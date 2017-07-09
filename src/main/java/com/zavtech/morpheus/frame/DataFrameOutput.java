@@ -15,15 +15,13 @@
  */
 package com.zavtech.morpheus.frame;
 
-import java.io.File;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.function.Consumer;
 
 import com.zavtech.morpheus.util.text.Formats;
 
 /**
- * An interface that provides various functions for writing a DataFrame to an output device in various formats.
+ * An interface that provides various functions for printing a DataFrame as text to an output device, usually Standard Out.
  *
  * <p>This is open source software released under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 License</a></p>
  *
@@ -75,67 +73,6 @@ public interface DataFrameOutput<R,C> {
      * @throws DataFrameException  if there is an IO exception
      */
     void print(int maxRows, OutputStream stream, Consumer<Formats> formatting);
-
-    /**
-     * Writes the contents of the DataFrame as CSV to the file specified
-     * @param file  the file to write to
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeCsv(File file) throws DataFrameException;
-
-    /**
-     * Writes the contents of the DataFrame as CSV to the output stream specified
-     * @param os    the output stream to write frame to
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeCsv(OutputStream os) throws DataFrameException;
-
-    /**
-     * Writes the contents of the DataFrame as CSV to the file specified
-     * @param file      the file to write to
-     * @param formats   the formats specification
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeCsv(File file, Formats formats) throws DataFrameException;
-
-    /**
-     * Writes the contents of the DataFrame as CSV to the output stream specified
-     * @param os        the output stream to write frame to
-     * @param formats   the formats specification
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeCsv(OutputStream os, Formats formats) throws DataFrameException;
-
-    /**
-     * Writes the contents of the DataFrame as JSON to the file specified
-     * @param file  the file to write to
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeJson(File file) throws DataFrameException;
-
-    /**
-     * Writes the contents of the DataFrame as JSON to the output stream specified
-     * @param os    the output stream to write frame to
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeJson(OutputStream os) throws DataFrameException;
-
-    /**
-     * Writes the contents of the DataFrame as JSON to the file specified
-     * @param file      the file to write to
-     * @param formats   the formats specification
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeJson(File file, Formats formats) throws DataFrameException;
-
-    /**
-     * Writes the contents of the DataFrame as JSON to the output stream specified
-     * @param os        the output stream to write frame to
-     * @param formats   the formats specification
-     * @throws DataFrameException  if there is an I/O exception
-     */
-    void writeJson(OutputStream os, Formats formats) throws DataFrameException;
-
 
 
 }

@@ -63,7 +63,7 @@ public class JsonTests {
         final File file = TestSuite.getOutputFile("JsonTests", "DataFrame-" + rowType.getSimpleName() + ".json");
         final DataFrame<T,String> frame = TestDataFrames.createMixedRandomFrame(rowType, 100);
         frame.out().print();;
-        frame.out().writeJson(file);
+        frame.write().json(o -> o.setFile(file));
         frame.out().print();
         readAndValidate(frame, file);
     }
@@ -87,7 +87,10 @@ public class JsonTests {
     public void testWriteFollowedByRead(String ticker) throws Exception {
         final File file = TestSuite.getOutputFile("JsonTests", "DataFrame-" + ticker + ".json");
         final DataFrame<LocalDate,String> frame1 = TestDataFrames.getQuotes(ticker);
-        frame1.out().writeJson(file, new Formats());
+        frame1.write().json(options -> {
+            options.setFile(file);
+            options.setFormats(new Formats());
+        });
         final DataFrame<LocalDate,String> frame2 = DataFrame.read().json(options -> options.setResource(file.getAbsolutePath()));
         DataFrameAsserts.assertEqualsByIndex(frame1, frame2);
     }
@@ -102,7 +105,7 @@ public class JsonTests {
             options.setRowKeyParser(Integer.class, values -> Integer.parseInt(values[1]));
             options.getFormats().setNullValues("null");
         });
-        frame1.out().writeJson(jsonFile);
+        frame1.write().json(o -> o.setFile(jsonFile));
         final DataFrame<Integer,String> frame2 = DataFrame.read().json(options -> {
             options.setResource(jsonFile.getAbsolutePath());
             options.getFormats().setNullValues("null");

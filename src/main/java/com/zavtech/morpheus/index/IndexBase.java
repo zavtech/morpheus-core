@@ -24,6 +24,7 @@ import java.util.stream.StreamSupport;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayValue;
 import com.zavtech.morpheus.range.Range;
 import com.zavtech.morpheus.util.IntComparator;
 import com.zavtech.morpheus.util.SortAlgorithm;
@@ -99,16 +100,14 @@ abstract class IndexBase<K> implements Index<K> {
 
     /**
      * Returns the parent for this index
-     *
      * @return the optional parent
      */
-    protected Index<K> parent() {
+    Index<K> parent() {
         return parent;
     }
 
     /**
      * Internal method to allow subclasses direct access to the internal key array
-     *
      * @return the key array for index
      */
     protected final Array<K> keyArray() {
@@ -182,7 +181,7 @@ abstract class IndexBase<K> implements Index<K> {
 
     @Override()
     public final Optional<K> first() {
-        return keys.first();
+        return keys.first(v -> true).map(ArrayValue::getValue);
     }
 
     @Override()

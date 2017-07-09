@@ -496,24 +496,37 @@ public abstract class ArrayBase<T> implements Array<T> {
 
 
     @Override
-    public final Optional<T> first() {
+    public final Optional<ArrayValue<T>> first(Predicate<ArrayValue<T>> predicate) {
         if (length() == 0) {
             return Optional.empty();
         } else {
-            final T value = getValue(0);
-            return Optional.ofNullable(value);
+            final int length = this.length();
+            final ArrayCursor<T> cursor = cursor();
+            for (int i=0; i<length; ++i) {
+                cursor.moveTo(i);
+                if (predicate.test(cursor)) {
+                    return Optional.of(cursor);
+                }
+            }
+            return Optional.empty();
         }
     }
 
 
     @Override
-    public final Optional<T> last() {
-        final int length = length();
-        if (length == 0) {
+    public final Optional<ArrayValue<T>> last(Predicate<ArrayValue<T>> predicate) {
+        if (length() == 0) {
             return Optional.empty();
         } else {
-            final T value = getValue(length-1);
-            return Optional.ofNullable(value);
+            final int length = this.length();
+            final ArrayCursor<T> cursor = cursor();
+            for (int i=length-1; i>=0; --i) {
+                cursor.moveTo(i);
+                if (predicate.test(cursor)) {
+                    return Optional.of(cursor);
+                }
+            }
+            return Optional.empty();
         }
     }
 
@@ -866,8 +879,8 @@ public abstract class ArrayBase<T> implements Array<T> {
         return "Array type=" + typeCode().name()
                 + ", length=" + length()
                 + ", defaultValue=" + defaultValue()
-                + ", start=" + first().map(Object::toString).orElse("N/A")
-                + ", end=" + last().map(Object::toString).orElse("N/A");
+                + ", start=" + first(v -> true).map(Object::toString).orElse("N/A")
+                + ", end=" + last(v -> true).map(Object::toString).orElse("N/A");
     }
 
 

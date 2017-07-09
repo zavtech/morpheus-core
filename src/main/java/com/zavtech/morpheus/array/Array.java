@@ -201,16 +201,18 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
     Optional<Bounds<T>> bounds();
 
     /**
-     * Returns a reference to the first entry in the array
-     * @return      the first entry in the array
+     * Returns the first value that matches the predicate specified
+     * @param predicate     the predicate to match values
+     * @return      the first match to predicate, Optional.empty() if no match
      */
-    Optional<T> first();
+    Optional<ArrayValue<T>> first(Predicate<ArrayValue<T>> predicate);
 
     /**
-     * Returns a reference to the last entry in the array
-     * @return      the last entry in the array
+     * Returns the last value that matches the predicate specified
+     * @param predicate     the predicate to match values
+     * @return      the last match to predicate, Optional.empty() if no match
      */
-    Optional<T> last();
+    Optional<ArrayValue<T>> last(Predicate<ArrayValue<T>> predicate);
 
     /**
      * Returns the greatest value strictly less than the given value

@@ -24,8 +24,10 @@ import java.util.function.Predicate;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 import com.zavtech.morpheus.array.coding.LongCoding;
 import com.zavtech.morpheus.array.coding.WithLongCoding;
 
@@ -167,13 +169,14 @@ class DenseArrayWithLongCoding<T> extends ArrayBase<T> implements WithLongCoding
 
 
     @Override
-    public final Array<T> filter(Predicate<T> predicate) {
+    public final Array<T> filter(Predicate<ArrayValue<T>> predicate) {
+        final ArrayCursor<T> cursor = cursor();
         final ArrayBuilder<T> builder = ArrayBuilder.of(length(), type());
         for (int i = 0; i< length(); ++i) {
-            final T value = getValue(i);
-            final boolean match = predicate.test(value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
             if (match) {
-                builder.add(value);
+                builder.add(cursor.getValue());
             }
         }
         return builder.toArray();

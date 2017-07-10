@@ -25,8 +25,10 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation designed to hold a sparse array of Object values
@@ -158,14 +160,15 @@ class SparseArrayOfObjects<T> extends ArrayBase<T> {
 
 
     @Override
-    public final Array<T> filter(Predicate<T> predicate) {
+    public final Array<T> filter(Predicate<ArrayValue<T>> predicate) {
         int count = 0;
         final int length = this.length();
+        final ArrayCursor<T> cursor = cursor();
         final Array<T> matches = Array.of(type(), length, loadFactor());
         for (int i=0; i<length; ++i) {
-            final T value = getValue(i);
-            final boolean match = predicate.test(value);
-            if (match) matches.setValue(count++, value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
+            if (match) matches.setValue(count++, cursor.getValue());
         }
         return count == length ? matches : matches.copy(0, count);
     }

@@ -25,8 +25,10 @@ import gnu.trove.map.hash.TIntDoubleHashMap;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation designed to hold a sparse array of double values
@@ -163,14 +165,15 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
 
 
     @Override
-    public final Array<Double> filter(Predicate<Double> predicate) {
+    public final Array<Double> filter(Predicate<ArrayValue<Double>> predicate) {
         int count = 0;
         final int length = this.length();
+        final ArrayCursor<Double> cursor = cursor();
         final Array<Double> matches = Array.of(type(), length, loadFactor());  //todo: fix the length of this filter
         for (int i=0; i<length; ++i) {
-            final double value = getDouble(i);
-            final boolean match = predicate.test(value);
-            if (match) matches.setDouble(count++, value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
+            if (match) matches.setDouble(count++, cursor.getDouble());
         }
         return count == length ? matches : matches.copy(0, count);
     }

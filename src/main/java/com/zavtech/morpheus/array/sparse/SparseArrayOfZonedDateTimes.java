@@ -32,8 +32,10 @@ import gnu.trove.map.hash.TIntShortHashMap;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation containing a sparse array of LocalDateTine values stored as a long of epoch milliseconds.
@@ -218,14 +220,15 @@ class SparseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
 
 
     @Override
-    public final Array<ZonedDateTime> filter(Predicate<ZonedDateTime> predicate) {
+    public final Array<ZonedDateTime> filter(Predicate<ArrayValue<ZonedDateTime>> predicate) {
         int count = 0;
         final int length = this.length();
+        final ArrayCursor<ZonedDateTime> cursor = cursor();
         final Array<ZonedDateTime> matches = Array.of(type(), length, loadFactor());
         for (int i=0; i<length; ++i) {
-            final ZonedDateTime value = getValue(i);
-            final boolean match = predicate.test(value);
-            if (match) matches.setValue(count++, value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
+            if (match) matches.setValue(count++, cursor.getValue());
         }
         return count == length ? matches : matches.copy(0, count);
     }

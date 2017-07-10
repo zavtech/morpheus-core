@@ -24,8 +24,10 @@ import java.util.function.Predicate;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation designed to hold a dense array of long values
@@ -150,13 +152,14 @@ class DenseArrayOfLongs extends ArrayBase<Long> {
 
 
     @Override
-    public final Array<Long> filter(Predicate<Long> predicate) {
+    public final Array<Long> filter(Predicate<ArrayValue<Long>> predicate) {
+        final ArrayCursor<Long> cursor = cursor();
         final ArrayBuilder<Long> builder = ArrayBuilder.of(length(), type());
         for (int i=0; i<values.length; ++i) {
-            final long value = getLong(i);
-            final boolean match = predicate.test(value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
             if (match) {
-                builder.addLong(value);
+                builder.addLong(cursor.getLong());
             }
         }
         return builder.toArray();

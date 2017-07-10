@@ -297,7 +297,7 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
      * @param predicate the predicate to filter the array
      * @return          the filtered array
      */
-    Array<T> filter(Predicate<T> predicate);
+    Array<T> filter(Predicate<ArrayValue<T>> predicate);
 
     /**
      * Expand this array to the new length specified

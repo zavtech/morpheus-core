@@ -136,7 +136,7 @@ class ArrayReadOnly<T> extends ArrayBase<T> {
     }
 
     @Override
-    public final Array<T> filter(Predicate<T> predicate) {
+    public final Array<T> filter(Predicate<ArrayValue<T>> predicate) {
         return source.filter(predicate);
     }
 

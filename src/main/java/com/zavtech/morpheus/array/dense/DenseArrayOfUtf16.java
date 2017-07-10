@@ -24,8 +24,10 @@ import java.util.function.Predicate;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation designed to hold a dense array of String values encoded as a primitive char array
@@ -266,13 +268,14 @@ class DenseArrayOfUtf16 extends ArrayBase<String> {
 
 
     @Override
-    public final Array<String> filter(Predicate<String> predicate) {
+    public final Array<String> filter(Predicate<ArrayValue<String>> predicate) {
+        final ArrayCursor<String> cursor = cursor();
         final ArrayBuilder<String> builder = ArrayBuilder.of(length(), type());
         for (int i=0; i<length(); ++i) {
-            final String value = getValue(i);
-            final boolean match = predicate.test(value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
             if (match) {
-                builder.add(value);
+                builder.add(cursor.getValue());
             }
         }
         return builder.toArray();

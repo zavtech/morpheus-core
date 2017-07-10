@@ -23,7 +23,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
@@ -875,7 +874,7 @@ public class ArraysBasicTests {
     public <T> void testFilter(Class<T> type, ArrayStyle style) {
         final Array<T> array = createRandomArray(type, 1000, style);
         if (array.typeCode() == ArrayType.BOOLEAN) {
-            final Array<T> filter = array.filter(Predicates.in(Collections.singleton((T)Boolean.TRUE)));
+            final Array<T> filter = array.filter(v -> v.getBoolean());
             Assert.assertTrue(filter.length() < array.length(), "Filter is smaller than source");
             for (int i=0; i<filter.length(); ++i) {
                 Assert.assertTrue(filter.getBoolean(i), "Value is true at " + i);
@@ -883,7 +882,7 @@ public class ArraysBasicTests {
         } else {
             final int[] indexes = IntStream.of(2, 45, 234, 456, 567, 598, 623, 734, 845, 867, 921, 956, 999).toArray();
             final Set<T> includes = array.copy(indexes).stream().values().collect(Collectors.toSet());
-            final Array<T> filter = array.filter(Predicates.in(includes));
+            final Array<T> filter = array.filter(v -> includes.contains(v.getValue()));
             Assert.assertEquals(filter.type(), type, "The filter has same type as source");
             filter.forEachValue(v -> Assert.assertTrue(includes.contains(v.getValue()), "Filter contains value: " + v.getValue()));
         }

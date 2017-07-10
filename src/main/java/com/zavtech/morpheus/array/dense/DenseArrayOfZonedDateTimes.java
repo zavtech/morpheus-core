@@ -29,10 +29,12 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation containing a dense array of ZonedDateTime values stored as a longs of Epoch Millis.
@@ -198,13 +200,14 @@ class DenseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
 
 
     @Override
-    public final Array<ZonedDateTime> filter(Predicate<ZonedDateTime> predicate) {
+    public final Array<ZonedDateTime> filter(Predicate<ArrayValue<ZonedDateTime>> predicate) {
+        final ArrayCursor<ZonedDateTime> cursor = cursor();
         final ArrayBuilder<ZonedDateTime> builder = ArrayBuilder.of(length(), type());
         for (int i=0; i<values.length; ++i) {
-            final ZonedDateTime value = getValue(i);
-            final boolean match = predicate.test(value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
             if (match) {
-                builder.add(value);
+                builder.add(cursor.getValue());
             }
         }
         return builder.toArray();

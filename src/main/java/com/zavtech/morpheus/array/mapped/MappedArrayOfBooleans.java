@@ -25,10 +25,12 @@ import java.nio.channels.FileChannel;
 import java.util.function.Predicate;
 
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation designed to hold a mapped array of boolean values
@@ -201,13 +203,14 @@ class MappedArrayOfBooleans extends ArrayBase<Boolean> {
 
 
     @Override
-    public final Array<Boolean> filter(Predicate<Boolean> predicate) {
+    public final Array<Boolean> filter(Predicate<ArrayValue<Boolean>> predicate) {
+        final ArrayCursor<Boolean> cursor = cursor();
         final ArrayBuilder<Boolean> builder = ArrayBuilder.of(length(), type());
         for (int i=0; i<length(); ++i) {
-            final boolean value = getBoolean(i);
-            final boolean match = predicate.test(value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
             if (match) {
-                builder.addBoolean(value);
+                builder.addBoolean(cursor.getBoolean());
             }
         }
         return builder.toArray();

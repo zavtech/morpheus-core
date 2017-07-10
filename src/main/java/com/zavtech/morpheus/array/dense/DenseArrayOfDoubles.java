@@ -22,10 +22,12 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation designed to hold a dense array of double values
@@ -149,13 +151,14 @@ class DenseArrayOfDoubles extends ArrayBase<Double> {
 
 
     @Override
-    public final Array<Double> filter(Predicate<Double> predicate) {
+    public final Array<Double> filter(Predicate<ArrayValue<Double>> predicate) {
+        final ArrayCursor<Double> cursor = cursor();
         final ArrayBuilder<Double> builder = ArrayBuilder.of(length(), type());
         for (int i=0; i<values.length; ++i) {
-            final double value = getDouble(i);
-            final boolean match = predicate.test(value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
             if (match) {
-                builder.addDouble(value);
+                builder.addDouble(cursor.getDouble());
             }
         }
         return builder.toArray();

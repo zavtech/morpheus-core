@@ -27,8 +27,10 @@ import java.util.function.Predicate;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 /**
  * An Array implementation designed to represent a dense array of int values in a memory-mapped file.
@@ -202,13 +204,14 @@ class MappedArrayOfInts extends ArrayBase<Integer> {
 
 
     @Override
-    public final Array<Integer> filter(Predicate<Integer> predicate) {
+    public final Array<Integer> filter(Predicate<ArrayValue<Integer>> predicate) {
+        final ArrayCursor<Integer> cursor = cursor();
         final ArrayBuilder<Integer> builder = ArrayBuilder.of(length(), type());
         for (int i=0; i<length(); ++i) {
-            final int value = getInt(i);
-            final boolean match = predicate.test(value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
             if (match) {
-                builder.addInt(value);
+                builder.addInt(cursor.getInt());
             }
         }
         return builder.toArray();

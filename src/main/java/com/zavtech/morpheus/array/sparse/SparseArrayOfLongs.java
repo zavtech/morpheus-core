@@ -20,10 +20,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
+import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayStyle;
+import com.zavtech.morpheus.array.ArrayValue;
 
 import gnu.trove.map.TIntLongMap;
 import gnu.trove.map.hash.TIntLongHashMap;
@@ -163,14 +165,15 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
 
 
     @Override
-    public final Array<Long> filter(Predicate<Long> predicate) {
+    public final Array<Long> filter(Predicate<ArrayValue<Long>> predicate) {
         int count = 0;
         final int length = this.length();
+        final ArrayCursor<Long> cursor = cursor();
         final Array<Long> matches = Array.of(type(), length, loadFactor());  //todo: fix the length of this filter
         for (int i=0; i<length; ++i) {
-            final long value = getLong(i);
-            final boolean match = predicate.test(value);
-            if (match) matches.setLong(count++, value);
+            cursor.moveTo(i);
+            final boolean match = predicate.test(cursor);
+            if (match) matches.setLong(count++, cursor.getLong());
         }
         return count == length ? matches : matches.copy(0, count);
     }

@@ -895,23 +895,23 @@ public class ArraysBasicTests {
     public void testLowerAndHigherValueOnSortedStringArray() {
         final Array<String> array = Array.of("a", "c", "e", "g", "i", "k", "m", "o", "q", "s", "u", "w", "y");
 
-        Assert.assertEquals(array.previous("e").get(), "c", "Lower value than e");
-        Assert.assertEquals(array.previous("g").get(), "e", "Lower value than g");
-        Assert.assertEquals(array.previous("i").get(), "g", "Lower value than i");
-        Assert.assertEquals(array.previous("q").get(), "o", "Lower value than q");
-        Assert.assertEquals(array.previous("b").get(), "a", "Lower value than e");
-        Assert.assertEquals(array.previous("f").get(), "e", "Lower value than g");
-        Assert.assertEquals(array.previous("h").get(), "g", "Lower value than i");
-        Assert.assertEquals(array.previous("p").get(), "o", "Lower value than q");
+        Assert.assertEquals(array.previous("e").map(ArrayValue::getValue).get(), "c", "Lower value than e");
+        Assert.assertEquals(array.previous("g").map(ArrayValue::getValue).get(), "e", "Lower value than g");
+        Assert.assertEquals(array.previous("i").map(ArrayValue::getValue).get(), "g", "Lower value than i");
+        Assert.assertEquals(array.previous("q").map(ArrayValue::getValue).get(), "o", "Lower value than q");
+        Assert.assertEquals(array.previous("b").map(ArrayValue::getValue).get(), "a", "Lower value than e");
+        Assert.assertEquals(array.previous("f").map(ArrayValue::getValue).get(), "e", "Lower value than g");
+        Assert.assertEquals(array.previous("h").map(ArrayValue::getValue).get(), "g", "Lower value than i");
+        Assert.assertEquals(array.previous("p").map(ArrayValue::getValue).get(), "o", "Lower value than q");
 
-        Assert.assertEquals(array.next("e").get(), "g", "Lower value than e");
-        Assert.assertEquals(array.next("g").get(), "i", "Lower value than g");
-        Assert.assertEquals(array.next("i").get(), "k", "Lower value than i");
-        Assert.assertEquals(array.next("q").get(), "s", "Lower value than q");
-        Assert.assertEquals(array.next("b").get(), "c", "Lower value than e");
-        Assert.assertEquals(array.next("f").get(), "g", "Lower value than g");
-        Assert.assertEquals(array.next("h").get(), "i", "Lower value than i");
-        Assert.assertEquals(array.next("p").get(), "q", "Lower value than q");
+        Assert.assertEquals(array.next("e").map(ArrayValue::getValue).get(), "g", "Lower value than e");
+        Assert.assertEquals(array.next("g").map(ArrayValue::getValue).get(), "i", "Lower value than g");
+        Assert.assertEquals(array.next("i").map(ArrayValue::getValue).get(), "k", "Lower value than i");
+        Assert.assertEquals(array.next("q").map(ArrayValue::getValue).get(), "s", "Lower value than q");
+        Assert.assertEquals(array.next("b").map(ArrayValue::getValue).get(), "c", "Lower value than e");
+        Assert.assertEquals(array.next("f").map(ArrayValue::getValue).get(), "g", "Lower value than g");
+        Assert.assertEquals(array.next("h").map(ArrayValue::getValue).get(), "i", "Lower value than i");
+        Assert.assertEquals(array.next("p").map(ArrayValue::getValue).get(), "q", "Lower value than q");
     }
 
 

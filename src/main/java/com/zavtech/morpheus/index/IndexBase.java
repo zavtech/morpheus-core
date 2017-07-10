@@ -191,12 +191,12 @@ abstract class IndexBase<K> implements Index<K> {
 
     @Override()
     public final Optional<K> previousKey(K key) {
-        return keys.previous(key);
+        return keys.previous(key).map(ArrayValue::getValue);
     }
 
     @Override()
     public final Optional<K> nextKey(K key) {
-        return keys.next(key);
+        return keys.next(key).map(ArrayValue::getValue);
     }
 
     @Override

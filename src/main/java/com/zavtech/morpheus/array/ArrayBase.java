@@ -438,7 +438,7 @@ public abstract class ArrayBase<T> implements Array<T> {
 
 
     @Override
-    public final Optional<T> previous(T value) {
+    public final Optional<ArrayValue<T>> previous(T value) {
         final int length = length();
         if (length == 0) {
             return Optional.empty();
@@ -446,8 +446,8 @@ public abstract class ArrayBase<T> implements Array<T> {
             final int insertionPoint = binarySearch(0, length, value);
             final int index = insertionPoint < 0 ? (insertionPoint * -1) - 2 : insertionPoint - 1;
             if (index >= 0 && index < length) {
-                final T previousValue = getValue(index);
-                return Optional.ofNullable(previousValue);
+                final ArrayValue<T> result = cursor().moveTo(index);
+                return Optional.ofNullable(result);
             } else {
                 return Optional.empty();
             }
@@ -456,7 +456,7 @@ public abstract class ArrayBase<T> implements Array<T> {
 
 
     @Override
-    public final Optional<T> next(T value) {
+    public final Optional<ArrayValue<T>> next(T value) {
         final int length = length();
         if (length == 0) {
             return Optional.empty();
@@ -464,8 +464,8 @@ public abstract class ArrayBase<T> implements Array<T> {
             final int insertionPoint = binarySearch(0, length, value);
             final int index = insertionPoint < 0 ? (insertionPoint * -1) - 1 : insertionPoint + 1;
             if (index >= 0 && index < length) {
-                final T nextValue = getValue(index);
-                return Optional.ofNullable(nextValue);
+                final ArrayValue<T> result = cursor().moveTo(index);
+                return Optional.ofNullable(result);
             } else {
                 return Optional.empty();
             }
@@ -486,12 +486,8 @@ public abstract class ArrayBase<T> implements Array<T> {
 
 
     @Override
-    public Array<T> sort(int start, int end, Comparator<T> comparator) {
-        return doSort(start, end, (i, j) -> {
-            final T v1 = getValue(i);
-            final T v2 = getValue(j);
-            return comparator.compare(v1, v2);
-        });
+    public Array<T> sort(int start, int end, Comparator<ArrayValue<T>> comparator) {
+        return doSort(start, end, new ArrayIntComparator(comparator));
     }
 
 
@@ -1393,6 +1389,39 @@ public abstract class ArrayBase<T> implements Array<T> {
         @Override
         protected void removeRange(int fromIndex, int toIndex) {
             throw new UnsupportedOperationException("This list is immutable");
+        }
+    }
+
+
+    /**
+     * An IntComparator implementation that calls a user provided Comparator with ArrayValue objects
+     */
+    private class ArrayIntComparator implements IntComparator {
+
+        private ArrayValueCursor v1;
+        private ArrayValueCursor v2;
+        private Comparator<ArrayValue<T>> comp;
+
+        /**
+         * Constructor
+         * @param comp  the user provided comparator
+         */
+        ArrayIntComparator(Comparator<ArrayValue<T>> comp) {
+            this.v1 = (ArrayValueCursor)cursor();
+            this.v2 = (ArrayValueCursor)cursor();
+            this.comp = comp;
+        }
+
+        @Override
+        public int compare(int index1, int index2) {
+            this.v1.moveTo(index1);
+            this.v2.moveTo(index2);
+            return comp.compare(v1, v2);
+        }
+
+        @Override
+        public IntComparator copy() {
+            return new ArrayIntComparator(comp);
         }
     }
 

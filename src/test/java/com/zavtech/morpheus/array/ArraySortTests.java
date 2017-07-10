@@ -80,7 +80,7 @@ public class ArraySortTests {
     public <T> void testSortWithComparatorAscending(Class<T> type, ArrayStyle style) {
         final Array<T> array = random(type, size, style);
         final Comparator<T> comparator = Comparators.getDefaultComparator(array.type());
-        array.sort(0, array.length(), (v1, v2) -> 1 * comparator.compare(v1, v2));
+        array.sort(0, array.length(), (v1, v2) -> comparator.compare(v1.getValue(), v2.getValue()));
         Assert.assertTrue(isAscending(array, 0, array.length()), "Array is in ascending order");
     }
 
@@ -90,7 +90,7 @@ public class ArraySortTests {
     public <T> void testSortWithComparatorDescending(Class<T> type, ArrayStyle style) {
         final Array<T> array = random(type, size, style);
         final Comparator<T> comparator = Comparators.getDefaultComparator(array.type());
-        array.sort(0, array.length(), (v1, v2) -> -1 * comparator.compare(v1, v2));
+        array.sort(0, array.length(), (v1, v2) -> -1 * comparator.compare(v1.getValue(), v2.getValue()));
         Assert.assertTrue(isDescending(array, 0, array.length()), "Array is in descending order");
     }
 

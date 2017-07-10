@@ -174,7 +174,6 @@ class DenseArrayOfDoubles extends ArrayBase<Double> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final double update = from.getDouble(fromIndex);
-                this.expand(toIndex);
                 this.setDouble(toIndex, update);
             }
         }
@@ -186,7 +185,6 @@ class DenseArrayOfDoubles extends ArrayBase<Double> {
     public final Array<Double> update(int toIndex, Array<Double> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final double update = from.getDouble(fromIndex + i);
-            this.expand(toIndex + i);
             this.setDouble(toIndex + i, update);
         }
         return this;
@@ -196,13 +194,10 @@ class DenseArrayOfDoubles extends ArrayBase<Double> {
     @Override
     public final Array<Double> expand(int newLength) {
         if (newLength > values.length) {
-            final int oldCapacity = values.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final double[] newValues = new double[newCapacity];
+            final double[] newValues = new double[newLength];
             System.arraycopy(values, 0, newValues, 0, values.length);
+            Arrays.fill(newValues, values.length, newValues.length, defaultValue);
             this.values = newValues;
-            Arrays.fill(values, oldCapacity, values.length, defaultValue);
         }
         return this;
     }

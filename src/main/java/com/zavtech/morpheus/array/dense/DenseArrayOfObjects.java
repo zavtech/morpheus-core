@@ -175,7 +175,6 @@ class DenseArrayOfObjects<T> extends ArrayBase<T> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final T update = from.getValue(fromIndex);
-                this.expand(toIndex);
                 this.setValue(toIndex, update);
             }
         }
@@ -187,7 +186,6 @@ class DenseArrayOfObjects<T> extends ArrayBase<T> {
     public final Array<T> update(int toIndex, Array<T> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final T update = from.getValue(fromIndex + i);
-            this.expand(toIndex + i);
             this.setValue(toIndex + i, update);
         }
         return this;
@@ -197,13 +195,10 @@ class DenseArrayOfObjects<T> extends ArrayBase<T> {
     @Override
     public final Array<T> expand(int newLength) {
         if (newLength > values.length) {
-            final int oldCapacity = values.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final Object[] newValues = new Object[newCapacity];
+            final Object[] newValues = new Object[newLength];
             System.arraycopy(values, 0, newValues, 0, values.length);
+            Arrays.fill(newValues, values.length, newValues.length, defaultValue);
             this.values = newValues;
-            Arrays.fill(values, oldCapacity, values.length, defaultValue);
         }
         return this;
     }

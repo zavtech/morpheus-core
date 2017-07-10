@@ -199,7 +199,6 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
     public final Array<Long> update(int toIndex, Array<Long> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final long update = from.getLong(fromIndex + i);
-            this.expand(toIndex + i);
             this.setLong(toIndex + i, update);
         }
         return this;

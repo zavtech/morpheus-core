@@ -194,7 +194,6 @@ class SparseArrayOfObjects<T> extends ArrayBase<T> {
     public final Array<T> update(int toIndex, Array<T> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final T update = from.getValue(fromIndex + i);
-            this.expand(toIndex + i);
             this.setValue(toIndex + i, update);
         }
         return this;

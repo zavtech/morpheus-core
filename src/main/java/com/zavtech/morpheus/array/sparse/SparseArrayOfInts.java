@@ -199,7 +199,6 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
     public final Array<Integer> update(int toIndex, Array<Integer> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final int update = from.getInt(fromIndex + i);
-            this.expand(toIndex + i);
             this.setInt(toIndex + i, update);
         }
         return this;

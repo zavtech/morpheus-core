@@ -227,7 +227,6 @@ class MappedArrayOfLongs extends ArrayBase<Long> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final long update = from.getLong(fromIndex);
-                this.expand(toIndex);
                 this.setLong(toIndex, update);
             }
         }
@@ -239,7 +238,6 @@ class MappedArrayOfLongs extends ArrayBase<Long> {
     public final Array<Long> update(int toIndex, Array<Long> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final long update = from.getLong(fromIndex + i);
-            this.expand(toIndex + i);
             this.setLong(toIndex + i, update);
         }
         return this;
@@ -250,13 +248,9 @@ class MappedArrayOfLongs extends ArrayBase<Long> {
     public final Array<Long> expand(int newLength) {
         try {
             if (newLength > length) {
-                final int oldLength = length;
-                int newCapacity = oldLength + (oldLength >> 1);
-                if (newCapacity - newLength < 0) newCapacity = newLength;
-                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newCapacity).asLongBuffer();
-                for (int i=oldLength; i<newLength; ++i) {
-                    this.setLong(i, defaultValue);
-                }
+                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newLength).asLongBuffer();
+                this.fill(defaultValue, length, newLength);
+                this.length = newLength;
             }
             return this;
         } catch (Exception ex) {

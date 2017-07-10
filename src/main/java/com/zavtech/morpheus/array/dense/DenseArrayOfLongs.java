@@ -175,7 +175,6 @@ class DenseArrayOfLongs extends ArrayBase<Long> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final long update = from.getLong(fromIndex);
-                this.expand(toIndex);
                 this.setLong(toIndex, update);
             }
         }
@@ -187,7 +186,6 @@ class DenseArrayOfLongs extends ArrayBase<Long> {
     public final Array<Long> update(int toIndex, Array<Long> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final long update = from.getLong(fromIndex + i);
-            this.expand(toIndex + i);
             this.setLong(toIndex + i, update);
         }
         return this;
@@ -197,13 +195,10 @@ class DenseArrayOfLongs extends ArrayBase<Long> {
     @Override
     public final Array<Long> expand(int newLength) {
         if (newLength > values.length) {
-            final int oldCapacity = values.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final long[] newValues = new long[newCapacity];
+            final long[] newValues = new long[newLength];
             System.arraycopy(values, 0, newValues, 0, values.length);
+            Arrays.fill(newValues, values.length, newValues.length, defaultValue);
             this.values = newValues;
-            Arrays.fill(values, oldCapacity, values.length, defaultValue);
         }
         return this;
     }

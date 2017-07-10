@@ -238,7 +238,6 @@ class MappedArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final T update = from.getValue(fromIndex);
-                this.expand(toIndex);
                 this.setValue(toIndex, update);
             }
         }
@@ -251,13 +250,11 @@ class MappedArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<
         if (from instanceof MappedArrayWithIntCoding) {
             final MappedArrayWithIntCoding other = (MappedArrayWithIntCoding) from;
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.buffer.put(toIndex + i, other.buffer.get(fromIndex + i));
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final T update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }
@@ -269,13 +266,9 @@ class MappedArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<
     public final Array<T> expand(int newLength) {
         try {
             if (newLength > length) {
-                final int oldLength = length;
-                int newCapacity = oldLength + (oldLength >> 1);
-                if (newCapacity - newLength < 0) newCapacity = newLength;
-                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newCapacity).asIntBuffer();
-                for (int i=oldLength; i<newLength; ++i) {
-                    this.setInt(i, defaultCode);
-                }
+                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newLength).asIntBuffer();
+                this.fill(defaultValue, length, newLength);
+                this.length = newLength;
             }
             return this;
 

@@ -302,7 +302,6 @@ class MappedArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
         } else {
             for (int i=0; i<length; ++i) {
                 final ZonedDateTime update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }
@@ -314,15 +313,9 @@ class MappedArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
     public final Array<ZonedDateTime> expand(int newLength) {
         try {
             if (newLength > length) {
-                final int oldLength = length;
-                int newCapacity = oldLength + (oldLength >> 1);
-                if (newCapacity - newLength < 0) newCapacity = newLength;
-                this.byteBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newCapacity);
-                for (int i=oldLength; i<newLength; ++i) {
-                    final int index = i * BYTE_COUNT;
-                    this.byteBuffer.putLong(index, defaultValueAsLong);
-                    this.byteBuffer.putShort(index + 8, defaultZoneId);
-                }
+                this.byteBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newLength);
+                this.fill(defaultValue, length, newLength);
+                this.length = newLength;
             }
             return this;
         } catch (Exception ex) {

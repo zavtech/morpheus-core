@@ -220,7 +220,7 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
      * @param value   the value, which does not necessarily have to exist in the array, from which to find the previous value
      * @return  the greatest value strictly less than the given value
      */
-    Optional<T> previous(T value);
+    Optional<ArrayValue<T>> previous(T value);
 
     /**
      * Returns the smallest value strictly greater than the given value
@@ -228,7 +228,7 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
      * @param value   the value, which does not necessarily have to exist in the array, from which to find the next value
      * @return      the least value strictly greater than the given value
      */
-    Optional<T> next(T value);
+    Optional<ArrayValue<T>> next(T value);
 
     /**
      * Returns the stats interface to this array
@@ -290,7 +290,7 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
      * @param comparator    the custom comparator to sort array
      * @return              the sorted Array reference
      */
-    Array<T> sort(int start, int end, Comparator<T> comparator);
+    Array<T> sort(int start, int end, Comparator<ArrayValue<T>> comparator);
 
     /**
      * Returns a newly created array including values that pass the predicate

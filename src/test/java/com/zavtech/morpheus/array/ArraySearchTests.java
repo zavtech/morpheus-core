@@ -214,11 +214,11 @@ public class ArraySearchTests {
                 if (index > 0) {
                     final T value = array.getValue(index);
                     final T expectedPrevious = array.getValue(index-1);
-                    final Optional<T> previousValue = array.previous(value);
+                    final Optional<T> previousValue = array.previous(value).map(ArrayValue::getValue);
                     Assert.assertTrue(previousValue.isPresent(), "A lower value exists for index " + index);
                     Assert.assertEquals(previousValue.get(), expectedPrevious, "Matches expected previous value for index " + index);
                     final T valueAdjusted = previousResolver.apply(value);
-                    final Optional<T> previousValueAdj = array.previous(valueAdjusted);
+                    final Optional<T> previousValueAdj = array.previous(valueAdjusted).map(ArrayValue::getValue);
                     Assert.assertTrue(previousValueAdj.isPresent(), "A lower value exists for index " + index);
                     Assert.assertEquals(previousValueAdj.get(), expectedPrevious, "Matches expected previous value for index " + index);
                 }
@@ -253,11 +253,11 @@ public class ArraySearchTests {
                 if (index < array.length()-1) {
                     final T value = array.getValue(index);
                     final T expectedNextValue = array.getValue(index+1);
-                    final Optional<T> nextValue = array.next(value);
+                    final Optional<T> nextValue = array.next(value).map(ArrayValue::getValue);
                     Assert.assertTrue(nextValue.isPresent(), "A higher value exists for index " + index);
                     Assert.assertEquals(nextValue.get(), expectedNextValue, "Matches expected next value for index " + index);
                     final T valueAdjusted = nextResolver.apply(value);
-                    final Optional<T> nextValueAdj = array.next(valueAdjusted);
+                    final Optional<T> nextValueAdj = array.next(valueAdjusted).map(ArrayValue::getValue);
                     Assert.assertTrue(nextValueAdj.isPresent(), "A lower value exists for index " + index);
                     Assert.assertEquals(nextValueAdj.get(), expectedNextValue, "Matches expected next value for index " + index);
                 }

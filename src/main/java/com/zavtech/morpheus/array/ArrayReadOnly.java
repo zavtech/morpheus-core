@@ -131,7 +131,7 @@ class ArrayReadOnly<T> extends ArrayBase<T> {
     }
 
     @Override
-    public final Array<T> sort(int start, int end, Comparator<T> comparator) {
+    public final Array<T> sort(int start, int end, Comparator<ArrayValue<T>> comparator) {
         throw new ArrayException("This is a ready only Morpheus Array");
     }
 

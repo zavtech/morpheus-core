@@ -2,8 +2,6 @@
     <img src="http://www.zavtech.com/morpheus/images/morpheus-logo.png"/>
 </p>
 
-----
-
 ### Introduction
 
 The Morpheus library is designed to facilitate the development of high performance analytical software involving large datasets for 

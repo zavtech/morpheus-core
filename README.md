@@ -8,7 +8,7 @@ The Morpheus library is designed to facilitate the development of high performan
 both offline and real-time analysis on the [Java Virtual Machine](https://en.wikipedia.org/wiki/Java_virtual_machine) (JVM). The 
 library is written in Java 8 with extensive use of lambdas, but is accessible to all JVM languages.
 
-For detailed documentation with examples, see [here](http://www.zavtech.com/morpheus/docs/)
+**For detailed documentation with examples, see [here](http://www.zavtech.com/morpheus/docs/)**
 
 #### Motivation
 
@@ -46,7 +46,7 @@ of [Linear Regressions](https://en.wikipedia.org/wiki/Linear_regression), apply 
 Morpheus also aims to provide a standard mechanism to load datasets from various data providers. The hope is that this API will 
 be embraced by the community in order to grow the catalogue of supported data sources. Currently, providers are implemented to enable 
 data to be loaded from [Quandl](https://www.quandl.com/), [Yahoo Finance](http://finance.yahoo.com/), [Google Finance](https://www.google.com/finance), 
-[The World Bank](http://www.worldbank.org/) and the [Federal Reserve Bank of St Louis](https://research.stlouisfed.org/fred2/).
+[The World Bank](http://www.worldbank.org/) and the [Federal Reserve](https://research.stlouisfed.org/fred2/).
 
 ### Maven Artifacts
 
@@ -124,10 +124,11 @@ on the far right of the frame.
 
 #### A Regression Example
 
-The Morpheus API includes a regression interface in order to fit data to a linear model using either [OLS](regression/ols/), 
-[WLS](regression/wls/) or [GLS](regression/gls/). The code below uses the same car dataset introduced in the previous example, 
-and regresses **Horsepower** on **EngineSize**. The code example prints the model results to standard out, which is shown below, 
-and then creates a scatter chart with the regression line clearly displayed.
+The Morpheus API includes a regression interface in order to fit data to a linear model using either [OLS](http://www.zavtech.com/morpheus/docs/regression/ols/), 
+[WLS](http://www.zavtech.com/morpheus/docs/regression/wls/) or [GLS](http://www.zavtech.com/morpheus/docs/regression/gls/). The 
+code below uses the same car dataset introduced in the previous example, and regresses **Horsepower** on **EngineSize**. The code 
+example prints the model results to standard out, which is shown below, and then creates a scatter chart with the regression line 
+clearly displayed.
 
 <?prettify?>
 ```java

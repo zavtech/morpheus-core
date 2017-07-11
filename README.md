@@ -264,3 +264,10 @@ correction in terms of EUR and USD since Pound Sterling depreciated heavily agai
 <p align="center">
     <img src="http://www.zavtech.com/morpheus/docs/images/uk-house-prices.png"/>
 </p>
+
+----
+
+<p align="center">
+    <img src="http://www.zavtech.com/morpheus/images/morpheus-logo.png"/>
+</p>
+

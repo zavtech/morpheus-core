@@ -8,6 +8,8 @@ The Morpheus library is designed to facilitate the development of high performan
 both offline and real-time analysis on the [Java Virtual Machine](https://en.wikipedia.org/wiki/Java_virtual_machine) (JVM). The 
 library is written in Java 8 with extensive use of lambdas, but is accessible to all JVM languages.
 
+For detailed documentation with examples, see [here](http://www.zavtech.com/morpheus/docs/)
+
 #### Motivation
 
 At its core, Morpheus provides a versatile two-dimensional **memory efficient** tabular data structure called a `DataFrame`, similar to

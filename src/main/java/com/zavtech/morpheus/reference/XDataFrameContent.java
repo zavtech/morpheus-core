@@ -126,7 +126,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
      * Returns true if data is stored in columns, false if row store
      * @return  true if data is stored as columns
      */
-    final boolean isColumnStore() {
+    private boolean isColumnStore() {
         return columnStore;
     }
 
@@ -289,7 +289,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
         } else {
             final boolean added = rowKeys.add(rowKey);
             final int rowCount = rowKeys.size();
-            this.data.forEach(s -> s.expand(rowCount));
+            this.ensureCapacity(rowCount);
             return added;
         }
     }
@@ -317,8 +317,27 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
                 added.setValue(i, key);
             }
             final int rowCount = this.rowKeys.size();
-            this.data.forEach(s -> s.expand(rowCount));
+            this.ensureCapacity(rowCount);
             return added;
+        }
+    }
+
+
+    /**
+     * Ensures that the data arrays support the capacity of row index
+     * @param rowCount      the row count for current row index
+     */
+    private void ensureCapacity(int rowCount) {
+        if (data.size() > 0) {
+            final int capacity = rowCapacity();
+            if (rowCount > capacity) {
+                final int newCapacity = capacity + (capacity >> 1);
+                if (newCapacity < rowCount) {
+                    this.data.forEach(s -> s.expand(rowCount));
+                } else {
+                    this.data.forEach(s -> s.expand(newCapacity));
+                }
+            }
         }
     }
 

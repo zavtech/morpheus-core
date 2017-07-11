@@ -226,7 +226,6 @@ class MappedArrayOfBooleans extends ArrayBase<Boolean> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final boolean update = from.getBoolean(fromIndex);
-                this.expand(toIndex);
                 this.setBoolean(toIndex, update);
             }
         }
@@ -238,7 +237,6 @@ class MappedArrayOfBooleans extends ArrayBase<Boolean> {
     public final Array<Boolean> update(int toIndex, Array<Boolean> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final boolean update = from.getBoolean(fromIndex + i);
-            this.expand(toIndex + i);
             this.setBoolean(toIndex + i, update);
         }
         return this;
@@ -249,16 +247,11 @@ class MappedArrayOfBooleans extends ArrayBase<Boolean> {
     public final Array<Boolean> expand(int newLength) {
         try {
             if (newLength > length) {
-                final int oldLength = length;
-                int newCapacity = oldLength + (oldLength >> 1);
-                if (newCapacity - newLength < 0) newCapacity = newLength;
-                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newCapacity).asShortBuffer();
-                for (int i=oldLength; i<newLength; ++i) {
-                    this.setBoolean(i, defaultValue);
-                }
+                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newLength).asShortBuffer();
+                this.fill(defaultValue, length, newLength);
+                this.length = newLength;
             }
             return this;
-
         } catch (Exception ex) {
             throw new ArrayException("Failed to expand size of memory mapped array at " + file.getAbsolutePath(), ex);
         }

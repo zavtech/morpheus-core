@@ -199,7 +199,6 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
     public final Array<Double> update(int toIndex, Array<Double> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final double update = from.getDouble(fromIndex + i);
-            this.expand(toIndex + i);
             this.setDouble(toIndex + i, update);
         }
         return this;

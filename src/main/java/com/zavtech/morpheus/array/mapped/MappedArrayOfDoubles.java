@@ -228,7 +228,6 @@ class MappedArrayOfDoubles extends ArrayBase<Double> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final double update = from.getDouble(fromIndex);
-                this.expand(toIndex);
                 this.setDouble(toIndex, update);
             }
         }
@@ -240,7 +239,6 @@ class MappedArrayOfDoubles extends ArrayBase<Double> {
     public final Array<Double> update(int toIndex, Array<Double> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final double update = from.getDouble(fromIndex + i);
-            this.expand(toIndex + i);
             this.setDouble(toIndex + i, update);
         }
         return this;
@@ -251,16 +249,11 @@ class MappedArrayOfDoubles extends ArrayBase<Double> {
     public final Array<Double> expand(int newLength) {
         try {
             if (newLength > length) {
-                final int oldLength = length;
-                int newCapacity = oldLength + (oldLength >> 1);
-                if (newCapacity - newLength < 0) newCapacity = newLength;
-                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newCapacity).asDoubleBuffer();
-                for (int i=oldLength; i<newLength; ++i) {
-                    this.setDouble(i, defaultValue);
-                }
+                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newLength).asDoubleBuffer();
+                this.fill(defaultValue, length, newLength);
+                this.length = newLength;
             }
             return this;
-
         } catch (Exception ex) {
             throw new ArrayException("Failed to expand size of memory mapped array at " + file.getAbsolutePath(), ex);
         }

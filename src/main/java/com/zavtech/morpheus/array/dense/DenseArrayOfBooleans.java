@@ -175,7 +175,6 @@ class DenseArrayOfBooleans extends ArrayBase<Boolean> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final boolean update = from.getBoolean(fromIndex);
-                this.expand(toIndex);
                 this.setBoolean(toIndex, update);
             }
         }
@@ -187,7 +186,6 @@ class DenseArrayOfBooleans extends ArrayBase<Boolean> {
     public final Array<Boolean> update(int toIndex, Array<Boolean> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final boolean update = from.getBoolean(fromIndex + i);
-            this.expand(toIndex + i);
             this.setBoolean(toIndex + i, update);
         }
         return this;
@@ -197,13 +195,10 @@ class DenseArrayOfBooleans extends ArrayBase<Boolean> {
     @Override
     public final Array<Boolean> expand(int newLength) {
         if (newLength > values.length) {
-            final int oldCapacity = values.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final boolean[] newValues = new boolean[newCapacity];
+            final boolean[] newValues = new boolean[newLength];
             System.arraycopy(values, 0, newValues, 0, values.length);
+            Arrays.fill(newValues, values.length, newValues.length, defaultValue);
             this.values = newValues;
-            Arrays.fill(values, oldCapacity, values.length, defaultValue);
         }
         return this;
     }

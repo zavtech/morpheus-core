@@ -224,7 +224,6 @@ class DenseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
                 for (int i=0; i<fromIndexes.length; ++i) {
                     final int toIndex = toIndexes[i];
                     final int fromIndex = fromIndexes[i];
-                    this.expand(toIndex);
                     this.values[toIndex] = other.values[fromIndex];
                     this.zoneIds[toIndex] = other.zoneIds[fromIndex];
                 }
@@ -233,7 +232,6 @@ class DenseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
                     final int toIndex = toIndexes[i];
                     final int fromIndex = fromIndexes[i];
                     final ZonedDateTime update = from.getValue(fromIndex);
-                    this.expand(toIndex);
                     this.setValue(toIndex, update);
                 }
             }
@@ -247,14 +245,12 @@ class DenseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
         if (from instanceof DenseArrayOfZonedDateTimes) {
             final DenseArrayOfZonedDateTimes other = (DenseArrayOfZonedDateTimes)from;
             for (int i=0; i<length; ++i) {
-                this.expand(toIndex + i);
                 this.values[toIndex + i] = other.values[fromIndex + i];
                 this.zoneIds[toIndex + i] = other.zoneIds[fromIndex + i];
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final ZonedDateTime update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }
@@ -265,17 +261,14 @@ class DenseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
     @Override
     public final Array<ZonedDateTime> expand(int newLength) {
         if (newLength > values.length) {
-            final int oldCapacity = values.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final long[] newValues = new long[newCapacity];
-            final short[] newZoneIds = new short[newCapacity];
+            final long[] newValues = new long[newLength];
+            final short[] newZoneIds = new short[newLength];
             System.arraycopy(values, 0, newValues, 0, values.length);
             System.arraycopy(zoneIds, 0, newZoneIds, 0, zoneIds.length);
+            Arrays.fill(newValues, values.length, newValues.length, defaultValueAsLong);
+            Arrays.fill(newZoneIds, zoneIds.length, newZoneIds.length, defaultZoneId);
             this.values = newValues;
             this.zoneIds = newZoneIds;
-            Arrays.fill(values, oldCapacity, values.length, defaultValueAsLong);
-            Arrays.fill(zoneIds, oldCapacity, zoneIds.length, defaultZoneId);
         }
         return this;
     }

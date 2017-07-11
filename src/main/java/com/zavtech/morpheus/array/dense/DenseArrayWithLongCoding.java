@@ -192,7 +192,6 @@ class DenseArrayWithLongCoding<T> extends ArrayBase<T> implements WithLongCoding
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final T update = from.getValue(fromIndex);
-                this.expand(toIndex);
                 this.setValue(toIndex, update);
             }
         }
@@ -204,18 +203,15 @@ class DenseArrayWithLongCoding<T> extends ArrayBase<T> implements WithLongCoding
         if (from instanceof DenseArrayWithLongCoding) {
             final DenseArrayWithLongCoding other = (DenseArrayWithLongCoding) from;
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.codes[toIndex + i] = other.codes[fromIndex + i];
             }
         } else if (from instanceof DenseArrayOfLongs) {
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.codes[toIndex + i] = from.getLong(fromIndex + i);
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final T update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }
@@ -226,13 +222,10 @@ class DenseArrayWithLongCoding<T> extends ArrayBase<T> implements WithLongCoding
     @Override
     public final Array<T> expand(int newLength) {
         if (newLength > codes.length) {
-            final int oldCapacity = codes.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final long[] newCodes = new long[newCapacity];
+            final long[] newCodes = new long[newLength];
             System.arraycopy(codes, 0, newCodes, 0, codes.length);
+            Arrays.fill(newCodes, codes.length, newCodes.length, defaultCode);
             this.codes = newCodes;
-            Arrays.fill(codes, oldCapacity, codes.length, defaultCode);
         }
         return this;
     }

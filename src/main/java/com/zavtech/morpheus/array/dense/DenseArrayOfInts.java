@@ -175,7 +175,6 @@ class DenseArrayOfInts extends ArrayBase<Integer> {
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final int update = from.getInt(fromIndex);
-                this.expand(toIndex);
                 this.setInt(toIndex, update);
             }
         }
@@ -187,7 +186,6 @@ class DenseArrayOfInts extends ArrayBase<Integer> {
     public final Array<Integer> update(int toIndex, Array<Integer> from, int fromIndex, int length) {
         for (int i=0; i<length; ++i) {
             final int update = from.getInt(fromIndex + i);
-            this.expand(toIndex + i);
             this.setInt(toIndex + i, update);
         }
         return this;
@@ -197,13 +195,10 @@ class DenseArrayOfInts extends ArrayBase<Integer> {
     @Override
     public final Array<Integer> expand(int newLength) {
         if (newLength > values.length) {
-            final int oldCapacity = values.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final int[] newValues = new int[newCapacity];
+            final int[] newValues = new int[newLength];
             System.arraycopy(values, 0, newValues, 0, values.length);
+            Arrays.fill(newValues, values.length, newValues.length, defaultValue);
             this.values = newValues;
-            Arrays.fill(values, oldCapacity, values.length, defaultValue);
         }
         return this;
     }

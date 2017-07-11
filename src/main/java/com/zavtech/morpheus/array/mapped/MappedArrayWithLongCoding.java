@@ -232,13 +232,11 @@ class MappedArrayWithLongCoding<T> extends ArrayBase<T> {
         if (from instanceof MappedArrayWithLongCoding) {
             final MappedArrayWithLongCoding other = (MappedArrayWithLongCoding) from;
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.buffer.put(toIndex + i, other.buffer.get(fromIndex + i));
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final T update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }
@@ -248,8 +246,16 @@ class MappedArrayWithLongCoding<T> extends ArrayBase<T> {
 
     @Override
     public final Array<T> expand(int newLength) {
-        this.length = newLength > length ? newLength : length;
-        return this;
+        try {
+            if (newLength > length) {
+                this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, BYTE_COUNT * newLength).asLongBuffer();
+                this.fill(defaultValue, length, newLength);
+                this.length = newLength;
+            }
+            return this;
+        } catch (Exception ex) {
+            throw new ArrayException("Failed to expand size of memory mapped array at " + file.getAbsolutePath(), ex);
+        }
     }
 
 

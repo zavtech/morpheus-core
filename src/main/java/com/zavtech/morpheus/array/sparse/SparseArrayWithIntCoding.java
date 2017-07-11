@@ -201,13 +201,11 @@ class SparseArrayWithIntCoding<T> extends ArrayBase<T> {
         if (from instanceof SparseArrayWithIntCoding) {
             final SparseArrayWithIntCoding other = (SparseArrayWithIntCoding)from;
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.codes.put(toIndex + i, other.codes.get(fromIndex + i));
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final T update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }

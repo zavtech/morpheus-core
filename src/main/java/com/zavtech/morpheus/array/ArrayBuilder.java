@@ -241,7 +241,7 @@ public class ArrayBuilder<T> {
     private void checkLength() {
         if (index >= length) {
             int newLength = length + (length >> 1);
-            if (newLength - index <= 0) newLength = index + 1;
+            if (newLength < index + 1) newLength = index + 1;
             this.array.expand(newLength);
             this.length = array.length();
         }

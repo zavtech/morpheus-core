@@ -194,7 +194,6 @@ class DenseArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<T
                 final int toIndex = toIndexes[i];
                 final int fromIndex = fromIndexes[i];
                 final T update = from.getValue(fromIndex);
-                this.expand(toIndex);
                 this.setValue(toIndex, update);
             }
         }
@@ -207,18 +206,15 @@ class DenseArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<T
         if (from instanceof DenseArrayWithIntCoding) {
             final DenseArrayWithIntCoding other = (DenseArrayWithIntCoding) from;
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.codes[toIndex + i] = other.codes[fromIndex + i];
             }
         } else if (from instanceof DenseArrayOfInts) {
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.codes[toIndex + i] = from.getInt(fromIndex + i);
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final T update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }
@@ -229,13 +225,10 @@ class DenseArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<T
     @Override
     public final Array<T> expand(int newLength) {
         if (newLength > codes.length) {
-            final int oldCapacity = codes.length;
-            int newCapacity = oldCapacity + (oldCapacity >> 1);
-            if (newCapacity - newLength < 0) newCapacity = newLength;
-            final int[] newCodes = new int[newCapacity];
+            final int[] newCodes = new int[newLength];
             System.arraycopy(codes, 0, newCodes, 0, codes.length);
+            Arrays.fill(newCodes, codes.length, newCodes.length, defaultCode);
             this.codes = newCodes;
-            Arrays.fill(codes, oldCapacity, codes.length, defaultCode);
         }
         return this;
     }

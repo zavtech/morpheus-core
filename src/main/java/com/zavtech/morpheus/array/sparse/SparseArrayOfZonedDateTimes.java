@@ -255,14 +255,12 @@ class SparseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
         if (from instanceof SparseArrayOfZonedDateTimes) {
             final SparseArrayOfZonedDateTimes other = (SparseArrayOfZonedDateTimes)from;
             for (int i=0; i<length; ++i) {
-                this.expand(toIndex + i);
                 this.values.put(toIndex + i, other.values.get(fromIndex + i));
                 this.zoneIds.put(toIndex + i, other.zoneIds.get(fromIndex + i));
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final ZonedDateTime update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }

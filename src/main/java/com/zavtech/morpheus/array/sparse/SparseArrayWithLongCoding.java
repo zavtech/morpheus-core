@@ -202,13 +202,11 @@ class SparseArrayWithLongCoding<T> extends ArrayBase<T> {
         if (from instanceof SparseArrayWithLongCoding) {
             final SparseArrayWithLongCoding other = (SparseArrayWithLongCoding) from;
             for (int i = 0; i < length; ++i) {
-                this.expand(toIndex + i);
                 this.codes.put(toIndex + i, other.codes.get(fromIndex + i));
             }
         } else {
             for (int i=0; i<length; ++i) {
                 final T update = from.getValue(fromIndex + i);
-                this.expand(toIndex + i);
                 this.setValue(toIndex + i, update);
             }
         }

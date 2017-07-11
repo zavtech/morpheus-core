@@ -16,7 +16,9 @@
 package com.zavtech.morpheus.util.text.parser;
 
 import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -55,6 +57,11 @@ class ParserOfDouble extends Parser<Double> {
     ParserOfDouble(ToBooleanFunction<String> nullChecker, Supplier<DecimalFormat> format) {
         super(FunctionStyle.DOUBLE, Double.class, nullChecker);
         this.format = format;
+    }
+
+    @Override
+    public Parser<Double> optimize(String value) {
+        return this;
     }
 
     @Override

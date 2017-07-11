@@ -76,6 +76,24 @@ class ParserOfLocalDateTime extends Parser<LocalDateTime> {
         return false;
     }
 
+
+    @Override
+    public final Parser<LocalDateTime> optimize(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot optimize to parse a null");
+        } else {
+            for (Map.Entry<Pattern,DateTimeFormatter> entry : patternMap.entrySet()) {
+                final Matcher matcher = entry.getKey().matcher(value);
+                if (matcher.reset(value).matches()) {
+                    final DateTimeFormatter formatter = entry.getValue();
+                    return new ParserOfLocalDateTime(getNullChecker(), () -> formatter);
+                }
+            }
+        }
+        throw new IllegalArgumentException("No LocalDateTime regex patterns match value: " + value);
+    }
+
+
     @Override
     public final LocalDateTime apply(String value) {
         try {

@@ -41,6 +41,11 @@ class ParserOfString extends Parser<String> {
     }
 
     @Override
+    public Parser<String> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final String apply(String value) {
         return getNullChecker().applyAsBoolean(value) ? null : value;
     }

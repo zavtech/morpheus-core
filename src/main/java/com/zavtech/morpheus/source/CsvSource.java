@@ -564,4 +564,18 @@ public class CsvSource<R> implements DataFrameSource<R,String,CsvSourceOptions<R
 
     }
 
+
+    public static void main(String[] args) {
+        final long t1 = System.currentTimeMillis();
+        final String path = "/Users/witdxav/Dropbox/data/uk-house-prices/uk-house-prices-2006.csv";
+        final DataFrame<Integer,String> frame = DataFrame.read().csv(options -> {
+            options.setResource(path);
+            options.setHeader(false);
+            options.setParallel(true);
+        });
+        final long t2 = System.currentTimeMillis();
+        frame.out().print();
+        System.out.printf("\n\nLoaded DataFrame with %s row in %s millis", frame.rowCount(), t2 - t1);
+    }
+
 }

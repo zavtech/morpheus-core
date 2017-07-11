@@ -48,6 +48,11 @@ class ParserOfBoolean extends Parser<Boolean> {
     }
 
     @Override
+    public Parser<Boolean> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final boolean applyAsBoolean(String value) {
         try {
             return !getNullChecker().applyAsBoolean(value) && trueSet.contains(value);

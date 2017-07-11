@@ -109,6 +109,14 @@ public abstract class Parser<T> extends Function1<String,T> {
 
 
     /**
+     * Returns a possibly modified version of this parser optimized to parse values of the form presented
+     * @param value     the format of the value to optimize for
+     * @return          the newly created parser, or this parser if no optimizations can be done
+     */
+    public abstract Parser<T> optimize(String value);
+
+
+    /**
      * Creates an BOOLEAN parser that wraps to function provided
      * @param function  the function to wrap
      * @return          the newly created parser
@@ -118,6 +126,10 @@ public abstract class Parser<T> extends Function1<String,T> {
             @Override
             public final boolean applyAsBoolean(String value) {
                 return value != null && function.applyAsBoolean(value);
+            }
+            @Override
+            public Parser<Boolean> optimize(String value) {
+                return this;
             }
             @Override
             public final boolean isSupported(String value) {
@@ -138,6 +150,10 @@ public abstract class Parser<T> extends Function1<String,T> {
                 return value != null ? function.applyAsInt(value) : 0;
             }
             @Override
+            public Parser<Integer> optimize(String value) {
+                return this;
+            }
+            @Override
             public final boolean isSupported(String value) {
                 return false;
             }
@@ -154,6 +170,10 @@ public abstract class Parser<T> extends Function1<String,T> {
             @Override
             public final long applyAsLong(String value) {
                 return value != null ? function.applyAsLong(value) : 0L;
+            }
+            @Override
+            public Parser<Long> optimize(String value) {
+                return this;
             }
             @Override
             public final boolean isSupported(String value) {
@@ -174,6 +194,10 @@ public abstract class Parser<T> extends Function1<String,T> {
                 return value != null ? function.applyAsDouble(value) : Double.NaN;
             }
             @Override
+            public Parser<Double> optimize(String value) {
+                return this;
+            }
+            @Override
             public final boolean isSupported(String value) {
                 return false;
             }
@@ -192,6 +216,10 @@ public abstract class Parser<T> extends Function1<String,T> {
             @Override
             public final O apply(String value) {
                 return value != null ? function.apply(value) : null;
+            }
+            @Override
+            public Parser<O> optimize(String value) {
+                return this;
             }
             @Override
             public final boolean isSupported(String value) {

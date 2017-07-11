@@ -61,6 +61,11 @@ class ParserOfDate<T extends java.util.Date> extends Parser<T> {
     }
 
     @Override
+    public Parser<T> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final boolean isSupported(String value) {
         if (!getNullChecker().applyAsBoolean(value)) {
             for (Map.Entry<Pattern,DateTimeFormatter> entry : patternMap.entrySet()) {

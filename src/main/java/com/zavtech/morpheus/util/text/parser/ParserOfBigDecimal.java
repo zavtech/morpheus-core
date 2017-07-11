@@ -66,6 +66,11 @@ class ParserOfBigDecimal extends Parser<BigDecimal> {
     }
 
     @Override
+    public Parser<BigDecimal> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public BigDecimal apply(String value) {
         try {
             return getNullChecker().applyAsBoolean(value) ? null : new BigDecimal(value);

@@ -64,6 +64,11 @@ class ParserOfZoneId extends Parser<ZoneId> {
     }
 
     @Override
+    public Parser<ZoneId> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final ZoneId apply(String value) {
         try {
             if (getNullChecker().applyAsBoolean(value)) {

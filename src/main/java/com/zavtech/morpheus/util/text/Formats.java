@@ -519,7 +519,7 @@ public class Formats {
                 final Parser<?> parser = entry.getValue();
                 final boolean allMatch = nonNullValues.stream().allMatch(parser::isSupported);
                 if (allMatch && !parser.getType().equals(Object.class)) {
-                    return Optional.of(parser);
+                    return Optional.of(parser.optimize(nonNullValues.iterator().next()));
                 }
             }
             return Optional.empty();

@@ -63,6 +63,11 @@ class ParserOfTimeZone extends Parser<TimeZone> {
     }
 
     @Override
+    public Parser<TimeZone> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final TimeZone apply(String value) {
         try {
             if (getNullChecker().applyAsBoolean(value)) {

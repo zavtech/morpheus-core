@@ -46,6 +46,11 @@ class ParserOfLong extends Parser<Long> {
     }
 
     @Override
+    public Parser<Long> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final long applyAsLong(String value) {
         try {
             if (getNullChecker().applyAsBoolean(value)) {

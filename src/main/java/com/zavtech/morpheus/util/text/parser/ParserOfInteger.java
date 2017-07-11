@@ -41,6 +41,11 @@ class ParserOfInteger extends Parser<Integer> {
     }
 
     @Override
+    public Parser<Integer> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final boolean isSupported(String value) {
         return !getNullChecker().applyAsBoolean(value) && pattern.matcher(value).matches();
     }

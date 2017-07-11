@@ -61,6 +61,11 @@ class ParserOfObject extends Parser<Object> {
     }
 
     @Override
+    public Parser<Object> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final Object apply(String value) {
         try {
             if (getNullChecker().applyAsBoolean(value)) {

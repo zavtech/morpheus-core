@@ -59,6 +59,13 @@ class ParserOfLocalTime extends Parser<LocalTime> {
         this.format = format;
     }
 
+
+    @Override
+    public Parser<LocalTime> optimize(String value) {
+        return this;
+    }
+
+
     @Override
     public final boolean isSupported(String value) {
         if (!getNullChecker().applyAsBoolean(value)) {
@@ -82,17 +89,39 @@ class ParserOfLocalTime extends Parser<LocalTime> {
                 if (formatter != null) {
                     return LocalTime.parse(value, formatter);
                 } else {
-                    for (Map.Entry<Pattern,DateTimeFormatter> entry : patternMap.entrySet()) {
-                        final Matcher matcher = entry.getKey().matcher(value);
-                        if (matcher.reset(value).matches()) {
-                            return LocalTime.parse(value, entry.getValue());
+                    final String[] tokens = value.split("\\:");
+                    if (tokens.length < 2) {
+                        throw new FormatException("Failed to parse value into LocalTime: " + value);
+                    } else {
+                        final int hour = Integer.parseInt(tokens[0].trim());
+                        final int minute = Integer.parseInt(tokens[1].trim());
+                        if (tokens.length == 2) {
+                            return LocalTime.of(hour, minute);
+                        } else {
+                            if (tokens[2].contains(".")) {
+                                final String[] remainder = tokens[2].split("\\.");
+                                final int seconds = Integer.parseInt(remainder[0]);
+                                final int nanos = Integer.parseInt(remainder[0]);
+                                return LocalTime.of(hour, minute, seconds, nanos);
+                            } else {
+                                final int seconds = Integer.parseInt(tokens[2]);
+                                return LocalTime.of(hour, minute, seconds);
+                            }
                         }
                     }
-                    throw new IllegalArgumentException("Unable to parse value into LocalDate: " + value);
                 }
             }
+        } catch (FormatException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new FormatException("Failed to parse value into LocalTime: " + value, ex);
         }
+    }
+
+    public static void main(String[] args) {
+        Parser<LocalTime> parser = new ParserOfLocalTime(value -> value == null, () -> null);
+        System.out.println(parser.apply("12:23"));
+        System.out.println(parser.apply("12:23:34"));
+        System.out.println(parser.apply("12:23:34.5345"));
     }
 }

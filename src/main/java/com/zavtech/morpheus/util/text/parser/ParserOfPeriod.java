@@ -48,6 +48,11 @@ class ParserOfPeriod extends Parser<Period> {
     }
 
     @Override
+    public Parser<Period> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final Period apply(String value) {
         try {
             if (getNullChecker().applyAsBoolean(value)) {

@@ -58,6 +58,24 @@ class ParserOfLocalDate extends Parser<LocalDate> {
         this.format = format;
     }
 
+
+    @Override
+    public Parser<LocalDate> optimize(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot optimize to parse a null");
+        } else {
+            for (Map.Entry<Pattern,DateTimeFormatter> entry : patternMap.entrySet()) {
+                final Matcher matcher = entry.getKey().matcher(value);
+                if (matcher.reset(value).matches()) {
+                    final DateTimeFormatter formatter = entry.getValue();
+                    return new ParserOfLocalDate(getNullChecker(), () -> formatter);
+                }
+            }
+        }
+        throw new IllegalArgumentException("No LocalDate regex patterns match value: " + value);
+    }
+
+
     @Override
     public final boolean isSupported(String value) {
         if (!getNullChecker().applyAsBoolean(value)) {
@@ -70,6 +88,7 @@ class ParserOfLocalDate extends Parser<LocalDate> {
         }
         return false;
     }
+
 
     @Override
     public final LocalDate apply(String value) {

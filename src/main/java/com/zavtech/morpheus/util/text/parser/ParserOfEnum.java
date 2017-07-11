@@ -49,6 +49,11 @@ public class ParserOfEnum<T extends Enum> extends Parser<T> {
     }
 
     @Override
+    public Parser<T> optimize(String value) {
+        return this;
+    }
+
+    @Override
     public final boolean isSupported(String value) {
         return !getNullChecker().applyAsBoolean(value) && enumMap.containsKey(value.toUpperCase());
     }

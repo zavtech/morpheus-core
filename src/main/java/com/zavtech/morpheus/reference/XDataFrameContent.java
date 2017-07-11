@@ -333,10 +333,8 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
             if (rowCount > capacity) {
                 final int newCapacity = capacity + (capacity >> 1);
                 if (newCapacity < rowCount) {
-                    System.out.println("Expanding-1 row capacity of arrays to " + rowCount);
                     this.data.forEach(s -> s.expand(rowCount));
                 } else {
-                    System.out.println("Expanding-2 row capacity of arrays to " + newCapacity);
                     this.data.forEach(s -> s.expand(newCapacity));
                 }
             }

@@ -176,6 +176,12 @@ public abstract class ArrayBase<T> implements Array<T> {
     }
 
 
+    @Override()
+    public Array<T> fill(T value) {
+        return fill(value, 0, length());
+    }
+
+
     @Override
     public Array<T> distinct() {
         return distinct(Integer.MAX_VALUE);

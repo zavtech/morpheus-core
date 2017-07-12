@@ -262,16 +262,6 @@ class MappedArrayOfInts extends ArrayBase<Integer> {
     }
 
 
-    @Override()
-    public final Array<Integer> fill(Integer value) {
-        final int fillValue = value == null ? defaultValue : value;
-        for (int i=0; i<length; ++i) {
-            this.buffer.put(i, fillValue);
-        }
-        return this;
-    }
-
-
     @Override
     public final Array<Integer> fill(Integer value, int start, int end) {
         final int fillValue = value == null ? defaultValue : value;

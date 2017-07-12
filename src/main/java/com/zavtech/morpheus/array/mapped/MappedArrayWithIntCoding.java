@@ -281,12 +281,6 @@ class MappedArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<
     }
 
 
-    @Override()
-    public final Array<T> fill(T value) {
-        return fill(value, 0, length());
-    }
-
-
     @Override
     public Array<T> fill(T value, int start, int end) {
         final int code = coding.getCode(value);

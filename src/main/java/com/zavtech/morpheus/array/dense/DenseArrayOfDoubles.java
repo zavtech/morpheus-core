@@ -206,16 +206,9 @@ class DenseArrayOfDoubles extends ArrayBase<Double> {
     }
 
 
-    @Override()
-    public final Array<Double> fill(Double value) {
-        Arrays.fill(values, value == null ? Double.NaN : value);
-        return this;
-    }
-
-
     @Override
     public final Array<Double> fill(Double value, int start, int end) {
-        Arrays.fill(values, start, end, value);
+        Arrays.fill(values, start, end, value == null ? defaultValue : value);
         return this;
     }
 

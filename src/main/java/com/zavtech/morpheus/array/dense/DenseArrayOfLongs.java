@@ -207,16 +207,9 @@ class DenseArrayOfLongs extends ArrayBase<Long> {
     }
 
 
-    @Override()
-    public final Array<Long> fill(Long value) {
-        Arrays.fill(values, value == null ? 0L : value);
-        return this;
-    }
-
-
     @Override
     public Array<Long> fill(Long value, int start, int end) {
-        Arrays.fill(values, start, end, value != null ? value : 0L);
+        Arrays.fill(values, start, end, value == null ? defaultValue : value);
         return this;
     }
 

@@ -237,14 +237,6 @@ class DenseArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<T
     }
 
 
-    @Override()
-    public final Array<T> fill(T value) {
-        final int code = coding.getCode(value);
-        Arrays.fill(codes, code);
-        return this;
-    }
-
-
     @Override
     public Array<T> fill(T value, int start, int end) {
         final int code = coding.getCode(value);

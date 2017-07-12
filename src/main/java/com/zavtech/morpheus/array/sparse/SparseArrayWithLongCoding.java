@@ -225,12 +225,6 @@ class SparseArrayWithLongCoding<T> extends ArrayBase<T> {
 
 
     @Override
-    public final Array<T> fill(T value) {
-        return fill(value, 0, length());
-    }
-
-
-    @Override
     public Array<T> fill(T value, int start, int end) {
         final long fillCode = coding.getCode(value);
         if (fillCode == defaultCode) {

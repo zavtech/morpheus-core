@@ -262,16 +262,6 @@ class MappedArrayOfLongs extends ArrayBase<Long> {
     }
 
 
-    @Override()
-    public final Array<Long> fill(Long value) {
-        final long fillValue = value == null ? defaultValue : value;
-        for (int i=0; i<length; ++i) {
-            this.buffer.put(i, fillValue);
-        }
-        return this;
-    }
-
-
     @Override
     public final Array<Long> fill(Long value, int start, int end) {
         final long fillValue = value == null ? defaultValue : value;

@@ -216,14 +216,8 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
 
 
     @Override
-    public final Array<Integer> fill(Integer value) {
-        return fill(value, 0, length());
-    }
-
-
-    @Override
     public Array<Integer> fill(Integer value, int start, int end) {
-        final int fillValue = value == null ? 0 : value;
+        final int fillValue = value == null ? defaultValue : value;
         if (fillValue == defaultValue) {
             this.values.clear();
         } else {

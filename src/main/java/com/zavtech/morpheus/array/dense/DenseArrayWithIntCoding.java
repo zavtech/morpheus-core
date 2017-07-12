@@ -21,6 +21,9 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
+
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -284,6 +287,25 @@ class DenseArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<T
         final T oldValue = getValue(index);
         this.codes[index] = coding.getCode(value);
         return oldValue;
+    }
+
+
+    @Override
+    public Array<T> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TIntSet set = new TIntHashSet(capacity);
+        final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
+        for (int i=0; i<length(); ++i) {
+            final int code = getInt(i);
+            if (set.add(code)) {
+                final T value = getValue(i);
+                builder.add(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

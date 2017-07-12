@@ -17,6 +17,8 @@ package com.zavtech.morpheus.array;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -113,12 +115,14 @@ public class ArrayUtils {
      */
     public static Array<Integer> distinct(IntStream values, int limit) {
         final DistinctInts distinct = new DistinctInts(limit);
-        values.forEach(v -> {
-            final boolean hitLimit = distinct.add(v);
+        final PrimitiveIterator.OfInt iterator = values.iterator();
+        while (iterator.hasNext()) {
+            final int value = iterator.next();
+            final boolean hitLimit = distinct.add(value);
             if (hitLimit) {
-                values.close();
+                break;
             }
-        });
+        }
         return distinct.toArray();
     }
 
@@ -131,12 +135,14 @@ public class ArrayUtils {
      */
     public static Array<Long> distinct(LongStream values, int limit) {
         final DistinctLongs distinct = new DistinctLongs(limit);
-        values.forEach(v -> {
-            final boolean hitLimit = distinct.add(v);
+        final PrimitiveIterator.OfLong iterator = values.iterator();
+        while (iterator.hasNext()) {
+            final long value = iterator.next();
+            final boolean hitLimit = distinct.add(value);
             if (hitLimit) {
-                values.close();
+                break;
             }
-        });
+        }
         return distinct.toArray();
     }
 
@@ -149,12 +155,14 @@ public class ArrayUtils {
      */
     public static Array<Double> distinct(DoubleStream values, int limit) {
         final DistinctDoubles distinct = new DistinctDoubles(limit);
-        values.forEach(v -> {
-            final boolean hitLimit = distinct.add(v);
+        final PrimitiveIterator.OfDouble iterator = values.iterator();
+        while (iterator.hasNext()) {
+            final double value = iterator.next();
+            final boolean hitLimit = distinct.add(value);
             if (hitLimit) {
-                values.close();
+                break;
             }
-        });
+        }
         return distinct.toArray();
     }
 
@@ -167,12 +175,14 @@ public class ArrayUtils {
      */
     public static <V> Array<V> distinct(Stream<V> values, int limit) {
         final DistinctValues<V> distinct = new DistinctValues<>(limit);
-        values.forEach(v -> {
-            final boolean hitLimit = distinct.add(v);
+        final Iterator<V> iterator = values.iterator();
+        while (iterator.hasNext()) {
+            final V value = iterator.next();
+            final boolean hitLimit = distinct.add(value);
             if (hitLimit) {
-                values.close();
+                break;
             }
-        });
+        }
         return distinct.toArray();
     }
 

@@ -22,9 +22,12 @@ import java.util.function.Predicate;
 
 import gnu.trove.map.TIntDoubleMap;
 import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.set.TDoubleSet;
+import gnu.trove.set.hash.TDoubleHashSet;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
+import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
@@ -303,6 +306,24 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
             }
         }
         return -(low + 1);
+    }
+
+
+    @Override
+    public Array<Double> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TDoubleSet set = new TDoubleHashSet(capacity);
+        final ArrayBuilder<Double> builder = ArrayBuilder.of(capacity, Double.class);
+        for (int i=0; i<length(); ++i) {
+            final double value = getDouble(i);
+            if (set.add(value)) {
+                builder.addDouble(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

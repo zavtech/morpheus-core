@@ -20,6 +20,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
+import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.Array;
@@ -29,6 +30,8 @@ import com.zavtech.morpheus.array.ArrayValue;
 
 import gnu.trove.map.TIntLongMap;
 import gnu.trove.map.hash.TIntLongHashMap;
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 
 /**
  * An Array implementation designed to hold a sparse array of long values
@@ -310,6 +313,24 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
             }
         }
         return -(low + 1);
+    }
+
+
+    @Override
+    public Array<Long> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TLongSet set = new TLongHashSet(capacity);
+        final ArrayBuilder<Long> builder = ArrayBuilder.of(capacity, Long.class);
+        for (int i=0; i<length(); ++i) {
+            final long value = getLong(i);
+            if (set.add(value)) {
+                builder.addLong(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

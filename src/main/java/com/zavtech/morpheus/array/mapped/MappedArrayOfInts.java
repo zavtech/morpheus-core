@@ -24,6 +24,9 @@ import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
 import java.util.function.Predicate;
 
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
+
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -357,6 +360,24 @@ class MappedArrayOfInts extends ArrayBase<Integer> {
         } catch (Exception ex) {
             throw new ArrayException("Binary search of array failed", ex);
         }
+    }
+
+
+    @Override
+    public Array<Integer> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TIntSet set = new TIntHashSet(capacity);
+        final ArrayBuilder<Integer> builder = ArrayBuilder.of(capacity, Integer.class);
+        for (int i=0; i<length(); ++i) {
+            final int value = getInt(i);
+            if (set.add(value)) {
+                builder.addInt(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

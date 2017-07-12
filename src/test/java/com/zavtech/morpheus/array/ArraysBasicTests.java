@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -1115,6 +1116,21 @@ public class ArraysBasicTests {
                 break;
         }
     }
+
+
+    @Test(dataProvider = "types")
+    public <T> void distinct(Class<T> type, ArrayStyle style) {
+        final Array<T> array = createRandomArray(type, 10000, style);
+        final Array<T> distinct1 = array.distinct();
+        final Array<T> distinct2 = array.distinct(20);
+        final Set<T> expected = new HashSet<>(array.toList());
+        Assert.assertEquals(distinct1.length(), expected.size());
+        Assert.assertTrue(distinct2.length() <= 20);
+        distinct1.forEachValue(v -> {
+            Assert.assertTrue(expected.contains(v.getValue()));
+        });
+    }
+
 
 
     @Test(dataProvider = "types", expectedExceptions = { ArrayException.class })

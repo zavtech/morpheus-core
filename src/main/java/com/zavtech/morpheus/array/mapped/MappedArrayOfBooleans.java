@@ -261,17 +261,6 @@ class MappedArrayOfBooleans extends ArrayBase<Boolean> {
     }
 
 
-    @Override()
-    public Array<Boolean> fill(Boolean value) {
-        final boolean fillValue = value == null ? defaultValue : value;
-        final short fillShort = fillValue ? (short)1 : (short)0;
-        for (int i=0; i<length; ++i) {
-            this.buffer.put(i, fillShort);
-        }
-        return this;
-    }
-
-
     @Override
     public Array<Boolean> fill(Boolean value, int start, int end) {
         final boolean fillValue = value == null ? defaultValue : value;

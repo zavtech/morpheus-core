@@ -263,16 +263,6 @@ class MappedArrayOfDoubles extends ArrayBase<Double> {
     }
 
 
-    @Override()
-    public final Array<Double> fill(Double value) {
-        final double fillValue = value == null ? defaultValue : value;
-        for (int i=0; i<length; ++i) {
-            this.buffer.put(i, fillValue);
-        }
-        return this;
-    }
-
-
     @Override
     public final Array<Double> fill(Double value, int start, int end) {
         final double fillValue = value == null ? defaultValue : value;

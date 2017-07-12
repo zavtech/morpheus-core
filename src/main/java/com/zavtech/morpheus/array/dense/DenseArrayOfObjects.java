@@ -204,13 +204,6 @@ class DenseArrayOfObjects<T> extends ArrayBase<T> {
     }
 
 
-    @Override()
-    public final Array<T> fill(T value) {
-        Arrays.fill(values, value);
-        return this;
-    }
-
-
     @Override
     public Array<T> fill(T value, int start, int end) {
         Arrays.fill(values, start, end, value);

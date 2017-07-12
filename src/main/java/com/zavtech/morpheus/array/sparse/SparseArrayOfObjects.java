@@ -208,12 +208,6 @@ class SparseArrayOfObjects<T> extends ArrayBase<T> {
 
 
     @Override
-    public final Array<T> fill(T value) {
-        return fill(value, 0, length());
-    }
-
-
-    @Override
     public Array<T> fill(T value, int start, int end) {
         if (value == defaultValue || (value != null && value.equals(defaultValue()))) {
             this.values.clear();

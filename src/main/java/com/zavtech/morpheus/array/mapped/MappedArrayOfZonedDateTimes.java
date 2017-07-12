@@ -324,19 +324,6 @@ class MappedArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
     }
 
 
-    @Override()
-    public final Array<ZonedDateTime> fill(ZonedDateTime value) {
-        final long fillEpochMillis = value == null ? nullValue : value.toInstant().toEpochMilli();
-        final short fillZoneId = value == null ? NULL_ZONE : zoneIdMap1.get(value.getZone());
-        for (int i=0; i<length; ++i) {
-            final int index = i * BYTE_COUNT;
-            this.byteBuffer.putLong(index, fillEpochMillis);
-            this.byteBuffer.putShort(index + 8, fillZoneId);
-        }
-        return this;
-    }
-
-
     @Override
     public Array<ZonedDateTime> fill(ZonedDateTime value, int start, int end) {
         final long fillEpochMillis = value == null ? nullValue : value.toInstant().toEpochMilli();

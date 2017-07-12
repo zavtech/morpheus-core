@@ -264,12 +264,6 @@ class MappedArrayWithLongCoding<T> extends ArrayBase<T> {
 
 
     @Override
-    public final Array<T> fill(T value) {
-        return fill(value, 0, length());
-    }
-
-
-    @Override
     public Array<T> fill(T value, int start, int end) {
         final long code = coding.getCode(value);
         for (int i=start; i<end; ++i) {

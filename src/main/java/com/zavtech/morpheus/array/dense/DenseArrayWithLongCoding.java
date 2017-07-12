@@ -234,14 +234,6 @@ class DenseArrayWithLongCoding<T> extends ArrayBase<T> implements WithLongCoding
     }
 
 
-    @Override()
-    public final Array<T> fill(T value) {
-        final long code = coding.getCode(value);
-        Arrays.fill(codes, code);
-        return this;
-    }
-
-
     @Override
     public Array<T> fill(T value, int start, int end) {
         final long code = coding.getCode(value);

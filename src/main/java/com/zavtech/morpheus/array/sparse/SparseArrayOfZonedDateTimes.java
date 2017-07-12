@@ -276,12 +276,6 @@ class SparseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
 
 
     @Override
-    public final Array<ZonedDateTime> fill(ZonedDateTime value) {
-        return fill(value, 0, length());
-    }
-
-
-    @Override
     public Array<ZonedDateTime> fill(ZonedDateTime value, int start, int end) {
         final long fillValue = value != null ? value.toInstant().toEpochMilli() : nullValue;
         if (fillValue == defaultValueAsLong) {

@@ -207,16 +207,9 @@ class DenseArrayOfInts extends ArrayBase<Integer> {
     }
 
 
-    @Override()
-    public final Array<Integer> fill(Integer value) {
-        Arrays.fill(values, value == null ? 0 : value);
-        return this;
-    }
-
-
     @Override
     public Array<Integer> fill(Integer value, int start, int end) {
-        Arrays.fill(values, start, end, value);
+        Arrays.fill(values, start, end, value == null ? defaultValue : value);
         return this;
     }
 

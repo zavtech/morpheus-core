@@ -216,14 +216,8 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
 
 
     @Override
-    public final Array<Double> fill(Double value) {
-        return fill(value, 0, length());
-    }
-
-
-    @Override
     public Array<Double> fill(Double value, int start, int end) {
-        final double fillValue = value == null ? Double.NaN : value;
+        final double fillValue = value == null ? defaultValue : value;
         if (fillValue == defaultValue) {
             this.values.clear();
         } else {

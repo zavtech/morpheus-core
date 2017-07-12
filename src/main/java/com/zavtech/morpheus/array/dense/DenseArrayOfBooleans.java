@@ -207,16 +207,9 @@ class DenseArrayOfBooleans extends ArrayBase<Boolean> {
     }
 
 
-    @Override()
-    public Array<Boolean> fill(Boolean value) {
-        Arrays.fill(values, value == null ? false :value);
-        return this;
-    }
-
-
     @Override
     public Array<Boolean> fill(Boolean value, int start, int end) {
-        Arrays.fill(values, start, end, value);
+        Arrays.fill(values, start, end, value == null ? defaultValue : value);
         return this;
     }
 

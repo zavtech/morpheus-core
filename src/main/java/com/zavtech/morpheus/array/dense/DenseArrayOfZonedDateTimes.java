@@ -274,14 +274,6 @@ class DenseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
     }
 
 
-    @Override()
-    public final Array<ZonedDateTime> fill(ZonedDateTime value) {
-        Arrays.fill(values, value == null ? nullValue : value.toInstant().toEpochMilli());
-        Arrays.fill(zoneIds, value == null ? NULL_ZONE : zoneIdMap1.get(value.getZone()));
-        return this;
-    }
-
-
     @Override
     public Array<ZonedDateTime> fill(ZonedDateTime value, int start, int end) {
         Arrays.fill(values, start, end, value != null ? value.toInstant().toEpochMilli() : nullValue);

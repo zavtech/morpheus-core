@@ -216,14 +216,8 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
 
 
     @Override
-    public final Array<Long> fill(Long value) {
-        return fill(value, 0, length());
-    }
-
-
-    @Override
     public Array<Long> fill(Long value, int start, int end) {
-        final long fillValue = value == null ? 0L : value;
+        final long fillValue = value == null ? defaultValue : value;
         if (fillValue == defaultValue) {
             this.values.clear();
         } else {

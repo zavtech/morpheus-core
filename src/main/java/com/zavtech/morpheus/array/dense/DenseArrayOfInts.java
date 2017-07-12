@@ -21,6 +21,9 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
+
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -271,6 +274,24 @@ class DenseArrayOfInts extends ArrayBase<Integer> {
     @Override
     public int binarySearch(int start, int end, Integer value) {
         return Arrays.binarySearch(values, start, end, value);
+    }
+
+
+    @Override
+    public Array<Integer> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TIntSet set = new TIntHashSet(capacity);
+        final ArrayBuilder<Integer> builder = ArrayBuilder.of(capacity, Integer.class);
+        for (int i=0; i<length(); ++i) {
+            final int value = getInt(i);
+            if (set.add(value)) {
+                builder.addInt(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

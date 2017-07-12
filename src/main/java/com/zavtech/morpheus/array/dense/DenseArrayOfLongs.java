@@ -21,6 +21,9 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
+
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -267,6 +270,24 @@ class DenseArrayOfLongs extends ArrayBase<Long> {
     @Override
     public int binarySearch(int start, int end, Long value) {
         return Arrays.binarySearch(values, start, end, value);
+    }
+
+
+    @Override
+    public Array<Long> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TLongSet set = new TLongHashSet(capacity);
+        final ArrayBuilder<Long> builder = ArrayBuilder.of(capacity, Long.class);
+        for (int i=0; i<length(); ++i) {
+            final long value = getLong(i);
+            if (set.add(value)) {
+                builder.addLong(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

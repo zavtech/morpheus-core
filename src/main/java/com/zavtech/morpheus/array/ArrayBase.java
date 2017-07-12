@@ -21,10 +21,12 @@ import java.io.ObjectOutputStream;
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ThreadLocalRandom;
@@ -175,14 +177,8 @@ public abstract class ArrayBase<T> implements Array<T> {
 
 
     @Override
-    @SuppressWarnings("unchecked")
     public Array<T> distinct() {
-        switch(typeCode()) {
-            case INTEGER:   return (Array<T>)ArrayUtils.distinct(stream().ints(), Integer.MAX_VALUE);
-            case LONG:      return (Array<T>)ArrayUtils.distinct(stream().longs(), Integer.MAX_VALUE);
-            case DOUBLE:    return (Array<T>)ArrayUtils.distinct(stream().doubles(), Integer.MAX_VALUE);
-            default:        return ArrayUtils.distinct(stream().values(), Integer.MAX_VALUE);
-        }
+        return distinct(Integer.MAX_VALUE);
     }
 
 
@@ -193,7 +189,20 @@ public abstract class ArrayBase<T> implements Array<T> {
             case INTEGER:   return (Array<T>)ArrayUtils.distinct(stream().ints(), limit);
             case LONG:      return (Array<T>)ArrayUtils.distinct(stream().longs(), limit);
             case DOUBLE:    return (Array<T>)ArrayUtils.distinct(stream().doubles(), limit);
-            default:        return ArrayUtils.distinct(stream().values(), limit);
+            default:
+                final int capacity = limit < Integer.MAX_VALUE ? limit : 16;
+                final Set<T> set = new HashSet<>(capacity);
+                final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
+                for (int i=0; i<length(); ++i) {
+                    final T value = getValue(i);
+                    if (set.add(value)) {
+                        builder.add(value);
+                        if (set.size() >= limit) {
+                            break;
+                        }
+                    }
+                }
+                return builder.toArray();
         }
     }
 

@@ -24,6 +24,9 @@ import java.nio.DoubleBuffer;
 import java.nio.channels.FileChannel;
 import java.util.function.Predicate;
 
+import gnu.trove.set.TDoubleSet;
+import gnu.trove.set.hash.TDoubleHashSet;
+
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -345,6 +348,24 @@ class MappedArrayOfDoubles extends ArrayBase<Double> {
         } catch (Exception ex) {
             throw new ArrayException("Binary search of array failed", ex);
         }
+    }
+
+
+    @Override
+    public Array<Double> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TDoubleSet set = new TDoubleHashSet(capacity);
+        final ArrayBuilder<Double> builder = ArrayBuilder.of(capacity, Double.class);
+        for (int i=0; i<length(); ++i) {
+            final double value = getDouble(i);
+            if (set.add(value)) {
+                builder.addDouble(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

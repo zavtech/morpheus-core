@@ -20,6 +20,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
+import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.Array;
@@ -29,6 +30,8 @@ import com.zavtech.morpheus.array.ArrayValue;
 
 import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
 
 /**
  * An Array implementation designed to hold a sparse array of int values
@@ -314,6 +317,24 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
             }
         }
         return -(low + 1);
+    }
+
+
+    @Override
+    public Array<Integer> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TIntSet set = new TIntHashSet(capacity);
+        final ArrayBuilder<Integer> builder = ArrayBuilder.of(capacity, Integer.class);
+        for (int i=0; i<length(); ++i) {
+            final int value = getInt(i);
+            if (set.add(value)) {
+                builder.addInt(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

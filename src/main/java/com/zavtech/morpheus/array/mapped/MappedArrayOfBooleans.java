@@ -24,6 +24,9 @@ import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.util.function.Predicate;
 
+import gnu.trove.set.TShortSet;
+import gnu.trove.set.hash.TShortHashSet;
+
 import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
@@ -345,6 +348,23 @@ class MappedArrayOfBooleans extends ArrayBase<Boolean> {
             }
         }
         return -(low + 1);
+    }
+
+
+    @Override
+    public Array<Boolean> distinct(int limit) {
+        final TShortSet set = new TShortHashSet(limit);
+        final ArrayBuilder<Boolean> builder = ArrayBuilder.of(2, Boolean.class);
+        for (int i=0; i<length(); ++i) {
+            final boolean value = getBoolean(i);
+            if (set.add(value ? (short)1 : (short)0)) {
+                builder.addBoolean(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

@@ -22,9 +22,12 @@ import java.util.function.Predicate;
 
 import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
+import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
@@ -284,6 +287,25 @@ class SparseArrayWithIntCoding<T> extends ArrayBase<T> {
             this.codes.put(index, code);
             return oldValue;
         }
+    }
+
+
+    @Override
+    public Array<T> distinct(int limit) {
+        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final TIntSet set = new TIntHashSet(capacity);
+        final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
+        for (int i=0; i<length(); ++i) {
+            final int code = getInt(i);
+            if (set.add(code)) {
+                final T value = getValue(i);
+                builder.add(value);
+                if (set.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return builder.toArray();
     }
 
 

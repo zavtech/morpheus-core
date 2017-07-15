@@ -20,10 +20,10 @@ and dangerous to refactor. The Morpheus library attempts to retain the power and
 much more **type safe** and **self describing** set of interfaces, which should make developing, maintaining & scaling code complexity much 
 easier. 
 
-Another advantage of the Morpheus library over many other scientific computing platforms is that it is extremely good at **scaling** on 
-[multi-core processor](https://en.wikipedia.org/wiki/Multi-core_processor) architectures given the powerful [threading](https://en.wikipedia.org/wiki/Multithreading_(computer_architecture))
-capabilities of the Java Virtual Machine. Many operations on a Morpheus `DataFrame` can seamlessly be run in **parallel** by simply calling 
-`parallel()` on the entity you wish to operate on, much like with [Java 8 Streams](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html). 
+Another advantage of the Morpheus library is that it is extremely good at **scaling** on [multi-core processor](https://en.wikipedia.org/wiki/Multi-core_processor) 
+architectures given the powerful [threading](https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)) capabilities of the Java 
+Virtual Machine. Many operations on a Morpheus `DataFrame` can seamlessly be run in **parallel** by simply calling `parallel()` on the entity 
+you wish to operate on, much like with [Java 8 Streams](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html). 
 Internally, these parallel implementations are based on the Fork & Join framework, and near linear improvements in performance are observed 
 for certain types of operations as CPU cores are added.
 

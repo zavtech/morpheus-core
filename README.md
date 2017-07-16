@@ -54,7 +54,7 @@ Morpheus is published to Maven Central so it can be easily added as a dependency
 
 ```xml
 <dependency>
-    <groupId>org.zavtech</groupId>
+    <groupId>com.zavtech</groupId>
     <artifactId>morpheus-core</artifactId>
     <version>${VERSION}</version>
 </dependency>

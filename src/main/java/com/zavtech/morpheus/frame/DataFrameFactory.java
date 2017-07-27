@@ -18,6 +18,7 @@ package com.zavtech.morpheus.frame;
 import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -116,40 +117,34 @@ public abstract class DataFrameFactory {
     public abstract <R,C> DataFrame<R,C> empty(Class<R> rowAxisType, Class<C> colAxisType);
 
     /**
-     * Returns a DataFrame result by concatenating a selection of frames
-     * @param frames    the iterable of frames to concatenate
+     * Returns a DataFrame result by combining multiple frames into one while applying only the first non-null element value
+     * If there are intersecting coordinates across the frames, the first non-null value will apply in the resulting frame
+     * @param frames    the iterator of frames
      * @param <R>       the row key type
      * @param <C>       the column key type
-     * @return          the concatenated DataFrame
+     * @return          the resulting DataFrame
      */
-    public abstract <R,C> DataFrame<R,C> concat(Iterable<DataFrame<R,C>> frames);
+    public abstract <R,C> DataFrame<R,C> combineFirst(Iterator<DataFrame<R,C>> frames);
 
     /**
      * Returns a newly created DataFrame by concatenating rows from the input frames
+     * If there are overlapping row keys, the row values from the first frame will apply
      * @param frames        the iterable of frames from which to concatenate rows
      * @param <R>           the row key type for frames
      * @param <C>           the column key type for frames
      * @return              the resulting DataFrame
      */
-    public abstract <R,C> DataFrame<R,C> concatRows(Iterable<DataFrame<R,C>> frames);
+    public abstract <R,C> DataFrame<R,C> concatRows(Iterator<DataFrame<R,C>> frames);
 
     /**
      * Returns a newly created DataFrame by concatenating columns from the input frames
+     * If there are overlapping column keys, the column values from the first frame will apply
      * @param frames        the iterable of frames from which to concatenate columns
      * @param <R>           the row key type for frames
      * @param <C>           the column key type for frames
      * @return              the resulting DataFrame
      */
-    public abstract <R,C> DataFrame<R,C> concatColumns(Iterable<DataFrame<R,C>> frames);
-
-    /**
-     * Returns the union of all the frames extracted from the Iterable provided
-     * @param frames    the iterable of frames from which to create the union
-     * @param <R>       the row key type
-     * @param <C>       the column key type
-     * @return          the union of all input frames
-     */
-    public abstract <R,C> DataFrame<R,C> union(Iterable<DataFrame<R,C>> frames);
+    public abstract <R,C> DataFrame<R,C> concatColumns(Iterator<DataFrame<R,C>> frames);
 
     /**
      * Returns a newly created empty <code>DataFrame</code> initialized with the row and column type

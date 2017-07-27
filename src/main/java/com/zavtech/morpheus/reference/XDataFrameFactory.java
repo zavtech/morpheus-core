@@ -23,29 +23,28 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.zavtech.morpheus.array.Array;
+import com.zavtech.morpheus.array.ArrayType;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameColumns;
+import com.zavtech.morpheus.frame.DataFrameCursor;
 import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.frame.DataFrameFactory;
 import com.zavtech.morpheus.frame.DataFrameHeader;
 import com.zavtech.morpheus.frame.DataFrameRead;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
-import com.zavtech.morpheus.util.Collect;
 
 /**
- * A factory class used to construct various DataFrame implementations.
+ * The reference implementation of the DataFrameFactory interface.
  *
  * <p><strong>This is open source software released under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 License</a></strong></p>
  *
@@ -59,6 +58,7 @@ public class XDataFrameFactory extends DataFrameFactory {
     public DataFrameRead read() {
         return read;
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -75,84 +75,71 @@ public class XDataFrameFactory extends DataFrameFactory {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R,C> DataFrame<R,C> concat(Iterable<DataFrame<R,C>> frames) {
-        final Iterator<DataFrame<R,C>> iterator = frames.iterator();
-        if (!iterator.hasNext()) {
-            return DataFrame.empty();
-        } else {
-            final DataFrame<R,C> result = iterator.next();
-            while (iterator.hasNext()) {
-                final DataFrame<R,C> frame = iterator.next();
-                final Array<R> rowKeys = frame.rows().keyArray();
-                //result.rows().addAll(rowKeys, false);
-                result.rows().addAll(frame);
-            }
-            return result;
-        }
-    }
-
-
-    @Override
-    public <R,C> DataFrame<R,C> concatRows(Iterable<DataFrame<R,C>> frames) {
-        final Iterator<DataFrame<R,C>> iterator = frames.iterator();
-        if (!iterator.hasNext()) {
-            return DataFrame.empty();
-        } else {
-            final DataFrame<R,C> first = iterator.next();
-            final Array<C> firstColKeys = first.cols().keyArray();
-            final AtomicInteger rowCount = new AtomicInteger(0);
-            final Map<C,Set<Class<?>>> typeMap = Collect.asMap(map -> firstColKeys.forEach(c -> map.put(c, new HashSet<>())));
-            frames.forEach(frame -> firstColKeys.forEach(colKey -> {
-                rowCount.addAndGet(frame.rowCount());
-                if (frame.cols().contains(colKey)) {
-                   final Class<?> type = frame.cols().type(colKey);
-                   typeMap.get(colKey).add(type);
-               }
-            }));
-            final Class<C> colKeyType = first.cols().keyType();
-            final Index<R> rowKeys = Index.of(first.rows().keyType(), rowCount.get());
-            final DataFrame<R,C> result = DataFrame.of(rowKeys, colKeyType, columns -> {
-                firstColKeys.forEach(colKey -> {
-                    final Set<Class<?>> types = typeMap.get(colKey);
-                    final Class<?> dataType = types.size() == 1 ? types.iterator().next() : (Class<?>)Object.class;
-                    columns.add(colKey, dataType);
-                });
-            });
-            frames.forEach(frame -> result.rows().addAll(frame));
-            return result;
-        }
-    }
-
-
-    @Override
-    public <R,C> DataFrame<R,C> concatColumns(Iterable<DataFrame<R,C>> frames) {
-        final Iterator<DataFrame<R,C>> iterator = frames.iterator();
+    public <R,C> DataFrame<R,C> combineFirst(Iterator<DataFrame<R,C>> iterator) {
         if (!iterator.hasNext()) {
             return DataFrame.empty();
         } else {
             final DataFrame<R,C> result = iterator.next().copy();
-            frames.forEach(frame -> {
-                if (frame != result) {
-                    result.cols().addAll(frame);
+            final DataFrameCursor<R,C> cursor = result.cursor();
+            while (iterator.hasNext()) {
+                final DataFrame<R,C> next = iterator.next();
+                result.rows().addAll(next);
+                result.cols().addAll(next);
+                next.cols().forEach(column -> {
+                    final ArrayType type = ArrayType.of(column.typeInfo());
+                    column.forEach(v -> {
+                        final R rowKey = v.rowKey();
+                        final C colKey = v.colKey();
+                        if (cursor.moveTo(rowKey, colKey).isNull()) {
+                            switch (type) {
+                                case BOOLEAN:   cursor.setBoolean(v.getBoolean());  break;
+                                case INTEGER:   cursor.setInt(v.getInt());          break;
+                                case LONG:      cursor.setLong(v.getLong());        break;
+                                case DOUBLE:    cursor.setDouble(v.getDouble());    break;
+                                default:        cursor.setValue(v.getValue());      break;
+                            }
+                        }
+                    });
+                });
+            }
+            return result.rows().sort(true);
+        }
+    }
+
+
+    @Override
+    public <R,C> DataFrame<R,C> concatRows(Iterator<DataFrame<R,C>> iterator) {
+        if (!iterator.hasNext()) {
+            return DataFrame.empty();
+        } else {
+            final DataFrame<R,C> result = iterator.next().copy();
+            while (iterator.hasNext()) {
+                final DataFrame<R,C> next = iterator.next();
+                if (next != null) {
+                    result.rows().addAll(next);
                 }
-            });
+            }
             return result;
         }
     }
 
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <R,C> DataFrame union(Iterable<DataFrame<R,C>> frames) {
-        final DataFrame<R,C> union = concatRows(frames);
-        final DataFrame<R,C> first = frames.iterator().next();
-        frames.forEach(frame -> {
-            if (frame != first) {
-                union.cols().addAll(frame);
+    public <R,C> DataFrame<R,C> concatColumns(Iterator<DataFrame<R,C>> iterator) {
+        if (!iterator.hasNext()) {
+            return DataFrame.empty();
+        } else {
+            final DataFrame<R,C> result = iterator.next().copy();
+            while (iterator.hasNext()) {
+                final DataFrame<R,C> next = iterator.next();
+                if (next != null) {
+                    result.cols().addAll(next);
+                }
             }
-        });
-        return union;
+            return result;
+        }
     }
+
 
     @SuppressWarnings("unchecked")
     public <R,C> DataFrame<R,C> from(Class<R> rowType, Map<C,Class<?>> columnMap) {
@@ -161,6 +148,7 @@ public class XDataFrameFactory extends DataFrameFactory {
         return from(rowType, colType, columns -> columnMap.forEach(columns::add));
     }
 
+
     @SuppressWarnings("unchecked")
     public <R,C> DataFrame<R,C> from(Iterable<R> rowKeys, Map<C,Class<?>> columnMap) {
         final Set<Class> colKeySet = columnMap.keySet().stream().map(C::getClass).collect(Collectors.toSet());
@@ -168,25 +156,30 @@ public class XDataFrameFactory extends DataFrameFactory {
         return from(rowKeys, colType, columns -> columnMap.forEach(columns::add));
     }
 
+
     @Override
     public <R,C> DataFrame<R,C> from(Class<R> rowType, Class<C> colType) {
         return new XDataFrame<>(Index.of(rowType, 1000), Index.of(colType, 50), Object.class, false);
     }
+
 
     @Override
     public <R,C> DataFrame<R,C> from(Iterable<R> rowKeys, Iterable<C> colKeys, Class<?> type) {
         return new XDataFrame<>(toIndex(rowKeys), toIndex(colKeys), type, false);
     }
 
+
     @Override
     public <R,C> DataFrame<R,C> from(Iterable<R> rowKeys, Class<C> colType, Consumer<DataFrameColumns<R, C>> columns) {
         return new XDataFrame<>(toIndex(rowKeys), Index.of(colType, 50), Object.class, false).configure(columns);
     }
 
+
     @Override
     public <R,C> DataFrame<R,C> from(Class<R> rowType, Class<C> colType, Consumer<DataFrameColumns<R,C>> columns) {
         return new XDataFrame<>(Index.of(rowType, 1000), Index.of(colType, 50), Object.class, false).configure(columns);
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -233,6 +226,7 @@ public class XDataFrameFactory extends DataFrameFactory {
             throw new DataFrameException("Failed to initialize DataFrame from ResultSet: " + t.getMessage(), t);
         }
     }
+
 
     /**
      * Returns a newly created empty DataFrame from the ResultSet

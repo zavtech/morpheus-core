@@ -1853,11 +1853,6 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
         }
 
         @Override
-        public DataFrameCursor<R,C> moveTo(DataFrameValue value) {
-            return moveTo(value.rowOrdinal(), value.colOrdinal());
-        }
-
-        @Override
         public final DataFrameCursor<R,C> moveToRow(R rowKey) {
             return moveToRow(rowKeys.getOrdinalForKey(rowKey));
         }

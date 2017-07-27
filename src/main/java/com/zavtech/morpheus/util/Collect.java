@@ -18,6 +18,7 @@ package com.zavtech.morpheus.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,9 +26,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * A convenience factory class for building collections of various kinds
@@ -66,6 +71,28 @@ public class Collect {
      */
     public static <T> List<T> asList(Iterable<T> values) {
         return Collect.asList(false, values);
+    }
+
+
+    /**
+     * Returns a new Stream of the values from the Iterator
+     * @param values    the values to create a new Set from
+     * @param <T>       the element type
+     * @return          the newly created set
+     */
+    public static <T> Stream<T> asStream(Iterator<T> values) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(values, Spliterator.ORDERED), false);
+    }
+
+
+    /**
+     * Returns a new Stream of the values from the Iterable
+     * @param values    the values to create a new Set from
+     * @param <T>       the element type
+     * @return          the newly created set
+     */
+    public static <T> Stream<T> asStream(Iterable<T> values) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(values.iterator(), Spliterator.ORDERED), false);
     }
 
 

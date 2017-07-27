@@ -34,13 +34,6 @@ public interface DataFrameCursor<R,C> extends DataFrameValue<R,C> {
     DataFrameCursor<R,C> copy();
 
     /**
-     * Moves this cursor to the same location as the value
-     * @param value     the value with coordinates to move this cursor to
-     * @return          this cursor
-     */
-    DataFrameCursor<R,C> moveTo(DataFrameValue value);
-
-    /**
      * Moves this cursor to the row location specified, leaving column location unchanged
      * @param rowKey    the row key
      * @return          this cursor

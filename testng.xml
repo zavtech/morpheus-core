@@ -90,6 +90,7 @@
         <classes>
             <class name="com.zavtech.morpheus.reference.AccessTests"/>
             <class name="com.zavtech.morpheus.reference.ApplyTests"/>
+            <class name="com.zavtech.morpheus.reference.CombineTests"/>
             <class name="com.zavtech.morpheus.reference.ContentTests"/>
             <class name="com.zavtech.morpheus.reference.DimensionTests"/>
             <class name="com.zavtech.morpheus.reference.FillTests"/>

@@ -397,7 +397,7 @@ public class PerfStat implements java.io.Serializable {
                 }));
             }
         }
-        return DataFrame.union(resultList);
+        return DataFrame.combineFirst(resultList);
     }
 
 

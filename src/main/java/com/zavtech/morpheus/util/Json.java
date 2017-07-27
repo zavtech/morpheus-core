@@ -15,8 +15,10 @@
  */
 package com.zavtech.morpheus.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
@@ -27,9 +29,21 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.stream.JsonReader;
+
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Currency;
+import java.util.TimeZone;
 
 /**
  * A simple API abstraction for serializing and de-serializing objects to and from Json
@@ -47,10 +61,49 @@ public class Json {
      * Constructor
      */
     public Json() {
-        this.builder = new GsonBuilder();
-        this.builder.registerTypeAdapter(LocalDate.class, new LocalDateDeserializer());
-        this.builder.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeDeserializer());
-        this.gson = builder.create();
+        this.gson = builder().create();
+    }
+
+
+    /**
+     * Returns a newly created GsonBuilder configured with some default serializers / deserializers
+     * @return      the newly created GsonBuilder which can be further custimized
+     */
+    public static GsonBuilder builder() {
+        final GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Currency.class, new CurrencySerializer());
+        builder.registerTypeAdapter(ZoneId.class, new ZoneIdSerializer());
+        builder.registerTypeAdapter(TimeZone.class, new TimeZoneSerializer());
+        builder.registerTypeAdapter(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ISO_LOCAL_TIME));
+        builder.registerTypeAdapter(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_LOCAL_DATE));
+        builder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        builder.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_ZONED_DATE_TIME));
+        return builder;
+    }
+
+    /**
+     * Returns a newly created Google GSON JsonReader
+     * @param is        the input stream to create reader from
+     * @return          the JsonReader
+     * @throws IOException  if there is an I/O exception
+     */
+    public static JsonReader reader(InputStream is) throws IOException {
+        return reader(is, "UTF-8");
+    }
+
+    /**
+     * Returns a newly created Google GSON JsonReader
+     * @param is        the input stream to create reader from
+     * @param encoding  the charset encoding
+     * @return          the JsonReader
+     * @throws IOException  if there is an I/O exception
+     */
+    public static JsonReader reader(InputStream is, String encoding) throws IOException {
+        if (is instanceof BufferedInputStream) {
+            return new JsonReader(new InputStreamReader(is, encoding));
+        } else {
+            return new JsonReader(new InputStreamReader(new BufferedInputStream(is), encoding));
+        }
     }
 
     /**
@@ -61,25 +114,199 @@ public class Json {
      * @return          the newly created object of type T
      */
     public <T> T parse(URL url, Class<T> type) throws IOException {
-        Reader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+        try (Reader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
             return gson.fromJson(reader, type);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
         }
     }
 
 
-    private class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+
+
+    /**
+     * A GSON Deserializer for Currency objects
+     */
+    private static class CurrencySerializer implements JsonDeserializer<Currency>, JsonSerializer<Currency> {
+
+        @Override
+        public Currency deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return json.isJsonNull() ? null : Currency.getInstance(json.getAsJsonPrimitive().getAsString());
+        }
+
+        @Override
+        public JsonElement serialize(Currency currency, Type type, JsonSerializationContext context) {
+            return currency == null ? JsonNull.INSTANCE : new JsonPrimitive(currency.getCurrencyCode());
+        }
+    }
+
+
+    /**
+     * A GSON Deserializer for ZoneId objects
+     */
+    private static class ZoneIdSerializer implements JsonDeserializer<ZoneId>, JsonSerializer<ZoneId> {
+
+        @Override
+        public ZoneId deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return json.isJsonNull() ? null : ZoneId.of(json.getAsJsonPrimitive().getAsString());
+        }
+
+        @Override
+        public JsonElement serialize(ZoneId value, Type type, JsonSerializationContext context) {
+            return value == null ? JsonNull.INSTANCE : new JsonPrimitive(value.getId());
+        }
+    }
+
+
+    /**
+     * A GSON Deserializer for TimeZone objects
+     */
+    private static class TimeZoneSerializer implements JsonDeserializer<TimeZone>, JsonSerializer<TimeZone> {
+
+        @Override
+        public TimeZone deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return json.isJsonNull() ? null : TimeZone.getTimeZone(json.getAsJsonPrimitive().getAsString());
+        }
+
+        @Override
+        public JsonElement serialize(TimeZone value, Type type, JsonSerializationContext context) {
+            return value == null ? JsonNull.INSTANCE : new JsonPrimitive(value.getID());
+        }
+    }
+
+
+    /**
+     * A GSON Serializer for LocalTime objects
+     */
+    public static class LocalTimeSerializer implements JsonDeserializer<LocalTime>, JsonSerializer<LocalTime> {
+
+        private DateTimeFormatter formatter;
+
+        /**
+         * Constructor
+         * @param pattern   the format patterm
+         */
+        public LocalTimeSerializer(String pattern) {
+            this(DateTimeFormatter.ofPattern(pattern));
+        }
+
+        /**
+         * Constructor
+         * @param formatter the date time formatter
+         */
+        public LocalTimeSerializer(DateTimeFormatter formatter) {
+            this.formatter = formatter;
+        }
+
+        @Override
+        public JsonElement serialize(LocalTime value, Type type, JsonSerializationContext context) {
+            return value == null ? JsonNull.INSTANCE : new JsonPrimitive(formatter.format(value));
+        }
+
+        @Override
+        public LocalTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return json.isJsonNull() ? null : LocalTime.parse(json.getAsJsonPrimitive().getAsString());
+        }
+    }
+
+
+    /**
+     * A GSON Serializer for LocalDate objects
+     */
+    public static class LocalDateSerializer implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
+
+        private DateTimeFormatter formatter;
+
+        /**
+         * Constructor
+         * @param pattern   the format patterm
+         */
+        public LocalDateSerializer(String pattern) {
+            this(DateTimeFormatter.ofPattern(pattern));
+        }
+
+        /**
+         * Constructor
+         * @param formatter the date time formatter
+         */
+        public LocalDateSerializer(DateTimeFormatter formatter) {
+            this.formatter = formatter;
+        }
+
+        @Override
+        public JsonElement serialize(LocalDate value, Type type, JsonSerializationContext context) {
+            return value == null ? JsonNull.INSTANCE : new JsonPrimitive(formatter.format(value));
+        }
+
+        @Override
         public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return json.isJsonNull() ? null : LocalDate.parse(json.getAsJsonPrimitive().getAsString());
         }
     }
 
-    private class ZonedDateTimeDeserializer implements JsonDeserializer<ZonedDateTime> {
+
+    /**
+     * A GSON Serializer for LocalDateTime objects
+     */
+    public static class LocalDateTimeSerializer implements JsonDeserializer<LocalDateTime>, JsonSerializer<LocalDateTime> {
+
+        private DateTimeFormatter formatter;
+
+        /**
+         * Constructor
+         * @param pattern   the format patterm
+         */
+        public LocalDateTimeSerializer(String pattern) {
+            this(DateTimeFormatter.ofPattern(pattern));
+        }
+
+        /**
+         * Constructor
+         * @param formatter the date time formatter
+         */
+        public LocalDateTimeSerializer(DateTimeFormatter formatter) {
+            this.formatter = formatter;
+        }
+
+        @Override
+        public JsonElement serialize(LocalDateTime value, Type type, JsonSerializationContext context) {
+            return value == null ? JsonNull.INSTANCE : new JsonPrimitive(formatter.format(value));
+        }
+
+        @Override
+        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return json.isJsonNull() ? null : LocalDateTime.parse(json.getAsJsonPrimitive().getAsString());
+        }
+    }
+
+
+    /**
+     * A GSON Serializer for LocalDateTime objects
+     */
+    public static class ZonedDateTimeSerializer implements JsonDeserializer<ZonedDateTime>, JsonSerializer<ZonedDateTime> {
+
+        private DateTimeFormatter formatter;
+
+        /**
+         * Constructor
+         * @param pattern   the format patterm
+         */
+        public ZonedDateTimeSerializer(String pattern) {
+            this(DateTimeFormatter.ofPattern(pattern));
+        }
+
+        /**
+         * Constructor
+         * @param formatter the date time formatter
+         */
+        public ZonedDateTimeSerializer(DateTimeFormatter formatter) {
+            this.formatter = formatter;
+        }
+
+        @Override
+        public JsonElement serialize(ZonedDateTime value, Type type, JsonSerializationContext context) {
+            return value == null ? JsonNull.INSTANCE : new JsonPrimitive(formatter.format(value));
+        }
+
+        @Override
         public ZonedDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return json.isJsonNull() ? null : ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString());
         }

@@ -164,12 +164,12 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
         } else {
             return first(predicate).map(first -> {
                 final int colStart = first.colOrdinal();
-                final DataFrameCursor<R,C> result = frame.cursor().moveTo(first);
-                final DataFrameCursor<R,C> value = frame.cursor().moveTo(first);
+                final DataFrameCursor<R,C> result = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> value = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
                 for (int i=colStart+1; i<frame.colCount(); ++i) {
                     value.moveToColumn(i);
                     if (predicate.test(value) && value.compareTo(result) < 0) {
-                        result.moveTo(value);
+                        result.moveTo(value.rowOrdinal(), value.colOrdinal());
                     }
                 }
                 return result;
@@ -185,12 +185,12 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
         } else {
             return first(predicate).map(first -> {
                 final int colStart = first.colOrdinal();
-                final DataFrameCursor<R,C> result = frame.cursor().moveTo(first);
-                final DataFrameCursor<R,C> value = frame.cursor().moveTo(first);
+                final DataFrameCursor<R,C> result = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> value = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
                 for (int i=colStart+1; i<frame.colCount(); ++i) {
                     value.moveToColumn(i);
                     if (predicate.test(value) && value.compareTo(result) > 0) {
-                        result.moveTo(value);
+                        result.moveTo(value.rowOrdinal(), value.colOrdinal());
                     }
                 }
                 return result;
@@ -209,7 +209,7 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
             for (int i=0; i<frame.colCount(); ++i) {
                 value.moveToColumn(i);
                 if (comparator.compare(value, result) < 0) {
-                    result.moveTo(value);
+                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
                 }
             }
             return Optional.of(result);
@@ -227,7 +227,7 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
             for (int i=0; i<frame.colCount(); ++i) {
                 value.moveToColumn(i);
                 if (comparator.compare(value, result) > 0) {
-                    result.moveTo(value);
+                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
                 }
             }
             return Optional.of(result);

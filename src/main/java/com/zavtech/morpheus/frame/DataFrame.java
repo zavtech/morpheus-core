@@ -34,8 +34,8 @@ import javax.imageio.ImageIO;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
 import com.zavtech.morpheus.stats.Stats;
-import com.zavtech.morpheus.util.functions.ToBooleanFunction;
 import com.zavtech.morpheus.util.text.Formats;
+import com.zavtech.morpheus.util.functions.ToBooleanFunction;
 
 /**
  * The central interface of the Morpheus Library that defines a 2-dimensional data structure called <code>DataFrame</code>
@@ -448,8 +448,8 @@ public interface DataFrame<R,C> extends DataFrameActions<R,C,DataFrame<R,C>>, Da
      * @return          the concatenated DataFrame
      */
     @SafeVarargs
-    static <R,C> DataFrame<R,C> concat(DataFrame<R,C>... frames) {
-        return DataFrame.factory().concat(Arrays.asList(frames));
+    static <R,C> DataFrame<R,C> combineFirst(DataFrame<R,C>... frames) {
+        return DataFrame.factory().combineFirst(Arrays.asList(frames).iterator());
     }
 
     /**
@@ -459,12 +459,25 @@ public interface DataFrame<R,C> extends DataFrameActions<R,C,DataFrame<R,C>>, Da
      * @param <C>       the column key type
      * @return          the concatenated DataFrame
      */
-    static <R,C> DataFrame<R,C> concat(Iterable<DataFrame<R,C>> frames) {
-        return DataFrame.factory().concat(frames);
+    static <R,C> DataFrame<R,C> combineFirst(Iterable<DataFrame<R,C>> frames) {
+        return DataFrame.factory().combineFirst(frames.iterator());
+    }
+
+    /**
+     * Returns a DataFrame result by combining multiple frames into one while applying only the first non-null element value
+     * If there are intersecting coordinates across the frames, that first non-null value will apply in the resulting frame
+     * @param frames    the stream of frames to apply
+     * @param <R>       the row key type
+     * @param <C>       the column key type
+     * @return          the concatenated DataFrame
+     */
+    static <R,C> DataFrame<R,C> combineFirst(Stream<DataFrame<R,C>> frames) {
+        return DataFrame.factory().combineFirst(frames.iterator());
     }
 
     /**
      * Returns a newly created DataFrame by concatenating rows from the input frames
+     * If there are overlapping row keys, the row values from the first frame will apply
      * @param frames        the iterable of frames from which to concatenate rows
      * @param <R>           the row key type for frames
      * @param <C>           the column key type for frames
@@ -472,22 +485,36 @@ public interface DataFrame<R,C> extends DataFrameActions<R,C,DataFrame<R,C>>, Da
      */
     @SafeVarargs
     static <R,C> DataFrame<R,C> concatRows(DataFrame<R,C>... frames) {
-        return DataFrame.factory().concatRows(Arrays.asList(frames));
+        return DataFrame.factory().concatRows(Arrays.asList(frames).iterator());
     }
 
     /**
      * Returns a newly created DataFrame by concatenating rows from the input frames
+     * If there are overlapping row keys, the row values from the first frame will apply
      * @param frames        the iterable of frames from which to concatenate rows
      * @param <R>           the row key type for frames
      * @param <C>           the column key type for frames
      * @return              the resulting DataFrame
      */
     static <R,C> DataFrame<R,C> concatRows(Iterable<DataFrame<R,C>> frames) {
-        return DataFrame.factory().concatRows(frames);
+        return DataFrame.factory().concatRows(frames.iterator());
+    }
+
+    /**
+     * Returns a newly created DataFrame by concatenating rows from the input frames
+     * If there are overlapping row keys, the row values from the first frame will apply
+     * @param frames        the iterable of frames from which to concatenate rows
+     * @param <R>           the row key type for frames
+     * @param <C>           the column key type for frames
+     * @return              the resulting DataFrame
+     */
+    static <R,C> DataFrame<R,C> concatRows(Stream<DataFrame<R,C>> frames) {
+        return DataFrame.factory().concatRows(frames.iterator());
     }
 
     /**
      * Returns a newly created DataFrame by concatenating columns from the input frames
+     * If there are overlapping column keys, the row values from the first frame will apply
      * @param frames        the iterable of frames from which to concatenate columns
      * @param <R>           the row key type for frames
      * @param <C>           the column key type for frames
@@ -495,41 +522,31 @@ public interface DataFrame<R,C> extends DataFrameActions<R,C,DataFrame<R,C>>, Da
      */
     @SafeVarargs
     static <R,C> DataFrame<R,C> concatColumns(DataFrame<R,C>... frames) {
-        return DataFrame.factory().concatColumns(Arrays.asList(frames));
+        return DataFrame.factory().concatColumns(Arrays.asList(frames).iterator());
     }
 
     /**
      * Returns a newly created DataFrame by concatenating columns from the input frames
+     * If there are overlapping column keys, the row values from the first frame will apply
      * @param frames        the iterable of frames from which to concatenate columns
      * @param <R>           the row key type for frames
      * @param <C>           the column key type for frames
      * @return              the resulting DataFrame
      */
     static <R,C> DataFrame<R,C> concatColumns(Iterable<DataFrame<R,C>> frames) {
-        return DataFrame.factory().concatColumns(frames);
+        return DataFrame.factory().concatColumns(frames.iterator());
     }
 
     /**
-     * Returns the union of all the frames extracted from the Iterable provided
-     * @param frames    the iterable of frames from which to create the union
-     * @param <R>       the row key type
-     * @param <C>       the column key type
-     * @return          the union of all input frames
+     * Returns a newly created DataFrame by concatenating columns from the input frames
+     * If there are overlapping column keys, the row values from the first frame will apply
+     * @param frames        the iterable of frames from which to concatenate columns
+     * @param <R>           the row key type for frames
+     * @param <C>           the column key type for frames
+     * @return              the resulting DataFrame
      */
-    static <R,C> DataFrame<R,C> union(Iterable<DataFrame<R,C>> frames) {
-        return DataFrame.factory().union(frames);
-    }
-
-    /**
-     * Returns the union of all the frames extracted from the array provided
-     * @param frames    the array of frames from which to create the union
-     * @param <R>       the row key type
-     * @param <C>       the column key type
-     * @return          the union of all input frames
-     */
-    @SafeVarargs
-    static <R,C> DataFrame<R,C> union(DataFrame<R,C>... frames) {
-        return DataFrame.factory().union(Arrays.asList(frames));
+    static <R,C> DataFrame<R,C> concatColumns(Stream<DataFrame<R,C>> frames) {
+        return DataFrame.factory().concatColumns(frames.iterator());
     }
 
     /**

@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.PrimitiveIterator;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameColumn;
 import com.zavtech.morpheus.frame.DataFrameColumns;
 import com.zavtech.morpheus.frame.DataFrameValue;

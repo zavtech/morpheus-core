@@ -35,6 +35,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayType;
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameRow;
 import com.zavtech.morpheus.frame.DataFrameRows;
 import com.zavtech.morpheus.frame.DataFrameValue;

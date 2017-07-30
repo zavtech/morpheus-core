@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.testng.Assert;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.frame.DataFramePCA;
 

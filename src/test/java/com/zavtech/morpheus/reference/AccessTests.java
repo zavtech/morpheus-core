@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.range.Range;
 import org.testng.Assert;

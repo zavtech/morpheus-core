@@ -18,6 +18,7 @@ package com.zavtech.morpheus.reference;
 import java.time.LocalDate;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
 import gnu.trove.map.TLongIntMap;

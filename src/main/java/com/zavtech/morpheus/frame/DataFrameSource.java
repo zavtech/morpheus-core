@@ -15,10 +15,12 @@
  */
 package com.zavtech.morpheus.frame;
 
-import com.zavtech.morpheus.util.AssertException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
- * An interface that returns a DataFrame from some underlying source, such as a database, web service and so on
+ * A base class for building DataFrameSource implementations that define a unified interface for loading DataFrames from various data sources.
  *
  * @param <R>   the row key type
  * @param <C>   the column key type
@@ -27,23 +29,62 @@ import com.zavtech.morpheus.util.AssertException;
  *
  * @author  Xavier Witdouck
  */
-public interface DataFrameSource<R,C,O extends DataFrameSource.Options<R,C>> {
+public abstract class DataFrameSource<R,C,O extends DataFrameSource.Options<R,C>> {
+
+
+    private static final Map<Object,DataFrameSource<?,?,?>> sourceMap = new HashMap<>();
+
 
     /**
-     * Returns true if this source supports the options type
-     * @param options   the options instance
-     * @param <T>       the options type
-     * @return          true if this source supports the options
+     * Registers a DataFrameSource
+     * @param source    the source to register
      */
-    <T extends Options<?,?>> boolean isSupported(T options);
+    public static void register(DataFrameSource<?,?,?> source) {
+        sourceMap.put(source.getClass(), source);
+    }
+
 
     /**
-     * Returns a <code>DataFrame</code> read from some underlying device
-     * @param options       the options to load the frame with
+     * Returns a DataFrameSource for the type specified
+     * @param type      the source type
+     * @param <R>       the row key type
+     * @param <C>       the column key type
+     * @param <O>       the source options type
+     * @param <S>       the source type
+     * @return          the matching source
+     */
+    @SuppressWarnings("unchecked")
+    public static <R,C,O extends Options<R,C>,S extends DataFrameSource<R,C,O>> S lookup(Class<S> type) {
+        final S source = (S)sourceMap.get(type);
+        if (source == null) {
+            throw new IllegalArgumentException("No DataFrameSource registered for " + type);
+        } else {
+            return source;
+        }
+    }
+
+
+    /**
+     * Returns a <code>DataFrame</code> read from some underlying device based on options configured by the arg
+     * @param configurator  the options consumer to configure load options
      * @return              the <code>DataFrame</code> response
      * @throws DataFrameException  if this operation fails
      */
-    DataFrame<R,C> read(O options) throws DataFrameException;
+    public abstract DataFrame<R,C> read(Consumer<O> configurator) throws DataFrameException;
+
+
+    /**
+     * Applies the options to the configurator and then validates
+     * @param options       the empty options instance
+     * @param configurator  the configurator to configure instance
+     * @param <X>           the options type
+     * @return              the configured options
+     */
+    protected <X extends Options<R,C>> X initOptions(X options, Consumer<X> configurator) {
+        configurator.accept(options);
+        options.validate();
+        return options;
+    }
 
 
     /**
@@ -51,7 +92,7 @@ public interface DataFrameSource<R,C,O extends DataFrameSource.Options<R,C>> {
      * @param <X>   the row key type
      * @param <Y>   the column key type
      */
-    interface Options<X,Y> {
+    public interface Options<X,Y> {
 
         /**
          * Validates that all required options are set
@@ -59,23 +100,6 @@ public interface DataFrameSource<R,C,O extends DataFrameSource.Options<R,C>> {
          */
         void validate();
 
-        /**
-         * Convenience static function to validate options and return the same
-         * @param options   the options to validate
-         * @param <R>       the row key type
-         * @param <C>       the column key type
-         * @param <O>       the options type
-         * @return          the same as the argument
-         * @throws IllegalStateException    if validation fails
-         */
-        static <R,C,O extends Options<R,C>> O validate(O options) throws IllegalStateException {
-            try {
-                options.validate();
-                return options;
-            } catch (AssertException ex) {
-                throw new IllegalStateException(ex.getMessage(), ex);
-            }
-        }
     }
 
 }

@@ -18,14 +18,9 @@ package com.zavtech.morpheus.reference;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import com.zavtech.morpheus.frame.DataFrame;
-import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.frame.DataFrameRead;
 import com.zavtech.morpheus.frame.DataFrameSource;
 import com.zavtech.morpheus.source.CsvSource;
@@ -34,8 +29,6 @@ import com.zavtech.morpheus.source.DbSource;
 import com.zavtech.morpheus.source.DbSourceOptions;
 import com.zavtech.morpheus.source.JsonSource;
 import com.zavtech.morpheus.source.JsonSourceOptions;
-import com.zavtech.morpheus.util.Asserts;
-import com.zavtech.morpheus.util.Initialiser;
 
 /**
  * The default implementation of the DataFrame read interface
@@ -46,24 +39,20 @@ import com.zavtech.morpheus.util.Initialiser;
  */
 class XDataFrameRead implements DataFrameRead {
 
-    private Set<DataFrameSource<?,?,?>> sourceSet = new HashSet<>();
+    /**
+     * Static initializer
+     */
+    static {
+        DataFrameSource.register(new CsvSource<>());
+        DataFrameSource.register(new JsonSource<>());
+        DataFrameSource.register(new DbSource<>());
+    }
 
     /**
      * Constructor
      */
     XDataFrameRead() {
-        this.register(new CsvSource<>());
-        this.register(new JsonSource<>());
-        this.register(new DbSource<>());
-    }
-
-    /**
-     * Registers a source that can be used to load frame some underlying device
-     * @param source    the source instance
-     */
-    public void register(DataFrameSource<?,?,?> source) {
-        Asserts.notNull(source, "The DataFrameSource cannot be null");
-        this.sourceSet.add(source);
+        super();
     }
 
     @Override
@@ -87,8 +76,9 @@ class XDataFrameRead implements DataFrameRead {
     }
 
     @Override
-    public <R> DataFrame<R, String> csv(Consumer<CsvSourceOptions<R>> configurator) {
-        return apply(Initialiser.apply(new CsvSourceOptions<>(), configurator));
+    @SuppressWarnings("unchecked")
+    public <R> DataFrame<R,String> csv(Consumer<CsvSourceOptions<R>> configurator) {
+        return DataFrameSource.lookup(CsvSource.class).read(configurator);
     }
 
     @Override
@@ -112,39 +102,14 @@ class XDataFrameRead implements DataFrameRead {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R,C> DataFrame<R,C> json(Consumer<JsonSourceOptions<R,C>> configurator) {
-        return apply(Initialiser.apply(new JsonSourceOptions<>(), configurator));
-    }
-
-    @Override
-    public <R> DataFrame<R, String> db(Consumer<DbSourceOptions<R>> configurator) {
-        return apply(Initialiser.apply(new DbSourceOptions<>(), configurator));
-    }
-
-    @Override
-    public <R,C,O extends DataFrameSource.Options<R, C>> DataFrame<R,C> apply(Class<O> type, Consumer<O> configurator) {
-        try {
-            Asserts.notNull(type, "The options type cannot be null");
-            Asserts.notNull(configurator, "The configurator cannot be null");
-            return apply(Initialiser.apply(type.newInstance(), configurator));
-        } catch (InstantiationException ex) {
-            throw new DataFrameException("Failed to create DataFrame source options for type: " + type.getName(), ex);
-        } catch (IllegalAccessException ex) {
-            throw new DataFrameException("Failed to access DataFrame source options for type: " + type.getName(), ex);
-        }
+        return DataFrameSource.lookup(JsonSource.class).read(configurator);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R,C,O extends DataFrameSource.Options<R,C>> DataFrame<R,C> apply(O options) {
-        Asserts.notNull(options, "The options type cannot be null");
-        final List<DataFrameSource<?,?,?>> matches = sourceSet.stream().filter(s -> s.isSupported(options)).collect(Collectors.toList());
-        if (matches.size() == 1) {
-            return ((DataFrameSource<R,C,O>)matches.iterator().next()).read(options);
-        } else if (matches.size() == 0) {
-            throw new DataFrameException("No DataFrameSources registered with support for " + options.getClass().getSimpleName());
-        } else {
-            throw new DataFrameException("Multiple DataFrameSources registered with support for " + options.getClass().getSimpleName());
-        }
+    public <R> DataFrame<R, String> db(Consumer<DbSourceOptions<R>> configurator) {
+        return DataFrameSource.lookup(DbSource.class).read(configurator);
     }
 }

@@ -127,7 +127,7 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
 

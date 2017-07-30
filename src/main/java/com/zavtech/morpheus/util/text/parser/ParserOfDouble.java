@@ -15,12 +15,9 @@
  */
 package com.zavtech.morpheus.util.text.parser;
 
-import java.text.DecimalFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +36,7 @@ class ParserOfDouble extends Parser<Double> {
 
     private static final Set<Pattern> patternSet = new HashSet<>();
 
-    private Supplier<DecimalFormat> format;
+    private Function<String,Number> handler;
 
     /**
      * Static initializer
@@ -52,11 +49,11 @@ class ParserOfDouble extends Parser<Double> {
     /**
      * Constructor
      * @param nullChecker   the null checker function
-     * @param format        the date format supplier, which may return a null format in order to use pattern matching
+     * @param handler       the handler for this parser, which may be null in order to use pattern matching
      */
-    ParserOfDouble(ToBooleanFunction<String> nullChecker, Supplier<DecimalFormat> format) {
+    ParserOfDouble(ToBooleanFunction<String> nullChecker, Function<String,Number> handler) {
         super(FunctionStyle.DOUBLE, Double.class, nullChecker);
-        this.format = format;
+        this.handler = handler;
     }
 
     @Override
@@ -83,9 +80,8 @@ class ParserOfDouble extends Parser<Double> {
             if (getNullChecker().applyAsBoolean(value) || value.equalsIgnoreCase("NaN")) {
                 return Double.NaN;
             } else {
-                final DecimalFormat formatter = format.get();
-                if (formatter != null) {
-                    final Number number = formatter.parse(value);
+                if (handler != null) {
+                    final Number number = handler.apply(value);
                     return number instanceof Double ? ((Double)number) : number.doubleValue();
                 } else {
                     for (Pattern pattern : patternSet) {
@@ -94,7 +90,7 @@ class ParserOfDouble extends Parser<Double> {
                             return Double.parseDouble(value);
                         }
                     }
-                    throw new IllegalArgumentException("Unable to parse value into LocalDate: " + value);
+                    throw new IllegalArgumentException("Unable to parse value into Double: " + value);
                 }
             }
         } catch (Exception ex) {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.gson.stream.JsonReader;
@@ -48,14 +49,23 @@ import com.zavtech.morpheus.util.text.parser.Parser;
  *
  * @author  Xavier Witdouck
  */
-public class JsonSource <R,C> implements DataFrameSource<R,C,JsonSourceOptions<R,C>> {
+public class JsonSource <R,C> extends DataFrameSource<R,C,JsonSourceOptions<R,C>> {
+
+
+    /**
+     * Static initializer
+     */
+    static {
+        DataFrameSource.register(new JsonSource<>());
+    }
+
 
     private Formats formats;
     private JsonReader reader;
     private List<Array<?>> dataList;
-    private JsonSourceOptions<R,C> options;
     private ArrayBuilder<R> rowKeyBuilder;
     private ArrayBuilder<C> colKeyBuilder;
+    private JsonSourceOptions<R,C> options;
 
     /**
      * Constructor
@@ -66,14 +76,18 @@ public class JsonSource <R,C> implements DataFrameSource<R,C,JsonSourceOptions<R
 
 
     @Override
-    public <T extends Options<?, ?>> boolean isSupported(T options) {
-        return options instanceof JsonSourceOptions;
+    public DataFrame<R,C> read(Consumer<JsonSourceOptions<R, C>> configurator) throws DataFrameException {
+        return new JsonSource<R,C>().apply(configurator);
     }
 
-
-    @Override
-    public DataFrame<R,C> read(JsonSourceOptions<R,C> options) throws DataFrameException {
-        this.options = Options.validate(options);
+    /**
+     * Private read method given this source is currently written with state
+     * @param configurator      the options configurator
+     * @return                  the loaded DataFrame
+     * @throws DataFrameException   if frame fails to load from json
+     */
+    private DataFrame<R,C> apply(Consumer<JsonSourceOptions<R,C>> configurator) throws DataFrameException {
+        this.options = initOptions(new JsonSourceOptions<>(), configurator);
         try (InputStream is = options.getResource().toInputStream()) {
             this.formats = options.getFormats();
             this.reader = createReader(is);

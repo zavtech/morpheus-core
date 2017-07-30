@@ -22,6 +22,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.zavtech.morpheus.array.Array;
@@ -43,7 +44,16 @@ import com.zavtech.morpheus.util.sql.SQLType;
  *
  * @author  Xavier Witdouck
  */
-public class DbSource<R> implements DataFrameSource<R,String,DbSourceOptions<R>> {
+public class DbSource<R> extends DataFrameSource<R,String,DbSourceOptions<R>> {
+
+
+    /**
+     * Static initializer
+     */
+    static {
+        DataFrameSource.register(new DbSource<>());
+    }
+
 
     /**
      * Constructor
@@ -54,14 +64,9 @@ public class DbSource<R> implements DataFrameSource<R,String,DbSourceOptions<R>>
 
 
     @Override
-    public <T extends Options<?,?>> boolean isSupported(T options) {
-        return options instanceof DbSourceOptions;
-    }
-
-
-    @Override
-    public DataFrame<R,String> read(DbSourceOptions<R> options) throws DataFrameException {
-        try (Connection conn = Options.validate(options).getConnection()) {
+    public DataFrame<R, String> read(Consumer<DbSourceOptions<R>> configurator) throws DataFrameException {
+        final DbSourceOptions<R> options = initOptions(new DbSourceOptions<>(), configurator);
+        try (Connection conn = options.getConnection()) {
             final SQL sql = SQL.of(options.getSql(), options.getParameters().orElse(new Object[0]));
             return sql.executeQuery(conn, rs -> read(rs, options));
         } catch (Exception ex) {

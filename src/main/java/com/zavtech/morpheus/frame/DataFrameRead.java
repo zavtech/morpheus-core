@@ -34,12 +34,6 @@ import com.zavtech.morpheus.source.JsonSourceOptions;
 public interface DataFrameRead {
 
     /**
-     * Registers a source that can be used to load frame some underlying device
-     * @param source    the source instance
-     */
-    void register(DataFrameSource<?,?,?> source);
-
-    /**
      * Reads a DataFrame from a CSV file
      * @param file      the input file
      * @param <R>       the row key type
@@ -131,27 +125,5 @@ public interface DataFrameRead {
      * @return              the resulting DataFrame
      */
     <R> DataFrame<R,String> db(Consumer<DbSourceOptions<R>> configurator);
-
-    /**
-     * Reads a DataFrame using a registered source that supports the options provided
-     * @param options       the options to load a DataFrame
-     * @param <O>           the options type
-     * @param <R>           the row key type
-     * @param <C>           the column key type
-     * @return              the resulting DataFrame
-     */
-    <R,C,O extends DataFrameSource.Options<R,C>> DataFrame<R,C> apply(O options);
-
-    /**
-     * Reads a DataFrame using a registered source that supports the options provided
-     * @param type          the options class, which musy have a no-argument constructor
-     * @param configurator  the configurator used to apply settings to the options
-     * @param <O>           the options type
-     * @param <R>           the row key type
-     * @param <C>           the column key type
-     * @return              the resulting DataFrame
-     */
-    <R,C,O extends DataFrameSource.Options<R,C>> DataFrame<R,C> apply(Class<O> type, Consumer<O> configurator);
-
 
 }

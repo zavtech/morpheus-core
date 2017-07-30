@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedTransferQueue;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -59,7 +60,16 @@ import com.zavtech.morpheus.util.text.parser.Parser;
  *
  * @author  Xavier Witdouck
  */
-public class CsvSource<R> implements DataFrameSource<R,String,CsvSourceOptions<R>> {
+public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> {
+
+
+    /**
+     * Static initializer
+     */
+    static {
+        DataFrameSource.register(new CsvSource<>());
+    }
+
 
     /**
      * Constructor
@@ -68,15 +78,12 @@ public class CsvSource<R> implements DataFrameSource<R,String,CsvSourceOptions<R
         super();
     }
 
-    @Override
-    public <T extends Options<?,?>> boolean isSupported(T options) {
-        return options instanceof CsvSourceOptions;
-    }
 
     @Override
-    public DataFrame<R,String> read(CsvSourceOptions<R> options) throws DataFrameException {
+    public DataFrame<R,String> read(Consumer<CsvSourceOptions<R>> configurator) throws DataFrameException {
         try {
-            final Resource resource = Options.validate(options).getResource();
+            final CsvSourceOptions<R> options = initOptions(new CsvSourceOptions<>(), configurator);
+            final Resource resource = options.getResource();
             switch (resource.getType()) {
                 case FILE:          return parse(options, new FileInputStream(resource.asFile()));
                 case URL:           return parse(options, resource.asURL());
@@ -86,9 +93,10 @@ public class CsvSource<R> implements DataFrameSource<R,String,CsvSourceOptions<R
         } catch (DataFrameException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new DataFrameException("Failed to create DataFrame from CSV source: " + options, ex);
+            throw new DataFrameException("Failed to create DataFrame from CSV source", ex);
         }
     }
+
 
     /**
      * Returns a DataFrame parsed from the url specified

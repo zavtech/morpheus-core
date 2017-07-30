@@ -36,7 +36,7 @@ import static org.testng.Assert.assertTrue;
 
 import com.zavtech.morpheus.TestSuite;
 import com.zavtech.morpheus.frame.DataFrame;
-import com.zavtech.morpheus.reference.DataFrameAsserts;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.reference.TestDataFrames;
 import com.zavtech.morpheus.util.Predicates;
 import com.zavtech.morpheus.util.text.Formats;

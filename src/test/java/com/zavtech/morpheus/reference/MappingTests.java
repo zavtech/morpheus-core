@@ -27,6 +27,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.range.Range;
 

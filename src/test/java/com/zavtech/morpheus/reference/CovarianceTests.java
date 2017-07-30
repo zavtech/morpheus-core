@@ -22,6 +22,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameColumns;
 import com.zavtech.morpheus.frame.DataFrameRows;
 

@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2014-2017 Xavier Witdouck
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +36,7 @@ public class Asserts {
         }
     }
 
+
     /**
      * Checks an expression is true otherwise throws an exception
      * @param expression    the expression to check is true
@@ -48,6 +49,7 @@ public class Asserts {
             throw new AssertException(String.format(message, args));
         }
     }
+
 
     /**
      * Checks that an object reference is not null
@@ -64,6 +66,7 @@ public class Asserts {
         }
     }
 
+
     /**
      * Checks that a string is not null and its trimmed length > 0
      * @param text  the text to check
@@ -75,36 +78,154 @@ public class Asserts {
         }
     }
 
+
+    /**
+     * Asserts some condition is true and raises an AssertException if not
+     * @param condition     the condition outcome
+     */
+    public static void assertTrue(boolean condition) {
+        if (!condition) {
+            fail("Boolean assertion failed", null);
+        }
+    }
+
+
+    /**
+     * Asserts some condition is true and raises an AssertException if not
+     * @param condition     the condition outcome
+     * @param message       the message
+     */
+    public static void assertTrue(boolean condition, String message) {
+        if (!condition) {
+            fail(message, null);
+        }
+    }
+
+
+    /**
+     * Asserts that the two values are equals
+     * @param actual        the actual value
+     * @param expected      the expected value
+     * @param message       the error message if not equals
+     */
+    public static void assertEquals(int actual, int expected, String message) {
+        assertEquals(actual, expected, 0d, message);
+    }
+
+
+    /**
+     * Asserts that the two values are almost equal based on some threshold
+     * @param actual        the actual value
+     * @param expected      the expected value
+     * @param delta         the delta threshold
+     */
+    public static void assertEquals(int actual, int expected, double delta) {
+        assertEquals(actual, expected, delta, null);
+    }
+
+
+    /**
+     * Asserts that the two values are almost equal based on some threshold
+     * @param actual        the actual value
+     * @param expected      the expected value
+     * @param message       the error message if not equals
+     * @param delta         the delta threshold
+     */
+    public static void assertEquals(int actual, int expected, double delta, String message) {
+        if (Integer.compare(actual, expected) != 0) {
+            if (Math.abs(expected - actual) > delta) {
+                fail(message, "Actual value," + actual + ", not equal to expected: " + expected);
+            }
+        }
+    }
+
+
+    /**
+     * Asserts that the two values are equals
+     * @param actual        the actual value
+     * @param expected      the expected value
+     * @param message       the error message if not equals
+     */
     public static void assertEquals(double actual, double expected, String message) {
         assertEquals(actual, expected, 0d, message);
     }
 
 
+    /**
+     * Asserts that the two values are almost equal based on some threshold
+     * @param actual        the actual value
+     * @param expected      the expected value
+     * @param delta         the delta threshold
+     */
     public static void assertEquals(double actual, double expected, double delta) {
-        if (Double.isInfinite(expected)) {
-            if (expected != actual) {
-                fail("Assertion failed", "Actual value," + actual + ", not equal to expected: " + expected);
-            }
-        } else if (Math.abs(expected - actual) > delta) {
-            fail("Assertion failed", "Actual value," + actual + ", not equal to expected: " + expected);
-        }
+        assertEquals(actual, expected, delta, null);
     }
 
 
+    /**
+     * Asserts that the two values are almost equal based on some threshold
+     * @param actual        the actual value
+     * @param expected      the expected value
+     * @param message       the error message if not equals
+     * @param delta         the delta threshold
+     */
     public static void assertEquals(double actual, double expected, double delta, String message) {
-        if (Double.isInfinite(expected)) {
-            if (expected != actual) {
+        if (Double.compare(actual, expected) != 0) {
+            if (Math.abs(expected - actual) > delta) {
                 fail(message, "Actual value," + actual + ", not equal to expected: " + expected);
             }
-        } else if (Math.abs(expected - actual) > delta) {
-            fail(message, "Actual value," + actual + ", not equal to expected: " + expected);
         }
     }
 
 
-    private static void fail(String message, String reason) {
-        throw new AssertException(message + " - " + reason);
+    /**
+     * Asserts that the two values are equals
+     * @param actual        the actual value
+     * @param expected      the expected value
+     */
+    public static void assertEquals(Object actual, Object expected) {
+        assertEquals(actual, expected, null);
     }
 
+
+    /**
+     * Asserts that the two values are equals
+     * @param actual        the actual value
+     * @param expected      the expected value
+     * @param message       the error message if not equals
+     */
+    public static void assertEquals(Object actual, Object expected, String message) {
+        if (actual != expected) {
+            if (actual != null && expected != null) {
+                final Class<?> type1 = actual.getClass();
+                final Class<?> type2 = expected.getClass();
+                if (type1 != type2) {
+                    fail(message, String.format("Type mismatch, %s != %s", type1, type2));
+                } else if (!actual.equals(expected)) {
+                    fail(message, String.format("Actual and expected value mismatch, %s != %s", type1, type2));
+                }
+            } else if (actual == null) {
+                fail(message, String.format("Actual value is null, expected value = %s", expected));
+            } else {
+                fail(message, String.format("Expected value is null, actual value = %s", actual));
+            }
+        }
+    }
+
+
+    /**
+     * Throws an AssertException with the message specified
+     * @param message       the message string
+     * @param reason        the reason string
+     */
+    private static void fail(String message, String reason) {
+        if (message != null && reason != null) {
+            throw new AssertException(message + " - " + reason);
+        } else if (message != null) {
+            throw new AssertException(message);
+        } else {
+            throw new AssertException(reason);
+        }
+    }
 
 }

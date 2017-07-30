@@ -18,6 +18,7 @@ package com.zavtech.morpheus.reference;
 import java.io.IOException;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.stats.StatType;
 import com.zavtech.morpheus.index.Index;
 import org.testng.annotations.DataProvider;

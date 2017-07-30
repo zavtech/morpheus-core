@@ -20,6 +20,7 @@ import java.util.Arrays;
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.array.ArrayType;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.range.Range;
 import com.zavtech.morpheus.util.PerfStat;
 

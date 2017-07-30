@@ -19,6 +19,8 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

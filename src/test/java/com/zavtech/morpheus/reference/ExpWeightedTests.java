@@ -18,6 +18,8 @@ package com.zavtech.morpheus.reference;
 import java.time.LocalDate;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

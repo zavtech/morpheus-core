@@ -16,6 +16,7 @@
 package com.zavtech.morpheus.reference;
 
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameColumn;
 
 import junit.framework.Assert;

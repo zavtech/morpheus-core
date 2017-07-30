@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.frame.DataFrame;
+import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameColumn;
 import com.zavtech.morpheus.frame.DataFrameGrouping;
 import com.zavtech.morpheus.frame.DataFrameRow;

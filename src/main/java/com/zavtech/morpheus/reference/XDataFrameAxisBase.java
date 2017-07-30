@@ -273,7 +273,7 @@ abstract class XDataFrameAxisBase<X,Y,R,C,V extends DataFrameVector<?,?,R,C,?>,T
             final int count = count();
             final ForEachVector action = new ForEachVector(0, count - 1, consumer);
             ForkJoinPool.commonPool().invoke(action);
-        } else {
+        } else if (count() > 0) {
             final int count = count();
             final V vector = createVector(frame, 0);
             for (int ordinal=0; ordinal < count; ++ordinal) {

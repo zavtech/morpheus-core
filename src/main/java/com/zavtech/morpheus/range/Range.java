@@ -126,6 +126,23 @@ public interface Range<T> extends Iterable<T> {
     }
 
     /**
+     * Returns true if this range straddles the value specified
+     * @param value     the value to check against
+     * @return          true if this range straddles the value specified
+     */
+    @SuppressWarnings("unchecked")
+    default boolean straddles(T value) {
+        if (value instanceof Comparable) {
+            final Comparable start = (Comparable)start();
+            final Comparable end = (Comparable)end();
+            final Comparable item = (Comparable)value;
+            return item.compareTo(start) >= 0 && item.compareTo(end) <= 0;
+        } else {
+            throw new RuntimeException("Range.straddles() only supported for Comparable types, not " + start().getClass());
+        }
+    }
+
+    /**
      * Returns an array of the elements in this range
      * @return      the array of elements in range
      */

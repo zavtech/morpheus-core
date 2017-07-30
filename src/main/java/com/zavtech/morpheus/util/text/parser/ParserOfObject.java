@@ -42,7 +42,7 @@ class ParserOfObject extends Parser<Object> {
         this.parserList.add(new ParserOfBoolean(nullChecker));
         this.parserList.add(new ParserOfInteger(nullChecker));
         this.parserList.add(new ParserOfLong(nullChecker));
-        this.parserList.add(new ParserOfDouble(nullChecker, () -> null));
+        this.parserList.add(new ParserOfDouble(nullChecker, null));
         this.parserList.add(new ParserOfLocalDate(nullChecker, () -> null));
         this.parserList.add(new ParserOfLocalTime(nullChecker, () -> null));
         this.parserList.add(new ParserOfLocalDateTime(nullChecker, () -> null));

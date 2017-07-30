@@ -17,6 +17,7 @@ package com.zavtech.morpheus.util.text.parser;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,6 +39,7 @@ import com.zavtech.morpheus.util.Asserts;
 import com.zavtech.morpheus.util.functions.Function1;
 import com.zavtech.morpheus.util.functions.FunctionStyle;
 import com.zavtech.morpheus.util.functions.ToBooleanFunction;
+import com.zavtech.morpheus.util.text.FormatException;
 
 /**
  * A Function implementation of a Parser than can parse a String value into some another type.
@@ -256,9 +258,25 @@ public abstract class Parser<T> extends Function1<String,T> {
      * Returns a newly created Parser for Double
      * @return  newly created Parser
      */
-    public static Parser<Double> ofDouble(String pattern, int multipler) {
-        final DecimalFormat decimalFormat = createDecimalFormat(pattern, multipler);
-        return new ParserOfDouble(defaultNullCheck, () -> decimalFormat);
+    public static Parser<Double> ofDouble() {
+        return new ParserOfDouble(defaultNullCheck, Double::parseDouble);
+    }
+
+    /**
+     * Returns a newly created Parser for Double
+     * @param pattern   the decimal format pattern
+     * @param multiplier    the multiplier to apply
+     * @return  newly created Parser
+     */
+    public static Parser<Double> ofDouble(String pattern, int multiplier) {
+        final DecimalFormat decimalFormat = createDecimalFormat(pattern, multiplier);
+        return new ParserOfDouble(defaultNullCheck, value -> {
+            try {
+                return decimalFormat.parse(value);
+            } catch (Exception ex) {
+                throw new FormatException("Failed to parse value into double: " + value, ex);
+            }
+        });
     }
 
     /**

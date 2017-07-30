@@ -64,14 +64,6 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
 
 
     /**
-     * Static initializer
-     */
-    static {
-        DataFrameSource.register(new CsvSource<>());
-    }
-
-
-    /**
      * Constructor
      */
     public CsvSource() {

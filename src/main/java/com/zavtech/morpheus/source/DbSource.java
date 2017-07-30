@@ -48,14 +48,6 @@ public class DbSource<R> extends DataFrameSource<R,String,DbSourceOptions<R>> {
 
 
     /**
-     * Static initializer
-     */
-    static {
-        DataFrameSource.register(new DbSource<>());
-    }
-
-
-    /**
      * Constructor
      */
     public DbSource() {

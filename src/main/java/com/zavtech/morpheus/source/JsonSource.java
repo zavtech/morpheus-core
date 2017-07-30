@@ -51,15 +51,6 @@ import com.zavtech.morpheus.util.text.parser.Parser;
  */
 public class JsonSource <R,C> extends DataFrameSource<R,C,JsonSourceOptions<R,C>> {
 
-
-    /**
-     * Static initializer
-     */
-    static {
-        DataFrameSource.register(new JsonSource<>());
-    }
-
-
     private Formats formats;
     private JsonReader reader;
     private List<Array<?>> dataList;

@@ -291,7 +291,7 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
 
 
     @Override
-    public int binarySearch(int start, int end, Long value) {
+    public final int binarySearch(int start, int end, Long value) {
         int low = start;
         int high = end - 1;
         while (low <= high) {
@@ -311,7 +311,7 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
 
 
     @Override
-    public Array<Long> distinct(int limit) {
+    public final Array<Long> distinct(int limit) {
         final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
         final TLongSet set = new TLongHashSet(capacity);
         final ArrayBuilder<Long> builder = ArrayBuilder.of(capacity, Long.class);
@@ -325,6 +325,20 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
             }
         }
         return builder.toArray();
+    }
+
+
+    @Override
+    public final Array<Long> cumSum() {
+        final int length = length();
+        final Array<Long> result = Array.of(Long.class, length);
+        result.setLong(0, values.get(0));
+        for (int i=1; i<length; ++i) {
+            final long prior = result.getLong(i-1);
+            final long current = values.get(i);
+            result.setLong(i, prior + current);
+        }
+        return result;
     }
 
 

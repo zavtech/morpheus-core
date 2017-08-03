@@ -160,6 +160,13 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
     Array<T> distinct(int limit);
 
     /**
+     * Returns the cumulative sum of this Array
+     * @return  the cumulative sum
+     * @throws ArrayException   if the array is non numeric
+     */
+    Array<T> cumSum();
+
+    /**
      * Returns an light-weight unmodifiable List view over this array
      * @return  a light-weight unmodifiable List view on this array
      */
@@ -235,6 +242,14 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
      * @return  the stats interface to this array
      */
     Stats<Number> stats();
+
+    /**
+     * Returns the stats interface over a subrange of this array
+     * @param offset    the offset from start of array
+     * @param length    the number of items from offset
+     * @return  the stats interface over a subrange of this array
+     */
+    Stats<Number> stats(int offset, int length);
 
     /**
      * Fills this array with the value provided

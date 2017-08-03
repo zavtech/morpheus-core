@@ -47,14 +47,21 @@ import com.zavtech.morpheus.stats.Variance;
  */
 class ArrayStats<T extends Number> implements Stats<Number> {
 
+    private int offset;
+    private int length;
     private final Array<T> array;
+
 
     /**
      * Constructor
      * @param array     the array to operate on
+     * @param offset    the offset from start
+     * @param length    the number of items to include
      */
-    ArrayStats(Array<T> array) {
+    ArrayStats(Array<T> array, int offset, int length) {
         this.array = array;
+        this.offset = offset;
+        this.length = length;
     }
 
     /**
@@ -63,9 +70,8 @@ class ArrayStats<T extends Number> implements Stats<Number> {
      * @return      the resulting value
      */
     private Number compute(Statistic1 stat) {
-        final int length = array.length();
         for (int i=0; i<length; ++i) {
-            final double value = array.getDouble(i);
+            final double value = array.getDouble(offset + i);
             if (!Double.isNaN(value)) {
                 stat.add(value);
             }

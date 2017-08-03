@@ -254,13 +254,13 @@ class DenseArrayOfDoubles extends ArrayBase<Double> {
 
 
     @Override
-    public int binarySearch(int start, int end, Double value) {
+    public final int binarySearch(int start, int end, Double value) {
         return Arrays.binarySearch(values, start, end, value);
     }
 
 
     @Override
-    public Array<Double> distinct(int limit) {
+    public final Array<Double> distinct(int limit) {
         final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
         final TDoubleSet set = new TDoubleHashSet(capacity);
         final ArrayBuilder<Double> builder = ArrayBuilder.of(capacity, Double.class);
@@ -278,6 +278,26 @@ class DenseArrayOfDoubles extends ArrayBase<Double> {
 
 
     @Override
+    public final Array<Double> cumSum() {
+        final int length = length();
+        final Array<Double> result = Array.of(Double.class, length);
+        result.setDouble(0, values[0]);
+        for (int i=1; i<length; ++i) {
+            final double prior = result.getDouble(i-1);
+            final double current = values[i];
+            if (Double.isNaN(prior)) {
+                result.setDouble(i, current);
+            } else if (Double.isNaN(current)) {
+                result.setDouble(i, prior);
+            } else {
+                result.setDouble(i, prior + current);
+            }
+        }
+        return result;
+    }
+
+
+        @Override
     public final void read(ObjectInputStream is, int count) throws IOException {
         for (int i=0; i<count; ++i) {
             this.values[i] = is.readDouble();

@@ -182,13 +182,13 @@ public abstract class ArrayBase<T> implements Array<T> {
     }
 
 
-    @Override
+    @Override()
     public Array<T> distinct() {
         return distinct(Integer.MAX_VALUE);
     }
 
 
-    @Override
+    @Override()
     @SuppressWarnings("unchecked")
     public Array<T> distinct(int limit) {
         switch(typeCode()) {
@@ -211,6 +211,13 @@ public abstract class ArrayBase<T> implements Array<T> {
                 return builder.toArray();
         }
     }
+
+
+    @Override()
+    public Array<T> cumSum() {
+        throw new ArrayException("Cumulative sum is only supported by numeric Array types, not " + type());
+    }
+
 
 
     @Override
@@ -594,9 +601,21 @@ public abstract class ArrayBase<T> implements Array<T> {
     @SuppressWarnings("unchecked")
     public Stats<Number> stats() throws ArrayException {
         switch (typeCode()) {
-            case INTEGER:       return new ArrayStats<>((Array<Number>)this);
-            case LONG:          return new ArrayStats<>((Array<Number>)this);
-            case DOUBLE:        return new ArrayStats<>((Array<Number>)this);
+            case INTEGER:       return new ArrayStats<>((Array<Number>)this, 0, length());
+            case LONG:          return new ArrayStats<>((Array<Number>)this, 0, length());
+            case DOUBLE:        return new ArrayStats<>((Array<Number>)this, 0, length());
+            default:    throw new IllegalStateException("The array is non-numeric: " + typeCode());
+        }
+    }
+
+
+    @Override()
+    @SuppressWarnings("unchecked")
+    public Stats<Number> stats(int offset, int length) {
+        switch (typeCode()) {
+            case INTEGER:       return new ArrayStats<>((Array<Number>)this, offset, length);
+            case LONG:          return new ArrayStats<>((Array<Number>)this, offset, length);
+            case DOUBLE:        return new ArrayStats<>((Array<Number>)this, offset, length);
             default:    throw new IllegalStateException("The array is non-numeric: " + typeCode());
         }
     }

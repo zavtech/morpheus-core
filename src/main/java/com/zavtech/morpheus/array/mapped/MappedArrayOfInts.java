@@ -330,7 +330,7 @@ class MappedArrayOfInts extends ArrayBase<Integer> {
 
 
     @Override
-    public int binarySearch(int start, int end, Integer value) {
+    public final int binarySearch(int start, int end, Integer value) {
         try {
             int low = start;
             int high = end - 1;
@@ -354,7 +354,7 @@ class MappedArrayOfInts extends ArrayBase<Integer> {
 
 
     @Override
-    public Array<Integer> distinct(int limit) {
+    public final Array<Integer> distinct(int limit) {
         final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
         final TIntSet set = new TIntHashSet(capacity);
         final ArrayBuilder<Integer> builder = ArrayBuilder.of(capacity, Integer.class);
@@ -368,6 +368,20 @@ class MappedArrayOfInts extends ArrayBase<Integer> {
             }
         }
         return builder.toArray();
+    }
+
+
+    @Override
+    public final Array<Integer> cumSum() {
+        final int length = length();
+        final Array<Integer> result = Array.of(Integer.class, length);
+        result.setInt(0, buffer.get(0));
+        for (int i=1; i<length; ++i) {
+            final int prior = result.getInt(i-1);
+            final int current = buffer.get(i);
+            result.setInt(i, prior + current);
+        }
+        return result;
     }
 
 

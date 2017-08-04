@@ -32,6 +32,9 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.distribution.RealDistribution;
+
 import com.zavtech.morpheus.stats.Stats;
 import com.zavtech.morpheus.util.functions.BooleanConsumer;
 import com.zavtech.morpheus.util.Bounds;
@@ -816,6 +819,29 @@ public interface Array<T> extends Iterable<T>, Serializable, Cloneable {
     @SuppressWarnings("unchecked")
     static <V> Array<V> singleton(V value) {
         return Array.of((Class<V>)value.getClass(), 1).applyValues(v -> value);
+    }
+
+
+    /**
+     * Returns an Array containing random values from a normal distribution with mean 0 and std dev 1
+     * @param length    the length for the array
+     * @return          the newly created dense Array
+     */
+    static Array<Double> randn(int length) {
+        return randn(length, 0d, 1d);
+    }
+
+
+    /**
+     * Returns an Array containing random values from a normal distribution with mean and std deviation specified
+     * @param length    the length for the array
+     * @param mean      the mean for sampling distribution
+     * @param stdDev    the standard deviation for sampling distribution
+     * @return          the newly created dense Array
+     */
+    static Array<Double> randn(int length, double mean, double stdDev) {
+        final RealDistribution dist = new NormalDistribution(mean, stdDev);
+        return Array.of(Double.class, length).applyDoubles(v -> dist.sample());
     }
 
 

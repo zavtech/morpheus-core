@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.zavtech.morpheus.util.Predicates;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -1208,6 +1207,13 @@ public class ArraysBasicTests {
             case DOUBLE:    array1.forEachValue(v -> Assert.assertEquals(v.getDouble(), array2.getDouble(v.index())));      break;
             default:        array1.forEachValue(v -> Assert.assertEquals(v.getValue(), array2.getValue(v.index())));        break;
         }
+    }
+
+
+    @Test()
+    public void testRandomArrayCreation() {
+        Assert.assertTrue(Array.randn(1000).count(v -> v.getDouble() > 0) > 0);
+        Assert.assertTrue(Array.randn(1000).count(v -> v.getDouble() < 0) > 0);
     }
 
 

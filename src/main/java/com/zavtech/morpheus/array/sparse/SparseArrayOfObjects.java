@@ -20,15 +20,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 /**
  * An Array implementation designed to hold a sparse array of Object values
@@ -43,7 +43,7 @@ class SparseArrayOfObjects<T> extends ArrayBase<T> {
 
     private int length;
     private T defaultValue;
-    private TIntObjectMap<Object> values;
+    private Int2ObjectMap<Object> values;
 
     /**
      * Constructor
@@ -55,7 +55,7 @@ class SparseArrayOfObjects<T> extends ArrayBase<T> {
         super(type, ArrayStyle.SPARSE, false);
         this.length = length;
         this.defaultValue = defaultValue;
-        this.values = new TIntObjectHashMap<>((int)Math.max(length * 0.5, 10d), 0.8f, -1);
+        this.values = new Int2ObjectOpenHashMap<>((int)Math.max(length * 0.5, 10d));
     }
 
     /**
@@ -68,6 +68,7 @@ class SparseArrayOfObjects<T> extends ArrayBase<T> {
         this.length = source.length;
         this.defaultValue = source.defaultValue;
         this.values = source.values;
+        this.values.defaultReturnValue(this.defaultValue);
     }
 
 
@@ -105,7 +106,7 @@ class SparseArrayOfObjects<T> extends ArrayBase<T> {
     public final Array<T> copy() {
         try {
             final SparseArrayOfObjects<T> copy = (SparseArrayOfObjects<T>)super.clone();
-            copy.values = new TIntObjectHashMap<>(values);
+            copy.values = new Int2ObjectOpenHashMap<>(values);
             copy.defaultValue = this.defaultValue;
             return copy;
         } catch (Exception ex) {

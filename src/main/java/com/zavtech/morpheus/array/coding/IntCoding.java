@@ -22,11 +22,11 @@ import java.util.Currency;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
 
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
-
 import com.zavtech.morpheus.util.IntComparator;
 import com.zavtech.morpheus.util.SortAlgorithm;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 /**
  * An interface that exposes a coding between object values and corresponding int code
@@ -169,7 +169,7 @@ public interface IntCoding<T> extends Coding<T> {
         private static final long serialVersionUID = 1L;
 
         private final Currency[] currencies;
-        private final TObjectIntMap<Currency> codeMap;
+        private final Object2IntMap<Currency> codeMap;
 
         /**
          * Constructor
@@ -177,7 +177,8 @@ public interface IntCoding<T> extends Coding<T> {
         public OfCurrency() {
             super(Currency.class);
             this.currencies = Currency.getAvailableCurrencies().stream().toArray(Currency[]::new);
-            this.codeMap = new TObjectIntHashMap<>(currencies.length, 0.5f, -1);
+            this.codeMap = new Object2IntOpenHashMap<>(currencies.length, 0.5f);
+            this.codeMap.defaultReturnValue(-1);
             Arrays.sort(currencies, (c1, c2) -> c1.getCurrencyCode().compareTo(c2.getCurrencyCode()));
             for (int i = 0; i< currencies.length; ++i) {
                 this.codeMap.put(currencies[i], i);
@@ -204,7 +205,7 @@ public interface IntCoding<T> extends Coding<T> {
         private static final long serialVersionUID = 1L;
 
         private final ZoneId[] zoneIds;
-        private final TObjectIntMap<ZoneId> codeMap;
+        private final Object2IntMap<ZoneId> codeMap;
 
         /**
          * Constructor
@@ -212,7 +213,8 @@ public interface IntCoding<T> extends Coding<T> {
         OfZoneId() {
             super(ZoneId.class);
             this.zoneIds = ZoneId.getAvailableZoneIds().stream().map(ZoneId::of).toArray(ZoneId[]::new);
-            this.codeMap = new TObjectIntHashMap<>(zoneIds.length, 0.5f, -1);
+            this.codeMap = new Object2IntOpenHashMap<>(zoneIds.length, 0.5f);
+            this.codeMap.defaultReturnValue(-1);
             Arrays.sort(zoneIds, (z1, z2) -> z1.getId().compareTo(z2.getId()));
             for (int i=0; i<zoneIds.length; ++i) {
                 this.codeMap.put(zoneIds[i], i);
@@ -239,7 +241,7 @@ public interface IntCoding<T> extends Coding<T> {
         private static final long serialVersionUID = 1L;
 
         private final TimeZone[] timeZones;
-        private final TObjectIntMap<TimeZone> codeMap;
+        private final Object2IntMap<TimeZone> codeMap;
 
         /**
          * Constructor
@@ -247,7 +249,8 @@ public interface IntCoding<T> extends Coding<T> {
         OfTimeZone() {
             super(TimeZone.class);
             this.timeZones = Arrays.stream(TimeZone.getAvailableIDs()).map(TimeZone::getTimeZone).toArray(TimeZone[]::new);
-            this.codeMap = new TObjectIntHashMap<>(timeZones.length, 0.5f, -1);
+            this.codeMap = new Object2IntOpenHashMap<>(timeZones.length, 0.5f);
+            this.codeMap.defaultReturnValue(-1);
             Arrays.sort(timeZones, (tz1, tz2) -> tz1.getID().compareTo(tz2.getID()));
             for (int i = 0; i< timeZones.length; ++i) {
                 this.codeMap.put(timeZones[i], i);

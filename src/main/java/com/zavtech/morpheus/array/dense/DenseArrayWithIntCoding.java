@@ -21,9 +21,6 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import gnu.trove.set.TIntSet;
-import gnu.trove.set.hash.TIntHashSet;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -33,6 +30,9 @@ import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
 import com.zavtech.morpheus.array.coding.IntCoding;
 import com.zavtech.morpheus.array.coding.WithIntCoding;
+
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 /**
  * A dense array implementation that maintains a primitive int array of codes that apply to Object values exposed through the IntCoding interface.
@@ -285,7 +285,7 @@ class DenseArrayWithIntCoding<T> extends ArrayBase<T> implements WithIntCoding<T
     @Override
     public Array<T> distinct(int limit) {
         final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TIntSet set = new TIntHashSet(capacity);
+        final IntSet set = new IntOpenHashSet(capacity);
         final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
         for (int i=0; i<length(); ++i) {
             final int code = getInt(i);

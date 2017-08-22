@@ -75,7 +75,7 @@ class IndexOfObjects<K> extends IndexBase<K> {
         this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final K key = v.getValue();
-            final int index = parent.indexMap.get(key);
+            final int index = parent.indexMap.getInt(key);
             if (index < 0) throw new IndexException("No match for key: " + v.getValue());
             final int existing = indexMap.put(key, index);
             if (existing >= 0) {
@@ -162,7 +162,7 @@ class IndexOfObjects<K> extends IndexBase<K> {
 
     @Override
     public final int getIndexForKey(K key) {
-        final int index = indexMap.get(key);
+        final int index = indexMap.getInt(key);
         if (index < 0) {
             throw new IndexException("No match for key in index: " + key);
         } else {
@@ -177,7 +177,7 @@ class IndexOfObjects<K> extends IndexBase<K> {
 
     @Override
     public final int replace(K existing, K replacement) {
-        final int index = indexMap.remove(existing);
+        final int index = indexMap.removeInt(existing);
         if (index == -1) {
             throw new IndexException("No match key for " + existing);
         } else {
@@ -197,7 +197,7 @@ class IndexOfObjects<K> extends IndexBase<K> {
         final int size = size();
         for (int i=0; i<size; ++i) {
             final K key = keyArray().getValue(i);
-            final int index = indexMap.get(key);
+            final int index = indexMap.getInt(key);
             consumer.accept(key, index);
         }
     }

@@ -161,7 +161,7 @@ class IndexOfDoubles extends IndexBase<Double> {
 
     @Override
     public final int getIndexForKey(Double key) {
-        final int index = indexMap.get(key);
+        final int index = indexMap.get(key.doubleValue());
         if (index < 0) {
             throw new IndexException("No match for key in index: " + key);
         } else {
@@ -176,11 +176,11 @@ class IndexOfDoubles extends IndexBase<Double> {
 
     @Override
     public final int replace(Double existing, Double replacement) {
-        final int index = indexMap.remove(existing);
+        final int index = indexMap.remove(existing.doubleValue());
         if (index == -1) {
             throw new IndexException("No match key for " + existing);
         } else {
-            if (indexMap.containsKey(replacement)) {
+            if (indexMap.containsKey(replacement.doubleValue())) {
                 throw new IndexException("The replacement key already exists in index " + replacement);
             } else {
                 final int ordinal = getOrdinalForIndex(index);
@@ -196,7 +196,7 @@ class IndexOfDoubles extends IndexBase<Double> {
         final int size = size();
         for (int i=0; i<size; ++i) {
             final Double key = keyArray().getValue(i);
-            final int index = indexMap.get(key);
+            final int index = indexMap.get(key.doubleValue());
             consumer.accept(key, index);
         }
     }

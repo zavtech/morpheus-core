@@ -281,7 +281,8 @@ class DenseArrayOfBooleans extends ArrayBase<Boolean> {
 
     @Override
     public Array<Boolean> distinct(int limit) {
-        final ShortSet set = new ShortOpenHashSet(limit);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final ShortSet set = new ShortOpenHashSet(capacity);
         final ArrayBuilder<Boolean> builder = ArrayBuilder.of(2, Boolean.class);
         for (int i=0; i<length(); ++i) {
             final boolean value = getBoolean(i);

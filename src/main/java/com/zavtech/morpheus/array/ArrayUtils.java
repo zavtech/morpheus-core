@@ -114,7 +114,8 @@ public class ArrayUtils {
      * @return          the array of distinct values in the order they were observed
      */
     public static Array<Integer> distinct(IntStream values, int limit) {
-        final DistinctInts distinct = new DistinctInts(limit);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final DistinctInts distinct = new DistinctInts(limit, capacity);
         final PrimitiveIterator.OfInt iterator = values.iterator();
         while (iterator.hasNext()) {
             final int value = iterator.next();
@@ -134,7 +135,8 @@ public class ArrayUtils {
      * @return          the array of distinct values in the order they were observed
      */
     public static Array<Long> distinct(LongStream values, int limit) {
-        final DistinctLongs distinct = new DistinctLongs(limit);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final DistinctLongs distinct = new DistinctLongs(limit, capacity);
         final PrimitiveIterator.OfLong iterator = values.iterator();
         while (iterator.hasNext()) {
             final long value = iterator.next();
@@ -154,7 +156,8 @@ public class ArrayUtils {
      * @return          the array of distinct values in the order they were observed
      */
     public static Array<Double> distinct(DoubleStream values, int limit) {
-        final DistinctDoubles distinct = new DistinctDoubles(limit);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final DistinctDoubles distinct = new DistinctDoubles(limit, capacity);
         final PrimitiveIterator.OfDouble iterator = values.iterator();
         while (iterator.hasNext()) {
             final double value = iterator.next();
@@ -174,7 +177,8 @@ public class ArrayUtils {
      * @return          the array of distinct values in the order they were observed
      */
     public static <V> Array<V> distinct(Stream<V> values, int limit) {
-        final DistinctValues<V> distinct = new DistinctValues<>(limit);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final DistinctValues<V> distinct = new DistinctValues<>(limit, capacity);
         final Iterator<V> iterator = values.iterator();
         while (iterator.hasNext()) {
             final V value = iterator.next();
@@ -198,10 +202,10 @@ public class ArrayUtils {
         /**
          * Constructor
          * @param type      the data type
-         * @param limit     the limit
+         * @param capacity  the initial capacity for array builder
          */
-        DistinctCalculator(Class<T> type, int limit) {
-            this.builder = ArrayBuilder.of(limit < Integer.MAX_VALUE ? limit : 1000, type);
+        DistinctCalculator(Class<T> type, int capacity) {
+            this.builder = ArrayBuilder.of(capacity, type);
         }
 
         /**
@@ -224,11 +228,12 @@ public class ArrayUtils {
         /**
          * Constructor
          * @param limit the limit for this calculator
+         * @param capacity  the initial capacity for set
          */
-        DistinctInts(int limit) {
-            super(Integer.class, limit);
+        DistinctInts(int limit, int capacity) {
+            super(Integer.class, capacity);
             this.limit = limit;
-            this.distinctSet = new IntOpenHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
+            this.distinctSet = new IntOpenHashSet(capacity);
         }
 
         /**
@@ -256,10 +261,10 @@ public class ArrayUtils {
          * Constructor
          * @param limit the limit for this calculator
          */
-        DistinctLongs(int limit) {
-            super(Long.class, limit);
+        DistinctLongs(int limit, int capacity) {
+            super(Long.class, capacity);
             this.limit = limit;
-            this.distinctSet = new LongOpenHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
+            this.distinctSet = new LongOpenHashSet(capacity);
         }
 
         /**
@@ -286,10 +291,10 @@ public class ArrayUtils {
          * Constructor
          * @param limit the limit for this calculator
          */
-        DistinctDoubles(int limit) {
-            super(Double.class, limit);
+        DistinctDoubles(int limit, int capacity) {
+            super(Double.class, capacity);
             this.limit = limit;
-            this.distinctSet = new DoubleOpenHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
+            this.distinctSet = new DoubleOpenHashSet(capacity);
         }
 
         /**
@@ -317,10 +322,10 @@ public class ArrayUtils {
          * @param limit the limit for this calculator
          */
         @SuppressWarnings("unchecked")
-        DistinctValues(int limit) {
-            super((Class<V>)Object.class, limit);
+        DistinctValues(int limit, int capacity) {
+            super((Class<V>)Object.class, capacity);
             this.limit = limit;
-            this.distinctSet = new HashSet<>(limit < Integer.MAX_VALUE ? limit : 1000);
+            this.distinctSet = new HashSet<>(capacity);
         }
 
         /**

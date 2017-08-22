@@ -349,7 +349,7 @@ class MappedArrayOfLongs extends ArrayBase<Long> {
 
     @Override
     public final Array<Long> distinct(int limit) {
-        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
         final LongSet set = new LongOpenHashSet(capacity);
         final ArrayBuilder<Long> builder = ArrayBuilder.of(capacity, Long.class);
         for (int i=0; i<length(); ++i) {

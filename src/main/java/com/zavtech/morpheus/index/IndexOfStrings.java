@@ -74,7 +74,7 @@ class IndexOfStrings extends IndexBase<String> {
         this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final String key = v.getValue();
-            final int index = parent.indexMap.get(key);
+            final int index = parent.indexMap.getInt(key);
             if (index < 0) throw new IndexException("No match for key: " + v.getValue());
             final int existing = indexMap.put(key, index);
             if (existing >= 0) {
@@ -159,7 +159,7 @@ class IndexOfStrings extends IndexBase<String> {
 
     @Override
     public final int getIndexForKey(String key) {
-        final int index = indexMap.get(key);
+        final int index = indexMap.getInt(key);
         if (index < 0) {
             throw new IndexException("No match for key in index: " + key);
         } else {
@@ -174,7 +174,7 @@ class IndexOfStrings extends IndexBase<String> {
 
     @Override
     public final int replace(String existing, String replacement) {
-        final int index = indexMap.remove(existing);
+        final int index = indexMap.removeInt(existing);
         if (index == -1) {
             throw new IndexException("No match key for " + existing);
         } else {
@@ -194,7 +194,7 @@ class IndexOfStrings extends IndexBase<String> {
         final int size = size();
         for (int i=0; i<size; ++i) {
             final String key = keyArray().getValue(i);
-            final int index = indexMap.get(key);
+            final int index = indexMap.getInt(key);
             consumer.accept(key, index);
         }
     }

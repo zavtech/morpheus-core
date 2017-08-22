@@ -187,7 +187,7 @@ public interface IntCoding<T> extends Coding<T> {
 
         @Override
         public final int getCode(Currency value) {
-            return value == null ? -1 : codeMap.get(value);
+            return value == null ? -1 : codeMap.getInt(value);
         }
 
         @Override
@@ -223,7 +223,7 @@ public interface IntCoding<T> extends Coding<T> {
 
         @Override
         public final int getCode(ZoneId value) {
-            return value == null ? -1 : codeMap.get(value);
+            return value == null ? -1 : codeMap.getInt(value);
         }
 
         @Override
@@ -259,7 +259,7 @@ public interface IntCoding<T> extends Coding<T> {
 
         @Override
         public final int getCode(TimeZone value) {
-            return value == null ? -1 : codeMap.get(value);
+            return value == null ? -1 : codeMap.getInt(value);
         }
 
         @Override

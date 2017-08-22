@@ -161,7 +161,7 @@ class IndexOfLongs extends IndexBase<Long> {
 
     @Override
     public int getIndexForKey(Long key) {
-        final int index = indexMap.get(key);
+        final int index = indexMap.get(key.longValue());
         if (index < 0) {
             throw new IndexException("No match for key in index: " + key);
         } else {
@@ -176,7 +176,7 @@ class IndexOfLongs extends IndexBase<Long> {
 
     @Override
     public final int replace(Long existing, Long replacement) {
-        final int index = indexMap.remove(existing);
+        final int index = indexMap.remove(existing.longValue());
         if (index == -1) {
             throw new IndexException("No match for key: " + existing);
         } else {
@@ -196,7 +196,7 @@ class IndexOfLongs extends IndexBase<Long> {
         final int size = size();
         for (int i=0; i<size; ++i) {
             final Long key = keyArray().getValue(i);
-            final int index = indexMap.get(key);
+            final int index = indexMap.get(key.longValue());
             consumer.accept(key, index);
         }
     }

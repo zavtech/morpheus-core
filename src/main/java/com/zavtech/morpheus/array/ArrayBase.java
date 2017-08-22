@@ -198,7 +198,7 @@ public abstract class ArrayBase<T> implements Array<T> {
             case LONG:      return (Array<T>)ArrayUtils.distinct(stream().longs(), limit);
             case DOUBLE:    return (Array<T>)ArrayUtils.distinct(stream().doubles(), limit);
             default:
-                final int capacity = limit < Integer.MAX_VALUE ? limit : 16;
+                final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
                 final Set<T> set = new HashSet<>(capacity);
                 final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
                 for (int i=0; i<length(); ++i) {

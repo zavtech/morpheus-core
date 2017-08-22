@@ -112,7 +112,7 @@ class IndexOfInts extends IndexBase<Integer> {
         if (isFilter()) {
             throw new IndexException("Cannot add keys to an filter on another index");
         } else {
-            if (indexMap.containsKey(key)) {
+            if (indexMap.containsKey(key.intValue())) {
                 return false;
             } else {
                 final int index = indexMap.size();
@@ -165,7 +165,7 @@ class IndexOfInts extends IndexBase<Integer> {
 
     @Override
     public final int getIndexForKey(Integer key) {
-        final int index = indexMap.get(key);
+        final int index = indexMap.get(key.intValue());
         if (index < 0) {
             throw new IndexException("No match for key in index: " + key);
         } else {
@@ -175,16 +175,16 @@ class IndexOfInts extends IndexBase<Integer> {
 
     @Override
     public final boolean contains(Integer key) {
-        return indexMap.containsKey(key);
+        return indexMap.containsKey(key.intValue());
     }
 
     @Override
     public final int replace(Integer existing, Integer replacement) {
-        final int index = indexMap.remove(existing);
+        final int index = indexMap.remove(existing.intValue());
         if (index == -1) {
             throw new IndexException("No match key for " + existing);
         } else {
-            if (indexMap.containsKey(replacement)) {
+            if (indexMap.containsKey(replacement.intValue())) {
                 throw new IndexException("The replacement key already exists in index " + replacement);
             } else {
                 final int ordinal = getOrdinalForIndex(index);
@@ -200,7 +200,7 @@ class IndexOfInts extends IndexBase<Integer> {
         final int size = size();
         for (int i = 0; i < size; ++i) {
             final Integer key = keyArray().getValue(i);
-            final int index = indexMap.get(key);
+            final int index = indexMap.get(key.intValue());
             consumer.accept(key, index);
         }
     }

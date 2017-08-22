@@ -4,6 +4,12 @@
 *.iws
 .idea/
 
+# Eclipse files
+.settings
+.classpath
+.project
+bin/
+
 # MC FILES
 .DS_Store
 

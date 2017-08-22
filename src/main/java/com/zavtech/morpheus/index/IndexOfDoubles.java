@@ -19,8 +19,9 @@ import java.util.function.Predicate;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBuilder;
-import gnu.trove.map.TDoubleIntMap;
-import gnu.trove.map.hash.TDoubleIntHashMap;
+
+import it.unimi.dsi.fastutil.doubles.Double2IntMap;
+import it.unimi.dsi.fastutil.doubles.Double2IntOpenHashMap;
 
 /**
  * An Index implementation designed to efficiently store Double values
@@ -33,7 +34,7 @@ class IndexOfDoubles extends IndexBase<Double> {
 
     private static final long serialVersionUID = 1L;
 
-    private TDoubleIntMap indexMap;
+    private Double2IntMap indexMap;
 
     /**
      * Constructor
@@ -41,7 +42,8 @@ class IndexOfDoubles extends IndexBase<Double> {
      */
     IndexOfDoubles(int initialSize) {
         super(Array.of(Double.class, initialSize));
-        this.indexMap = new TDoubleIntHashMap(initialSize, 0.75f, -1, -1);
+        this.indexMap = new Double2IntOpenHashMap(initialSize, 0.75f);
+        this.indexMap.defaultReturnValue(-1);
     }
 
     /**
@@ -50,7 +52,8 @@ class IndexOfDoubles extends IndexBase<Double> {
      */
     IndexOfDoubles(Iterable<Double> iterable) {
         super(iterable);
-        this.indexMap = new TDoubleIntHashMap(keyArray().length(), 0.75f, -1, -1);
+        this.indexMap = new Double2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final int index = v.index();
             final double key = v.getDouble();
@@ -68,7 +71,8 @@ class IndexOfDoubles extends IndexBase<Double> {
      */
     private IndexOfDoubles(Iterable<Double> iterable, IndexOfDoubles parent) {
         super(iterable, parent);
-        this.indexMap = new TDoubleIntHashMap(keyArray().length(), 0.75f, -1, -1);
+        this.indexMap = new Double2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final double key = v.getDouble();
             final int index = parent.indexMap.get(key);
@@ -110,7 +114,7 @@ class IndexOfDoubles extends IndexBase<Double> {
                 final int index = indexMap.size();
                 this.ensureCapacity(index + 1);
                 this.keyArray().setValue(index, key);
-                this.indexMap.put(key, index);
+                this.indexMap.put((double) key, index);
                 return true;
             }
         }
@@ -143,7 +147,7 @@ class IndexOfDoubles extends IndexBase<Double> {
     public final Index<Double> copy() {
         try {
             final IndexOfDoubles clone = (IndexOfDoubles)super.copy();
-            clone.indexMap = new TDoubleIntHashMap(indexMap);
+            clone.indexMap = new Double2IntOpenHashMap(indexMap);
             return clone;
         } catch (Exception ex) {
             throw new IndexException("Failed to clone index", ex);
@@ -180,7 +184,7 @@ class IndexOfDoubles extends IndexBase<Double> {
                 throw new IndexException("The replacement key already exists in index " + replacement);
             } else {
                 final int ordinal = getOrdinalForIndex(index);
-                this.indexMap.put(replacement, index);
+                this.indexMap.put((double) replacement, index);
                 this.keyArray().setValue(ordinal, replacement);
                 return index;
             }

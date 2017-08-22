@@ -19,8 +19,8 @@ import java.util.function.Predicate;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBuilder;
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 /**
  * An Index implementation designed to store any object type.
@@ -33,7 +33,7 @@ class IndexOfObjects<K> extends IndexBase<K> {
 
     private static final long serialVersionUID = 1L;
 
-    private TObjectIntMap<K> indexMap;
+    private Object2IntMap<K> indexMap;
 
     /**
      * Constructor
@@ -42,7 +42,8 @@ class IndexOfObjects<K> extends IndexBase<K> {
      */
     IndexOfObjects(Class<K> type, int initialSize) {
         super(Array.of(type, initialSize));
-        this.indexMap = new TObjectIntHashMap<>(initialSize, 0.75f, -1);
+        this.indexMap = new Object2IntOpenHashMap<>(initialSize, 0.75f);
+        this.indexMap.defaultReturnValue(-1);
     }
 
     /**
@@ -51,7 +52,8 @@ class IndexOfObjects<K> extends IndexBase<K> {
      */
     IndexOfObjects(Iterable<K> iterable) {
         super(iterable);
-        this.indexMap = new TObjectIntHashMap<>(keyArray().length(), 0.75f, -1);
+        this.indexMap = new Object2IntOpenHashMap<>(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final int index = v.index();
             final K key = v.getValue();
@@ -69,7 +71,8 @@ class IndexOfObjects<K> extends IndexBase<K> {
      */
     private IndexOfObjects(Iterable<K> iterable, IndexOfObjects<K> parent) {
         super(iterable, parent);
-        this.indexMap = new TObjectIntHashMap<>(keyArray().length(), 0.75f, -1);
+        this.indexMap = new Object2IntOpenHashMap<>(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final K key = v.getValue();
             final int index = parent.indexMap.get(key);
@@ -145,7 +148,7 @@ class IndexOfObjects<K> extends IndexBase<K> {
     public final Index<K> copy() {
         try {
             final IndexOfObjects<K> clone = (IndexOfObjects<K>)super.copy();
-            clone.indexMap = new TObjectIntHashMap<>(indexMap);
+            clone.indexMap = new Object2IntOpenHashMap<>(indexMap);
             return clone;
         } catch (Exception ex) {
             throw new IndexException("Failed to clone index", ex);

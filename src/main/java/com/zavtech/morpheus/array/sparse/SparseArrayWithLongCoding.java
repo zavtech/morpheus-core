@@ -20,11 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
-import gnu.trove.map.TIntLongMap;
-import gnu.trove.map.hash.TIntLongHashMap;
-import gnu.trove.set.TLongSet;
-import gnu.trove.set.hash.TLongHashSet;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -33,6 +28,11 @@ import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
 import com.zavtech.morpheus.array.coding.LongCoding;
+
+import it.unimi.dsi.fastutil.ints.Int2LongMap;
+import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
 /**
  * A sparse array implementation that maintains a primitive long array of codes that apply to Object values exposed through the Coding interface.
@@ -48,7 +48,7 @@ class SparseArrayWithLongCoding<T> extends ArrayBase<T> {
     private int length;
     private T defaultValue;
     private long defaultCode;
-    private TIntLongMap codes;
+    private Int2LongMap codes;
     private LongCoding<T> coding;
 
 
@@ -64,7 +64,8 @@ class SparseArrayWithLongCoding<T> extends ArrayBase<T> {
         this.coding = coding;
         this.defaultValue = defaultValue;
         this.defaultCode = coding.getCode(defaultValue);
-        this.codes = new TIntLongHashMap((int)Math.max(length * 0.5, 10d), 0.8f, -1, defaultCode);
+        this.codes = new Int2LongOpenHashMap((int)Math.max(length * 0.5, 10d), 0.8f);
+        this.codes.defaultReturnValue(this.defaultCode);
     }
 
     /**
@@ -117,7 +118,7 @@ class SparseArrayWithLongCoding<T> extends ArrayBase<T> {
     public final Array<T> copy() {
         try {
             final SparseArrayWithLongCoding<T> copy = (SparseArrayWithLongCoding<T>)super.clone();
-            copy.codes = new TIntLongHashMap(codes);
+            copy.codes = new Int2LongOpenHashMap(codes);
             copy.defaultValue = this.defaultValue;
             copy.defaultCode = this.defaultCode;
             copy.coding = this.coding;
@@ -298,7 +299,7 @@ class SparseArrayWithLongCoding<T> extends ArrayBase<T> {
     @Override
     public Array<T> distinct(int limit) {
         final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TLongSet set = new TLongHashSet(capacity);
+        final LongSet set = new LongOpenHashSet(capacity);
         final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
         for (int i=0; i<length(); ++i) {
             final long code = getLong(i);

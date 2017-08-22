@@ -22,8 +22,8 @@ import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.coding.LongCoding;
 import com.zavtech.morpheus.array.coding.WithLongCoding;
 
-import gnu.trove.map.TLongIntMap;
-import gnu.trove.map.hash.TLongIntHashMap;
+import it.unimi.dsi.fastutil.longs.Long2IntMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 
 /**
  * An Index implementation designed to efficiently store Object values that can be coded as a long value
@@ -36,7 +36,7 @@ class IndexWithLongCoding<T> extends IndexBase<T> implements WithLongCoding<T> {
 
     private static final long serialVersionUID = 1L;
 
-    private TLongIntMap indexMap;
+    private Long2IntMap indexMap;
     private LongCoding<T> coding;
 
     /**
@@ -48,7 +48,8 @@ class IndexWithLongCoding<T> extends IndexBase<T> implements WithLongCoding<T> {
     IndexWithLongCoding(Class<T> type, LongCoding<T> coding, int capacity) {
         super(Array.of(type, capacity));
         this.coding = coding;
-        this.indexMap = new TLongIntHashMap(capacity, 0.75f, -1L, -1);
+        this.indexMap = new Long2IntOpenHashMap(capacity, 0.75f);
+        this.indexMap.defaultReturnValue(-1);
     }
 
     /**
@@ -59,7 +60,8 @@ class IndexWithLongCoding<T> extends IndexBase<T> implements WithLongCoding<T> {
     IndexWithLongCoding(Iterable<T> iterable, LongCoding<T> coding) {
         super(iterable);
         this.coding = coding;
-        this.indexMap = new TLongIntHashMap(keyArray().length(), 0.75f, -1L, -1);
+        this.indexMap = new Long2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final int index = v.index();
             final long code = v.getLong();
@@ -79,7 +81,8 @@ class IndexWithLongCoding<T> extends IndexBase<T> implements WithLongCoding<T> {
     private IndexWithLongCoding(Iterable<T> iterable, LongCoding<T> coding, IndexWithLongCoding<T> parent) {
         super(iterable, parent);
         this.coding = coding;
-        this.indexMap = new TLongIntHashMap(keyArray().length(), 0.75f, -1L, -1);
+        this.indexMap = new Long2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final long code = v.getLong();
             final int index = parent.indexMap.get(code);
@@ -164,7 +167,7 @@ class IndexWithLongCoding<T> extends IndexBase<T> implements WithLongCoding<T> {
     public final Index<T> copy() {
         try {
             final IndexWithLongCoding<T> clone = (IndexWithLongCoding<T>)super.copy();
-            clone.indexMap = new TLongIntHashMap(indexMap);
+            clone.indexMap = new Long2IntOpenHashMap(indexMap);
             clone.coding = coding;
             return clone;
         } catch (Exception ex) {

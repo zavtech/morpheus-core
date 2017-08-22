@@ -30,15 +30,15 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import gnu.trove.set.TDoubleSet;
-import gnu.trove.set.TIntSet;
-import gnu.trove.set.TLongSet;
-import gnu.trove.set.hash.TDoubleHashSet;
-import gnu.trove.set.hash.TIntHashSet;
-import gnu.trove.set.hash.TLongHashSet;
-
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
+
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
+import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
 /**
  * A utility class that provides various useful functions to operate on Morpheus arrays
@@ -219,7 +219,7 @@ public class ArrayUtils {
     private static class DistinctInts extends DistinctCalculator<Integer> {
 
         private int limit;
-        private TIntSet distinctSet;
+        private IntSet distinctSet;
 
         /**
          * Constructor
@@ -228,7 +228,7 @@ public class ArrayUtils {
         DistinctInts(int limit) {
             super(Integer.class, limit);
             this.limit = limit;
-            this.distinctSet = new TIntHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
+            this.distinctSet = new IntOpenHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
         }
 
         /**
@@ -250,7 +250,7 @@ public class ArrayUtils {
     private static class DistinctLongs extends DistinctCalculator<Long> {
 
         private int limit;
-        private TLongSet distinctSet;
+        private LongSet distinctSet;
 
         /**
          * Constructor
@@ -259,7 +259,7 @@ public class ArrayUtils {
         DistinctLongs(int limit) {
             super(Long.class, limit);
             this.limit = limit;
-            this.distinctSet = new TLongHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
+            this.distinctSet = new LongOpenHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
         }
 
         /**
@@ -280,7 +280,7 @@ public class ArrayUtils {
     private static class DistinctDoubles extends DistinctCalculator<Double> {
 
         private int limit;
-        private TDoubleSet distinctSet;
+        private DoubleSet distinctSet;
 
         /**
          * Constructor
@@ -289,7 +289,7 @@ public class ArrayUtils {
         DistinctDoubles(int limit) {
             super(Double.class, limit);
             this.limit = limit;
-            this.distinctSet = new TDoubleHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
+            this.distinctSet = new DoubleOpenHashSet(limit < Integer.MAX_VALUE ? limit : 1000);
         }
 
         /**

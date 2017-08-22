@@ -24,9 +24,6 @@ import java.nio.LongBuffer;
 import java.nio.channels.FileChannel;
 import java.util.function.Predicate;
 
-import gnu.trove.set.TLongSet;
-import gnu.trove.set.hash.TLongHashSet;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -35,6 +32,9 @@ import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
 import com.zavtech.morpheus.array.coding.LongCoding;
+
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
 /**
  * A sparse array implementation that maintains a primitive long array of codes that apply to Object values exposed through the Coding interface.
@@ -327,7 +327,7 @@ class MappedArrayWithLongCoding<T> extends ArrayBase<T> {
     @Override
     public Array<T> distinct(int limit) {
         final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TLongSet set = new TLongHashSet(capacity);
+        final LongSet set = new LongOpenHashSet(capacity);
         final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
         for (int i=0; i<length(); ++i) {
             final long code = getLong(i);

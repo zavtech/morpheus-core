@@ -57,6 +57,8 @@ import com.zavtech.morpheus.util.IntComparator;
 import com.zavtech.morpheus.util.SortAlgorithm;
 import com.zavtech.morpheus.util.functions.ToBooleanFunction;
 
+import it.unimi.dsi.fastutil.Arrays;
+
 /**
  * A convenience base class used to build Morpheus Array implementations
  *
@@ -184,7 +186,7 @@ public abstract class ArrayBase<T> implements Array<T> {
 
     @Override()
     public Array<T> distinct() {
-        return distinct(Integer.MAX_VALUE);
+        return distinct(Arrays.MAX_ARRAY_SIZE);
     }
 
 

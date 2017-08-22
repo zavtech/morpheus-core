@@ -24,9 +24,6 @@ import java.nio.DoubleBuffer;
 import java.nio.channels.FileChannel;
 import java.util.function.Predicate;
 
-import gnu.trove.set.TDoubleSet;
-import gnu.trove.set.hash.TDoubleHashSet;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -34,6 +31,9 @@ import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
+
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
+import it.unimi.dsi.fastutil.doubles.DoubleSet;
 
 /**
  * An Array implementation designed to represent a dense array of double values in a memory-mapped file.
@@ -344,7 +344,7 @@ class MappedArrayOfDoubles extends ArrayBase<Double> {
     @Override
     public final Array<Double> distinct(int limit) {
         final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TDoubleSet set = new TDoubleHashSet(capacity);
+        final DoubleSet set = new DoubleOpenHashSet(capacity);
         final ArrayBuilder<Double> builder = ArrayBuilder.of(capacity, Double.class);
         for (int i=0; i<length(); ++i) {
             final double value = getDouble(i);

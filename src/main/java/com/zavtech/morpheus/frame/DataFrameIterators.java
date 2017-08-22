@@ -25,7 +25,7 @@ import java.util.function.Predicate;
  *
  * @author  Xavier Witdouck
  */
-public interface DataFrameIterators<R,C> {
+public interface DataFrameIterators<R,C> extends Iterable<DataFrameValue<R,C>> {
 
     /**
      * Returns an iterator over the values in this row

@@ -105,7 +105,7 @@ public class StatsTest1 {
     }
 
 
-    @Test(dataProvider="allStats", expectedExceptions={DataFrameException.class})
+    @Test(dataProvider="allStats")
     public void testStatFailsOnNumeric(StatType stat) {
         final DataFrame<String,String> frame = TestDataFrames.random(double.class, 100, 100);
         frame.cols().add("DateColumn", Object.class).applyValues(v -> "X:" + Math.random());

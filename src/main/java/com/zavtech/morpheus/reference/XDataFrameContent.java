@@ -1649,6 +1649,11 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
         }
 
         @Override
+        public final boolean isNumeric() {
+            return isInteger() || isLong() || isDouble();
+        }
+
+        @Override
         public final boolean isNull() {
             try {
                 if (columnStore) {

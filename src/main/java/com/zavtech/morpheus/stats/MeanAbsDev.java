@@ -79,8 +79,14 @@ public class MeanAbsDev implements Statistic1 {
     public long add(double value) {
         if (!Double.isNaN(value)) {
             this.m1 += (value - m1) / ++n;
+            final int index = n-1;
+            if (index == sample.length) {
+                final int newLength = sample.length + (sample.length >> 1);
+                final double[] newSample = new double[newLength];
+                System.arraycopy(sample, 0, newSample, 0, sample.length);
+                this.sample = newSample;
+            }
             this.sample[n-1] = value;
-            //todo: grow the array if necessary
         }
         return n;
     }

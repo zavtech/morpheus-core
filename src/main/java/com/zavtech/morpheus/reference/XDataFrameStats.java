@@ -15,13 +15,11 @@
  */
 package com.zavtech.morpheus.reference;
 
-import java.util.function.IntSupplier;
-
 import com.zavtech.morpheus.frame.DataFrameException;
+import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.stats.AutoCorrelation;
 import com.zavtech.morpheus.stats.Count;
 import com.zavtech.morpheus.stats.MeanAbsDev;
-import com.zavtech.morpheus.stats.Sample;
 import com.zavtech.morpheus.stats.StatException;
 import com.zavtech.morpheus.stats.GeoMean;
 import com.zavtech.morpheus.stats.Kurtosis;
@@ -48,269 +46,129 @@ import com.zavtech.morpheus.stats.Variance;
  *
  * @author  Xavier Witdouck
  */
-class XDataFrameStats implements Stats<Double> {
+class XDataFrameStats<R,C> implements Stats<Double> {
 
-    private Sample sample;
-    private IntSupplier size;
+    private boolean skipNaNs;
+    private Iterable<DataFrameValue<R,C>> values;
 
     /**
      * Constructor
-     * @param sample    the sample to compute statistic over
+     * @param skipNaNs  if true, skip NaN values
+     * @param values    the values to compute stats over
      */
-    XDataFrameStats(Sample sample, IntSupplier size) {
-        this.sample = sample;
-        this.size = size;
+    XDataFrameStats(boolean skipNaNs, Iterable<DataFrameValue<R,C>> values) {
+        this.skipNaNs = skipNaNs;
+        this.values = values;
     }
 
-    @Override()
-    public Double count() {
+    /**
+     * Computes the uni-variate statistic specified over the sample
+     * @param statistic     the statistic to compute
+     * @return              the resulting statistic value
+     */
+    private Double compute(Statistic1 statistic) {
         try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Count();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
+            this.values.forEach(value -> {
+                if (value.isNumeric()) {
+                    final double doubleValue = value.getDouble();
+                    if (!skipNaNs || !Double.isNaN(doubleValue)) {
+                        statistic.add(doubleValue);
+                    }
+                }
+            });
+            return statistic.getValue();
         } catch (StatException ex) {
             throw new DataFrameException(ex.getMessage(), ex);
         }
     }
 
     @Override()
-    public Double min() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Min();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double count() {
+        return compute(new Count());
     }
 
     @Override()
-    public Double max() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Max();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double min() {
+        return compute(new Min());
     }
 
     @Override()
-    public Double mean() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Mean();
-            for (int i = 0; i < count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double max() {
+        return compute(new Max());
     }
 
     @Override()
-    public Double stdDev() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new StdDev(true);
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double mean() {
+        return compute(new Mean());
     }
 
     @Override()
-    public Double sum() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Sum();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double stdDev() {
+        return compute(new StdDev(true));
+    }
+
+    @Override()
+    public final Double sum() {
+        return compute(new Sum());
     }
 
     @Override
-    public Double sumLogs() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new SumLogs();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double sumLogs() {
+        return compute(new SumLogs());
     }
 
     @Override()
-    public Double sumSquares() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new SumSquares();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double sumSquares() {
+        return compute(new SumSquares());
     }
 
     @Override()
-    public Double variance() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Variance(true);
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double variance() {
+        return compute(new Variance(true));
     }
 
     @Override()
-    public Double skew() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Skew();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double skew() {
+        return compute(new Skew());
     }
 
     @Override()
-    public Double kurtosis() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Kurtosis();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double kurtosis() {
+        return compute(new Kurtosis());
     }
 
     @Override()
-    public Double geoMean() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new GeoMean();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double geoMean() {
+        return compute(new GeoMean());
     }
 
     @Override()
-    public Double product() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Product();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (StatException ex) {
-            throw new DataFrameException(ex.getMessage(), ex);
-        }
+    public final Double product() {
+        return compute(new Product());
     }
 
     @Override()
-    public Double median() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Median();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (Exception ex) {
-            throw new DataFrameException("Failed to compute median", ex);
-        }
+    public final Double median() {
+        return compute(new Median());
     }
 
     @Override
-    public Double mad() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new MeanAbsDev(count);
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (Exception ex) {
-            throw new DataFrameException("Failed to compute mean absolute deviation", ex);
-        }
+    public final Double mad() {
+        return compute(new MeanAbsDev());
     }
 
     @Override
-    public Double sem() {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new StdErrorMean();
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (Exception ex) {
-            throw new DataFrameException("Failed to compute standard error of the mean", ex);
-        }
+    public final Double sem() {
+        return compute(new StdErrorMean());
     }
 
     @Override()
-    public Double autocorr(int lag) {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new AutoCorrelation(lag);
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (Exception ex) {
-            throw new DataFrameException("Failed to compute auto correlation", ex);
-        }
+    public final Double autocorr(int lag) {
+        return compute(new AutoCorrelation(lag));
     }
 
     @Override()
-    public Double percentile(double nth) {
-        try {
-            final int count = size.getAsInt();
-            final Statistic1 stat = new Percentile(nth);
-            for (int i=0; i<count; ++i) {
-                stat.add(sample.getDouble(i));
-            }
-            return stat.getValue();
-        } catch (Exception ex) {
-            throw new DataFrameException("Failed to compute percentile", ex);
-        }
+    public final Double percentile(double nth) {
+        return compute(new Percentile(nth));
     }
 }

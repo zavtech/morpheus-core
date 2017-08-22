@@ -91,6 +91,12 @@ public interface DataFrameValue<R,C> extends Comparable<DataFrameValue<R,C>> {
     boolean isDouble();
 
     /**
+     * Returns true if this values holds either an int, long or double
+     * @return      true if value is numeric
+     */
+    boolean isNumeric();
+
+    /**
      * Returns a reference to the frame to which this value belongs
      * @return      the frame associated with value
      */

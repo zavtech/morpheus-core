@@ -21,6 +21,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
@@ -449,7 +450,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
 
     @Override()
     public final Stats<Double> stats() {
-        return new XDataFrameStats(toSample(), () -> rows.count() * cols.count());
+        return new XDataFrameStats<>(true, (Iterable<DataFrameValue<R,C>>)this);
     }
 
 
@@ -1626,6 +1627,40 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
             } else {
                 return leftAns.isPresent() ? leftAns : rightAns;
             }
+        }
+    }
+
+
+    /**
+     * The double iterator over all numeric values in the frame
+     */
+    private class DoubleIterator implements PrimitiveIterator.OfDouble {
+
+        private DataFrameValue<R,C> value;
+        private Iterator<DataFrameValue<R,C>> iterator;
+
+        /**
+         * Constructor
+         * @param iterator  the input iterator for this double iterator
+         */
+        DoubleIterator(Iterator<DataFrameValue<R,C>> iterator) {
+            this.iterator = iterator;
+        }
+
+        @Override
+        public double nextDouble() {
+            return value.getDouble();
+        }
+
+        @Override
+        public boolean hasNext() {
+            while (iterator.hasNext()) {
+                this.value = iterator.next();
+                if (value.isNumeric()) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 

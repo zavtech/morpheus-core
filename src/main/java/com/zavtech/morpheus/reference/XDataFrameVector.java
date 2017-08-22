@@ -40,7 +40,6 @@ import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.frame.DataFrameVector;
 import com.zavtech.morpheus.range.Range;
-import com.zavtech.morpheus.stats.Sample;
 import com.zavtech.morpheus.stats.Statistic1;
 import com.zavtech.morpheus.stats.Stats;
 import com.zavtech.morpheus.util.Asserts;
@@ -54,14 +53,14 @@ import com.zavtech.morpheus.util.functions.ToBooleanFunction;
  *
  * @author  Xavier Witdouck
  */
-abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>, Sample, Serializable {
+abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Type axisType;
     private boolean parallel;
     private XDataFrame<R,C> frame;
-    private XDataFrameStats stats;
+    private XDataFrameStats<R,C> stats;
 
     /**
      * Constructor
@@ -74,7 +73,7 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
         this.frame = frame;
         this.parallel = parallel;
         this.axisType = row ? Type.ROWS : Type.COLS;
-        this.stats = new XDataFrameStats(this, this::size);
+        this.stats = new XDataFrameStats<>(true, this);
     }
 
     @Override()

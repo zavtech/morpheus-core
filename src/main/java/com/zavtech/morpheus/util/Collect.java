@@ -201,6 +201,22 @@ public class Collect {
         return map;
     }
 
+
+    /**
+     * Returns a new Iterable wrapper of the stream
+     * @param stream        the stream to wrap
+     * @param <T>           the entity type
+     * @return              the newly created iterable
+     */
+    public static <T> Iterable<T> asIterable(Stream<T> stream) {
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return stream.iterator();
+            }
+        };
+    }
+
     /**
      * Returns a apply that reverses the input apply
      * @param map   the apply reference to reverse

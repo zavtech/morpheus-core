@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.zavtech</groupId>
   <artifactId>morpheus-core</artifactId>
-  <version>0.9.5</version>
+  <version>0.9.12</version>
   <packaging>jar</packaging>
 
   <name>Morpheus-Core</name>

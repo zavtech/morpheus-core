@@ -15,7 +15,12 @@
  */
 package com.zavtech.morpheus.util;
 
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * A utility class that provides some useful I/O related methods
@@ -61,4 +66,21 @@ public class IO {
         System.out.println(value);
         return instance;
     }
+
+
+    public static void writeText(String text, File file) throws IOException {
+        final File dir = file.getParentFile();
+        if (dir != null && dir.mkdirs()) {
+            System.out.println("Created directory: " + dir.getAbsolutePath());
+        }
+        writeText(text, new FileOutputStream(file));
+    }
+
+
+    public static void writeText(String text, OutputStream os) throws IOException {
+        try (BufferedOutputStream bos = new BufferedOutputStream(os)) {
+            bos.write(text.getBytes("UTF-8"));
+        }
+    }
+
 }

@@ -273,49 +273,49 @@ charts as well as HTML5 browser based charts via the same programmatic interface
 see the section on visualization [here](./viz/charts/overview/), and the code [here](https://github.com/zavtech/morpheus-viz).
 
 <table width="100%" border="0">
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-1.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-2.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-1.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-2.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-3.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-4.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-3.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-4.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-5.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-6.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-5.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-6.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-7.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-8.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-7.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-8.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-9.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-10.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-9.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-10.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-11.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-12.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-11.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-12.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-13.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-14.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-13.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-14.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-15.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-16.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-15.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-16.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-17.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-18.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-17.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-18.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-19.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-20.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-19.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-20.png"/></td>
     </tr>
-    <tr style="background:none;">
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-21.png"/></td>
-        <td><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-22.png"/></td>
+    <tr style="background-color:white;">
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-21.png"/></td>
+        <td style="background-color:white;"><img class="smallChart" src="http://www.zavtech.com/morpheus/docs/images/gallery/chart-22.png"/></td>
     </tr>
 </table>
 

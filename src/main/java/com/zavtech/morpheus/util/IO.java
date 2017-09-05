@@ -70,8 +70,10 @@ public class IO {
 
     public static void writeText(String text, File file) throws IOException {
         final File dir = file.getParentFile();
-        if (dir != null && dir.mkdirs()) {
-            System.out.println("Created directory: " + dir.getAbsolutePath());
+        if (dir != null && !dir.exists()) {
+            if (!dir.mkdirs()) {
+                throw new RuntimeException("Unable to create one or more directories at " + dir.getAbsolutePath());
+            }
         }
         writeText(text, new FileOutputStream(file));
     }

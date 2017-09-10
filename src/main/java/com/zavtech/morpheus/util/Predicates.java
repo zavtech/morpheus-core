@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -100,6 +99,19 @@ public class Predicates {
             final Set<T> valueSet = new HashSet<>(values);
             return valueSet::contains;
         }
+    }
+
+
+    /**
+     * Returns a predicate to select values between the start and end, inclusive
+     * @param start     the start value, inclusive
+     * @param end       the end value, inclusive
+     * @param <T>       the type for predicate
+     * @return          the newly created Predicate
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Comparable> Predicate<T> between(T start, T end) {
+        return value -> start.compareTo(value) <= 0 && end.compareTo(value) >= 0;
     }
 
 }

@@ -90,7 +90,7 @@ public enum StatType {
             case PRODUCT:           return stats.product();
             case SUM_SQUARES:       return stats.sumSquares();
             case PERCENTILE:        return stats.percentile(0.5d);
-            case AUTO_CORREL:  return stats.autocorr(1);
+            case AUTO_CORREL:       return stats.autocorr(1);
             default:    throw new DataFrameException("Unsupported stat type: " + this.name());
         }
     }

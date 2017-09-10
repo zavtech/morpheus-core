@@ -40,6 +40,7 @@ public class HttpRequest<T> implements java.io.Serializable, Cloneable {
     private int readTimeout;
     private int connectTimeout;
     private Map<String,String> headers;
+    private Map<String,String> cookies;
     private HttpClient.ResponseHandler<T> responseHandler;
 
     /**
@@ -49,6 +50,7 @@ public class HttpRequest<T> implements java.io.Serializable, Cloneable {
     HttpRequest(HttpMethod method) {
         this.method = method;
         this.headers = new HashMap<>();
+        this.cookies = new HashMap<>();
     }
 
     /**
@@ -63,6 +65,7 @@ public class HttpRequest<T> implements java.io.Serializable, Cloneable {
         this.readTimeout = request.readTimeout;
         this.connectTimeout = request.connectTimeout;
         this.headers.putAll(request.headers);
+        this.cookies.putAll(request.cookies);
         this.responseHandler = request.responseHandler;
         return this;
     }
@@ -205,10 +208,18 @@ public class HttpRequest<T> implements java.io.Serializable, Cloneable {
 
     /**
      * Returns the request header parameters for this request
-     * @return  the request header parameters
+     * @return  the map of headers
      */
     public Map<String,String> getHeaders() {
         return headers;
+    }
+
+    /**
+     * Returns an map of cookies for this request
+     * @return  the map of cookies
+     */
+    public Map<String,String> getCookies() {
+        return cookies;
     }
 
     /**

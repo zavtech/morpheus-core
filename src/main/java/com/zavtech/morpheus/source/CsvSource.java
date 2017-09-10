@@ -103,8 +103,8 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
         } else {
             return HttpClient.getDefault().<DataFrame<R,String>>doGet(httpRequest -> {
                 httpRequest.setUrl(url);
-                httpRequest.setResponseHandler((status, stream) -> {
-                    try {
+                httpRequest.setResponseHandler(response -> {
+                    try (InputStream stream = response.getStream()) {
                         final DataFrame<R,String> frame = parse(request, stream);
                         return Optional.ofNullable(frame);
                     } catch (IOException ex) {

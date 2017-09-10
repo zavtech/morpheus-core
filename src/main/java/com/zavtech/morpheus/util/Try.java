@@ -16,6 +16,7 @@
 package com.zavtech.morpheus.util;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 
 /**
@@ -77,6 +78,19 @@ public class Try<T,R> implements Function<T,R> {
             throw new RuntimeException(ex.getMessage(), ex);
         }
     }
+
+    /**
+     * Calls the get() method on the future, catching any Exception and re-throwing as a RuntimneException
+     * @param future    the future to get result from
+     */
+    public static <T> T get(Future<T> future) {
+        try {
+            return future.get();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+
 
     /**
      * Calls the call() method wrapped in a try catch and throws a RuntimeException if fails

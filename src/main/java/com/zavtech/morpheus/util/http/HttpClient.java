@@ -21,9 +21,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import com.zavtech.morpheus.util.IO;
 import com.zavtech.morpheus.util.Initialiser;
 
 /**
@@ -87,12 +90,11 @@ public abstract class HttpClient {
 
         /**
          * Called after an http request has been invoked
-         * @param status        the http status
-         * @param response      the response stream
+         * @param response      the response object
          * @return              the optional result for this handler
          * @throws RuntimeException    if the handler fails to process request
          */
-        Optional<T> onResponse(HttpStatus status, InputStream response) throws RuntimeException;
+        Optional<T> onResponse(HttpResponse response) throws RuntimeException;
     }
 
 
@@ -130,6 +132,9 @@ public abstract class HttpClient {
                     conn.setReadTimeout(request.getReadTimeout());
                     conn.setDoOutput(request.getContent().isPresent());
                     request.getHeaders().forEach(conn::setRequestProperty);
+                    request.getCookies().forEach((key, value) -> {
+                        conn.addRequestProperty("Cookie", String.format("%s=%s", key, value));
+                    });
                     final int statusCode = conn.getResponseCode();
                     if (hasMoved(statusCode)) {
                         final String newUrl = conn.getHeaderField("Location");
@@ -138,11 +143,10 @@ public abstract class HttpClient {
                         throw new HttpException(request, message, null);
                     }
                     request.getContent().ifPresent(bytes -> write(bytes, conn));
-                    try (final InputStream inputStream = conn.getInputStream()) {
-                        final String message = conn.getResponseMessage();
-                        final HttpStatus status = new HttpStatus(statusCode, message);
-                        return request.getResponseHandler().flatMap(handler -> handler.onResponse(status, inputStream));
-                    }
+                    final String message = conn.getResponseMessage();
+                    final HttpStatus status = new HttpStatus(statusCode, message);
+                    final HttpResponse response = new DefaultResponse(status, conn);
+                    return request.getResponseHandler().flatMap(handler -> handler.onResponse(response));
                 } catch (HttpException ex) {
                     throw ex; //no retries based on our own internally generated exception
                 } catch (Exception ex) {
@@ -183,6 +187,70 @@ public abstract class HttpClient {
                 default:                                return false;
             }
         }
+    }
+
+    /**
+     * The HttpResponse object for the default HttpClient.
+     */
+    private static class DefaultResponse implements HttpResponse {
+
+        private HttpStatus status;
+        private InputStream stream;
+        private HttpURLConnection conn;
+        private List<HttpHeader> headers;
+
+        /**
+         * Constructor
+         * @param conn  the http connection object
+         */
+        DefaultResponse(HttpStatus status, HttpURLConnection conn) throws IOException {
+            this.conn = conn;
+            this.status = status;
+            this.stream = conn.getInputStream();
+            this.headers = new ArrayList<>();
+            conn.getHeaderFields().forEach((key, values) -> {
+                if (key != null && values != null && !values.isEmpty()) {
+                    values.forEach(value -> {
+                        headers.add(new HttpHeader(key, value));
+                    });
+                }
+            });
+        }
+
+        @Override
+        public HttpStatus getStatus() {
+            return status;
+        }
+
+        @Override
+        public InputStream getStream() {
+            return stream;
+        }
+
+        @Override
+        public List<HttpHeader> getHeaders() {
+            return headers;
+        }
+
+        @Override
+        public void close() throws Exception {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+    }
+
+
+    public static void main(String[] args) {
+        HttpClient.getDefault().doGet(request -> {
+            request.setUrl("https://finance.yahoo.com/quote/SPY?p=SPY");
+            request.setResponseHandler(response -> {
+                response.getHeaders().forEach(header -> {
+                    IO.println(String.format("%s = %s", header.getKey(), header.getValue()));
+                });
+                return Optional.empty();
+            });
+        });
     }
 
 }

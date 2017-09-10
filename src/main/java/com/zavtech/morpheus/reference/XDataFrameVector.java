@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.zavtech.morpheus.array.Array;
+import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayType;
 import com.zavtech.morpheus.array.ArrayUtils;
 import com.zavtech.morpheus.frame.DataFrame;
@@ -338,6 +339,21 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
     @SuppressWarnings("unchecked")
     public final <V> Stream<V> toValueStream() {
         return values().map(v -> (V)v.getValue());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <V> Array<V> toArray() {
+        final int length = size();
+        final Class<V> type = (Class<V>)typeInfo();
+        final ArrayBuilder<V> builder = ArrayBuilder.of(length, type);
+        switch (ArrayType.of(type)) {
+            case INTEGER:   forEach(v -> builder.addInt(v.getInt()));       break;
+            case LONG:      forEach(v -> builder.addLong(v.getLong()));     break;
+            case DOUBLE:    forEach(v -> builder.addDouble(v.getDouble())); break;
+            default:        forEach(v -> builder.add(v.getValue()));        break;
+        }
+        return builder.toArray();
     }
 
     @Override()

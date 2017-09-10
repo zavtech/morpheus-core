@@ -175,6 +175,13 @@ public interface DataFrameVector<X,Y,R,C,Z> extends DataFrameActions<R,C,Z>, Dat
     <V> Stream<V> toValueStream();
 
     /**
+     * Returns an array of values for this vector
+     * @param <V>   the array type
+     * @return      the array of values
+     */
+    <V> Array<V> toArray();
+
+    /**
      * Returns a newly created DataFrame representation of this vector
      * @return      the DataFrame representation of this vector
      */

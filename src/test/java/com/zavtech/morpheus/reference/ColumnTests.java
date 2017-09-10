@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.PrimitiveIterator;
 
+import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameColumn;
@@ -615,5 +616,20 @@ public class ColumnTests {
         }).print();
     }
 
+
+    @Test()
+    public void testColumnToArray() {
+        final DataFrame<Integer,String> frame = TestDataFrames.createMixedRandomFrame(Integer.class, 1000);
+        frame.cols().forEach(column -> {
+            final Array<?> array = column.toArray();
+            final Class<?> expectedType = column.typeInfo();
+            Assert.assertEquals(array.type(), expectedType, "Type is as expected");
+            column.forEachValue(v -> {
+                final Object expected = v.getValue();
+                final Object actual = array.getValue(v.rowOrdinal());
+                Assert.assertEquals(actual, expected, "Values for column match for " + v.rowKey());
+            });
+        });
+    }
 
 }

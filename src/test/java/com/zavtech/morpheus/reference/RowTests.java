@@ -648,4 +648,19 @@ public class RowTests {
         }).print();
     }
 
+
+    @Test()
+    public void testRowToArray() {
+        final DataFrame<Integer,String> frame = TestDataFrames.createMixedRandomFrame(Integer.class, 1000);
+        frame.rows().forEach(row -> {
+            final Array<Object> array = row.toArray();
+            Assert.assertEquals(array.type(), Object.class, "Type is as expected");
+            row.forEachValue(v -> {
+                final Object expected = v.getValue();
+                final Object actual = array.getValue(v.colOrdinal());
+                Assert.assertEquals(actual, expected, "Values for column match for " + v.colKey());
+            });
+        });
+    }
+
 }

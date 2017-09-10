@@ -28,8 +28,6 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
 
-import com.zavtech.morpheus.frame.DataFrameException;
-
 /**
  * A class used to capture a SQL expression and associated arguments, with convenience execute() functions.
  *
@@ -118,7 +116,7 @@ public class SQL implements java.io.Serializable {
                 final LocalDateTime dateTime = zonedDateTime.toLocalDateTime();
                 stmt.setTimestamp(i+1, Timestamp.valueOf(dateTime));
             } else {
-                throw new DataFrameException("Unsupported argument, cannot be bound to SQL statement: " + value);
+                throw new RuntimeException("Unsupported argument, cannot be bound to SQL statement: " + value);
             }
         }
         return stmt;

@@ -52,13 +52,17 @@ class XDataFrameSmooth<R,C> implements DataFrameSmooth<R,C> {
     @Override
     public DataFrame<R,C> ema(double halfLife) {
         try {
-            if (!inPlace) {
+            if (halfLife < 0) {
+                throw new IllegalArgumentException("Half-life for smoothing must be >= 0, " + halfLife + " is illegal");
+            } else if (halfLife == 0d) {
+                return frame;
+            } else if (!inPlace) {
                 return frame.copy().smooth(true).ema(halfLife);
             } else {
                 final int rowCount = frame.rows().count();
                 if (rowCount > 0) {
                     final int colCount = frame.cols().count();
-                    for (int colIndex=0; colIndex<colCount; ++colIndex) {
+                    for (int colIndex = 0; colIndex < colCount; ++colIndex) {
                         final double value = frame.data().getDouble(0, colIndex);
                         frame.data().setDouble(0, colIndex, value);
                     }
@@ -68,7 +72,7 @@ class XDataFrameSmooth<R,C> implements DataFrameSmooth<R,C> {
                         if (rowOrdinal > 0) {
                             row.forEachValue(v -> {
                                 final double rawValue = v.getDouble();
-                                final double emaPrior = v.col().getDouble(rowOrdinal-1);
+                                final double emaPrior = v.col().getDouble(rowOrdinal - 1);
                                 final double emaValue = rawValue * alpha + (1d - alpha) * emaPrior;
                                 v.setDouble(emaValue);
                             });
@@ -77,7 +81,7 @@ class XDataFrameSmooth<R,C> implements DataFrameSmooth<R,C> {
                 }
                 return frame;
             }
-        } catch (DataFrameException ex) {
+        } catch (IllegalArgumentException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new DataFrameException("Failed to apply EWMA smoothing to DataFrame", ex);

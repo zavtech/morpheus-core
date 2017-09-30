@@ -61,9 +61,11 @@ public class SmartFormat extends java.text.Format {
     private Matcher timeMatcher1 = Pattern.compile(TIME_REGEX_1).matcher("");
     private Matcher timeMatcher2 = Pattern.compile(TIME_REGEX_2).matcher("");
 
-    private Format decimalFormat1 = new DecimalFormat("0.0000####;-0.0000####");
-    private Format decimalFormat2 = new DecimalFormat("0.0000####;-0.0000####");
-    private Format decimalFormat6 = new DecimalFormat("0.0000####;-0.0000####");
+    private Format billionsFormat = new DecimalFormat("0.0000'B';-0.0000'B'");
+    private Format millionsFormat = new DecimalFormat("0.0000'M';-0.0000'M'");
+    private Format thousandFormat = new DecimalFormat("0.0000'K';-0.0000'K'");
+    private Format decimalFormat = new DecimalFormat("###,###,##0.0000####;-###,###,##0.0000####");
+
     private DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
     private DateFormat dateFormat2 = new SimpleDateFormat("dd-MM-yyyy");
     private DateFormat dateFormat3 = new SimpleDateFormat("dd/MM/yyyy");
@@ -105,11 +107,17 @@ public class SmartFormat extends java.text.Format {
             return buffer;
         } else if (value instanceof Double) {
             final Double doubleValue = (Double)value;
-            if (Double.isNaN(doubleValue)) buffer.append("NaN");
-            else if (doubleValue < 0.001d) buffer.append(decimalFormat1.format(value));
-            else if (doubleValue < 0d) buffer.append(decimalFormat6.format(value));
-            else if (doubleValue > 1000000d) buffer.append(decimalFormat1.format(value));
-            else buffer.append(decimalFormat2.format(value));
+            if (Double.isNaN(doubleValue)) {
+                buffer.append("NaN");
+            } else if (Math.abs(doubleValue) > 1000000000d) {
+                buffer.append(billionsFormat.format(doubleValue / 1000000000d));
+            }  else if (Math.abs(doubleValue) > 1000000d) {
+                buffer.append(millionsFormat.format(doubleValue / 1000000d));
+            }  else if (Math.abs(doubleValue) > 1000d) {
+                buffer.append(thousandFormat.format(doubleValue / 1000d));
+            } else {
+                buffer.append(decimalFormat.format(doubleValue));
+            }
             return buffer;
         } else if (value instanceof Boolean) {
             buffer.append(value.toString());

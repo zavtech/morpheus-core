@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.zip.GZIPInputStream;
 
 import com.zavtech.morpheus.util.IO;
 import com.zavtech.morpheus.util.Initialiser;
@@ -217,6 +218,19 @@ public abstract class HttpClient {
             });
         }
 
+        /**
+         * Returns the content encoding for response
+         * @return  the content encoding
+         */
+        private Optional<String> getContentEncoding() {
+            for (HttpHeader header : headers) {
+                if (header.getKey().equals("Content-Encoding")) {
+                    return Optional.ofNullable(header.getValue());
+                }
+            }
+            return Optional.empty();
+        }
+
         @Override
         public HttpStatus getStatus() {
             return status;
@@ -224,7 +238,16 @@ public abstract class HttpClient {
 
         @Override
         public InputStream getStream() {
-            return stream;
+            try {
+                final String encoding = getContentEncoding().orElse("default").toLowerCase();
+                if (encoding.equalsIgnoreCase("gzip")) {
+                    return new GZIPInputStream(stream);
+                } else {
+                    return stream;
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException("Failed to read from input stream", ex);
+            }
         }
 
         @Override

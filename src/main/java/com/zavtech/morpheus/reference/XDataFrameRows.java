@@ -17,6 +17,7 @@ package com.zavtech.morpheus.reference;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -178,6 +179,12 @@ class XDataFrameRows<R,C> extends XDataFrameAxisBase<R,C,R,C,DataFrameRow<R,C>,D
     @Override @Parallel
     public final DataFrame<R,C> sort(Comparator<DataFrameRow<R,C>> comparator) {
         return XDataFrameSorter.sortRows(frame(), isParallel(), comparator);
+    }
+
+    @Override @Parallel
+    public final DataFrame<R,C> apply(Consumer<DataFrameRow<R,C>> consumer) {
+        this.forEach(consumer);
+        return frame();
     }
 
     @Override @Parallel

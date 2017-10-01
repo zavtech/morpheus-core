@@ -632,4 +632,22 @@ public class ColumnTests {
         });
     }
 
+
+    @Test()
+    public void testColumnApply() {
+        Range<Integer> rowKeys = Range.of(0, 10000);
+        Range<String> colKeys = Range.of(0, 20).map(i -> "C" + i);
+        DataFrame<Integer,String> frame = DataFrame.ofDoubles(rowKeys, colKeys, v -> Math.random());
+        frame.cols().apply(column -> {
+            final double sum = column.stats().sum();
+            column.applyDoubles(v -> {
+                return v.getDouble() / sum;
+            });
+        });
+        frame.cols().forEach(column -> {
+            double sum = column.stats().sum();
+            Assert.assertEquals(sum, 1d, 0.00000001);
+        });
+    }
+
 }

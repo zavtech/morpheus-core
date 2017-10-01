@@ -19,13 +19,13 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.zavtech.morpheus.array.Array;
-import com.zavtech.morpheus.stats.StatType;
 import com.zavtech.morpheus.util.Tuple;
 
 /**
@@ -313,6 +313,13 @@ public interface DataFrameAxis<X,Y,R,C,V extends DataFrameVector,T extends DataF
      * @return              the sorted DataFrame
      */
     DataFrame<R,C> sort(Comparator<V> comparator);
+
+    /**
+     * Applies the consumer on every vector of the DataFrame
+     * @param consumer  the consumer to receive each vector
+     * @return          the DataFrame reference
+     */
+    DataFrame<R,C> apply(Consumer<V> consumer);
 
     /**
      * Subtracts the mean from each row / column defined by this axis

@@ -663,4 +663,22 @@ public class RowTests {
         });
     }
 
+
+    @Test()
+    public void testRowApply() {
+        Range<Integer> rowKeys = Range.of(0, 10000);
+        Range<String> colKeys = Range.of(0, 20).map(i -> "C" + i);
+        DataFrame<Integer,String> frame = DataFrame.ofDoubles(rowKeys, colKeys, v -> Math.random());
+        frame.rows().apply(row -> {
+            final double sum = row.stats().sum();
+            row.applyDoubles(v -> {
+                return v.getDouble() / sum;
+            });
+        });
+        frame.rows().forEach(row -> {
+            double sum = row.stats().sum();
+            Assert.assertEquals(sum, 1d, 0.00000001);
+        });
+    }
+
 }

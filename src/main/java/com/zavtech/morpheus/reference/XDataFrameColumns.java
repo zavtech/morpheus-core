@@ -37,6 +37,7 @@ import com.zavtech.morpheus.frame.DataFrameEvent;
 import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.frame.DataFrameGrouping;
 import com.zavtech.morpheus.frame.DataFrameOptions;
+import com.zavtech.morpheus.frame.DataFrameRow;
 import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
@@ -218,6 +219,11 @@ class XDataFrameColumns<R,C> extends XDataFrameAxisBase<C,R,R,C,DataFrameColumn<
         return XDataFrameSorter.sortCols(frame(), isParallel(), comparator);
     }
 
+    @Override @Parallel
+    public final DataFrame<R,C> apply(Consumer<DataFrameColumn<R,C>> consumer) {
+        this.forEach(consumer);
+        return frame();
+    }
 
     @Override @Parallel
     public final DataFrame<R,C> demean(boolean inPlace) {

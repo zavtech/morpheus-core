@@ -166,7 +166,7 @@ public class Collect {
      * @param mapper            the consumer that sets up mappings
      * @param <K>               the key type
      * @param <V>               the value type
-     * @return                  the newly created apply
+     * @return                  the newly created map
      */
     public static <K,V> Map<K,V> asMap(Consumer<Map<K,V>> mapper) {
         final Map<K,V> map = new HashMap<>();
@@ -180,7 +180,7 @@ public class Collect {
      * @param mapper            the consumer that sets up mappings
      * @param <K>               the key type
      * @param <V>               the value type
-     * @return                  the newly created apply
+     * @return                  the newly created map
      */
     public static <K,V> Map<K,V> asMap(int initialCapacity, Consumer<Map<K,V>> mapper) {
         final Map<K,V> map = new HashMap<>(initialCapacity);
@@ -193,10 +193,24 @@ public class Collect {
      * @param mapper            the consumer that sets up mappings
      * @param <K>               the key type
      * @param <V>               the value type
-     * @return                  the newly created apply
+     * @return                  the newly created map
      */
     public static <K,V> SortedMap<K,V> asSortedMap(Consumer<Map<K,V>> mapper) {
         final SortedMap<K,V> map = new TreeMap<>();
+        mapper.accept(map);
+        return map;
+    }
+
+
+    /**
+     * Returns a new created Map initialized with whatever the consumer does
+     * @param mapper            the consumer that sets up mappings
+     * @param <K>               the key type
+     * @param <V>               the value type
+     * @return                  the newly created map
+     */
+    public static <K,V> Map<K,V> asOrderedMap(Consumer<Map<K,V>> mapper) {
+        final Map<K,V> map = new LinkedHashMap<>();
         mapper.accept(map);
         return map;
     }

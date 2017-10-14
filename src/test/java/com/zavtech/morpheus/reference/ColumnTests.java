@@ -521,7 +521,7 @@ public class ColumnTests {
 
     @Test()
     public void testColumnStats() {
-        final DataFrame<String, String> frame = TestDataFrames.random(double.class, 10, 10);
+        final DataFrame<String, String> frame = TestDataFrames.random(double.class, 100, 100);
         final Stats<Double> stats1 = frame.colAt("C3").stats();
         final Stats<Double> stats2 = frame.colAt("C3").toDataFrame().stats();
         for (StatType stat : StatType.univariate()) {

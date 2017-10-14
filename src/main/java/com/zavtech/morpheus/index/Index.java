@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -242,6 +243,14 @@ public interface Index<K> extends Iterable<K>, Cloneable, Serializable {
      * @return      true if this index contains all keys in the stream
      */
     boolean containsAll(Iterable<K> keys);
+
+    /**
+     * Maps this Index into a new Index based on the mapper provided
+     * @param mapper    the index mapper that takes the key, ordinal and index
+     * @param <V>       the new Index type
+     * @return          the newly created Index
+     */
+    <V> Index<V> map(IndexMapper<K,V> mapper);
 
     /**
      * Returns an array of keys that intersect with the stream

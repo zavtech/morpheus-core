@@ -15,20 +15,16 @@
  */
 package com.zavtech.morpheus.reference;
 
-import java.io.PrintStream;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayType;
 import com.zavtech.morpheus.array.ArrayBuilder;
-import com.zavtech.morpheus.array.ArrayUtils;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameAxisStats;
 import com.zavtech.morpheus.frame.DataFrameColumn;
@@ -37,9 +33,7 @@ import com.zavtech.morpheus.frame.DataFrameEvent;
 import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.frame.DataFrameGrouping;
 import com.zavtech.morpheus.frame.DataFrameOptions;
-import com.zavtech.morpheus.frame.DataFrameRow;
 import com.zavtech.morpheus.frame.DataFrameValue;
-import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
 import com.zavtech.morpheus.stats.StatType;
 import com.zavtech.morpheus.stats.Stats;
@@ -250,14 +244,11 @@ class XDataFrameColumns<R,C> extends XDataFrameAxisBase<C,R,R,C,DataFrameColumn<
 
     @Override
     public final <X> DataFrame<R,X> mapKeys(Function<DataFrameColumn<R,C>,X> mapper) {
-        if (frame().rowKeys().isFilter()) {
+        if (frame().colKeys().isFilter()) {
             throw new DataFrameException("Column axis is immutable for this frame, call copy() first");
         } else {
             final XDataFrameColumn<R,C> column = new XDataFrameColumn<>(frame(), false);
-            final Stream<X> newKeys = IntStream.range(0, count()).mapToObj(i -> mapper.apply(column.moveTo(i)));
-            final Array<X> newArray = newKeys.collect(ArrayUtils.toArray(count()));
-            final Index<X> newIndex = Index.of(newArray);
-            return frame().withColKeys(newIndex);
+            return frame().mapColKeys((key, ordinal) -> mapper.apply(column.moveTo(ordinal)));
         }
     }
 

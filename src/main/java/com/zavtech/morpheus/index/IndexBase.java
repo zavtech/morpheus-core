@@ -18,6 +18,7 @@ package com.zavtech.morpheus.index;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -237,6 +238,23 @@ abstract class IndexBase<K> implements Index<K> {
             }
         }
         return true;
+    }
+
+
+    @Override
+    public final <V> Index<V> map(IndexMapper<K,V> mapper) {
+        if (parent != null) {
+            throw new IndexException("Cannot map a filtered Index, call copy() first");
+        } else {
+            final Array<V> newKeys = Range.of(0, size()).map(i -> mapper.map(keys.getValue(i), i)).toArray();
+            final Index<V> newIndex = Index.of(newKeys);
+            if (newIndex instanceof IndexBase) {
+                final IndexBase<V> base = (IndexBase<V>)newIndex;
+                base.ordinals = this.ordinals;
+                base.indexes = this.indexes;
+            }
+            return newIndex;
+        }
     }
 
 

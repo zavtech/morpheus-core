@@ -194,6 +194,11 @@ class IndexReadOnly<K> implements Index<K> {
     }
 
     @Override
+    public final <V> Index<V> map(IndexMapper<K, V> mapper) {
+        throw new IndexException("The Index in question is ready only");
+    }
+
+    @Override
     public final Array<K> intersect(Iterable<K> keys) {
         return underlying.intersect(keys);
     }

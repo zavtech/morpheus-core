@@ -46,6 +46,7 @@ import com.zavtech.morpheus.frame.DataFrameRow;
 import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.index.IndexException;
+import com.zavtech.morpheus.index.IndexMapper;
 import com.zavtech.morpheus.range.Range;
 import com.zavtech.morpheus.util.Mapper;
 import com.zavtech.morpheus.util.functions.ToBooleanFunction;
@@ -255,24 +256,26 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
 
 
     /**
-     * Returns a copy of this content replacing the row keys with the arg
-     * @param dimension  the row keys replacement
-     * @param <T>   the new row key type
-     * @return      shallow copy of this content
+     * Returns a shallow copy of this content after mapping the row keys
+     * @param mapper    the row key mapping function
+     * @param <T>       the new row key type
+     * @return          shallow copy of this content
      */
-    final <T> XDataFrameContent<T,C> withRowKeys(Index<T> dimension) {
-        return new XDataFrameContent<>(dimension, colKeys, columnStore, data);
+    final <T> XDataFrameContent<T,C> mapRowKeys(IndexMapper<R,T> mapper) {
+        final Index<T> newIndex = rowKeys.map(mapper);
+        return new XDataFrameContent<>(newIndex, colKeys, columnStore, data);
     }
 
 
     /**
-     * Returns a copy of this content replacing the column keys with the arg
-     * @param dimension  the column keys replacement
-     * @param <T>   the new column key type
-     * @return      shallow copy of this content
+     * Returns a shallow copy of this content after mapping the column keys
+     * @param mapper    the column key mapping function
+     * @param <T>       the new column key type
+     * @return          shallow copy of this content
      */
-    final <T> XDataFrameContent<R,T> withColKeys(Index<T> dimension) {
-        return new XDataFrameContent<>(rowKeys, dimension, columnStore, data);
+    final <T> XDataFrameContent<R,T> mapColKeys(IndexMapper<C,T> mapper) {
+        final Index<T> newIndex = colKeys.map(mapper);
+        return new XDataFrameContent<>(rowKeys, newIndex, columnStore, data);
     }
 
 

@@ -154,8 +154,8 @@ class XDataFrameSorter {
      */
     static <R,C> XDataFrame<R,C> sortCols(XDataFrame<R,C> frame, boolean parallel, Comparator<DataFrameColumn<R,C>> comparator) {
         if (comparator == null) {
-            final Index<C> colKeys = frame.colKeys().resetOrder();
-            return frame.withColKeys(colKeys);
+            frame.colKeys().sort(parallel, null);
+            return frame;
         } else {
             final XDataFrameComparator colComparator = XDataFrameComparator.createColComparator(frame, comparator);
             frame.colKeys().sort(parallel, colComparator);

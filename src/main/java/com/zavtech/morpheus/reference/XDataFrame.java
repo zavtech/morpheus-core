@@ -61,6 +61,7 @@ import com.zavtech.morpheus.frame.DataFrameRows;
 import com.zavtech.morpheus.frame.DataFrameSmooth;
 import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.frame.DataFrameWrite;
+import com.zavtech.morpheus.index.IndexMapper;
 import com.zavtech.morpheus.reference.algebra.XDataFrameAlgebra;
 import com.zavtech.morpheus.reference.regress.XDataFrameRegression;
 import com.zavtech.morpheus.index.Index;
@@ -128,24 +129,24 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
 
 
     /**
-     * Returns a newly created frame replacing the row dimension
-     * @param dim   the new row dimension
-     * @param <X>   the new row key type
-     * @return      the newly created frame
+     * Returns a shallow copy of the frame replacing the row keys
+     * @param mapper    the mapper to map row keys
+     * @param <X>       the new row key type
+     * @return          the shallow copy of the frame
      */
-    final <X> XDataFrame<X,C> withRowKeys(Index<X> dim) {
-        return new XDataFrame<>(data.withRowKeys(dim), isParallel());
+    final <X> XDataFrame<X,C> mapRowKeys(IndexMapper<R,X> mapper) {
+        return new XDataFrame<>(data.mapRowKeys(mapper), isParallel());
     }
 
 
     /**
-     * Returns a newly created frame replacing the column dimension
-     * @param dim   the new column dimension
-     * @param <Y>   the new column key type
-     * @return      the newly created frame
+     * Returns a shallow copy of the frame replacing the column keys
+     * @param mapper    the mapper to map column keys
+     * @param <Y>       the new row key type
+     * @return          the shallow copy of the frame
      */
-    final <Y> XDataFrame<R,Y> withColKeys(Index<Y> dim) {
-        return new XDataFrame<>(data.withColKeys(dim), isParallel());
+    final <Y> XDataFrame<R,Y> mapColKeys(IndexMapper<C,Y> mapper) {
+        return new XDataFrame<>(data.mapColKeys(mapper), isParallel());
     }
 
 

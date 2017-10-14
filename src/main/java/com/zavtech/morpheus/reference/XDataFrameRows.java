@@ -206,10 +206,7 @@ class XDataFrameRows<R,C> extends XDataFrameAxisBase<R,C,R,C,DataFrameRow<R,C>,D
             throw new DataFrameException("Row axis is immutable for this frame, call copy() first");
         } else {
             final XDataFrameRow<R,C> row = new XDataFrameRow<>(frame(), false);
-            final Stream<X> newKeys = IntStream.range(0, count()).mapToObj(i -> mapper.apply(row.moveTo(i)));
-            final Array<X> newArray = newKeys.collect(ArrayUtils.toArray(count()));
-            final Index<X> newIndex = Index.of(newArray);
-            return frame().withRowKeys(newIndex);
+            return frame().mapRowKeys((key, ordinal) -> mapper.apply(row.moveTo(ordinal)));
         }
     }
 

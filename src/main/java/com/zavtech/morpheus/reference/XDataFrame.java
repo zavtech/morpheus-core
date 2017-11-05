@@ -174,7 +174,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
      * @return  the row keys
      */
     final Index<R> rowKeys() {
-        return data.rowDim();
+        return data.rowKeyIndex();
     }
 
 
@@ -183,7 +183,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
      * @return  the column keys
      */
     final Index<C> colKeys() {
-        return data.colDim();
+        return data.colKeyIndex();
     }
 
 

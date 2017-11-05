@@ -19,11 +19,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import com.zavtech.morpheus.array.Array;
-import com.zavtech.morpheus.array.ArrayUtils;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameAxisStats;
 import com.zavtech.morpheus.frame.DataFrameCursor;
@@ -34,7 +31,6 @@ import com.zavtech.morpheus.frame.DataFrameOptions;
 import com.zavtech.morpheus.frame.DataFrameRow;
 import com.zavtech.morpheus.frame.DataFrameRows;
 import com.zavtech.morpheus.frame.DataFrameValue;
-import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.stats.StatType;
 import com.zavtech.morpheus.stats.Stats;
 import com.zavtech.morpheus.util.Parallel;
@@ -82,7 +78,7 @@ class XDataFrameRows<R,C> extends XDataFrameAxisBase<R,C,R,C,DataFrameRow<R,C>,D
             throw new DataFrameException("Attempt to add duplicate row key: " + key);
         } else if (added) {
             final XDataFrame<R,C> frame = frame();
-            final int ordinal = content.rowDim().getOrdinalForKey(key);
+            final int ordinal = content.rowKeyIndex().getOrdinalForKey(key);
             if (initials != null) {
                 final DataFrameCursor<R,C> value = frame.cursor().moveToRow(ordinal);
                 for (int i=0; i<frame.colCount(); ++i) {

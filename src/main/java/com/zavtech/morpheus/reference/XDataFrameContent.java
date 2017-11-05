@@ -80,7 +80,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
     XDataFrameContent(Iterable<R> rowKeys, Iterable<C> colKeys, Class<?> dataType) {
         this(rowKeys, colKeys, true, new ArrayList<>());
         this.data = new ArrayList<>(this.rowKeys.capacity());
-        final int rowCapacity = rowDim().capacity();
+        final int rowCapacity = rowKeyIndex().capacity();
         this.colKeys.keys().forEach(colKey -> {
             final Array<?> array = Array.of(dataType, rowCapacity);
             this.data.add(array);
@@ -144,18 +144,18 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
     }
 
     /**
-     * Returns the row dimension for this content
-     * @return      the row dimension for content
+     * Returns the row key index for this content
+     * @return      the row key index for content
      */
-    final Index<R> rowDim() {
+    final Index<R> rowKeyIndex() {
         return rowKeys;
     }
 
     /**
-     * Returns the column dimension for this content
-     * @return  the column dimension for content
+     * Returns the column key index for this content
+     * @return  the column key index for content
      */
-    final Index<C> colDim() {
+    final Index<C> colKeyIndex() {
         return colKeys;
     }
 
@@ -663,36 +663,48 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
 
 
     /**
-     * Returns a deep copy of this content which is expressed as a row store
+     * Returns a deep copy of this content which will turn a row-store into a column-store
      * @return  the deep copy of this content
      */
     @SuppressWarnings("unchecked")
     private XDataFrameContent<R,C> copyRowStore() {
-        try {
-            if (colDim().isFilter()) {
-                final Array<R> rowKeys = rowDim().toArray();
-                final Array<C> colKeys = colDim().toArray();
-                final int[] modelIndexes = colDim().indexes().toArray();
-                final Index<R> newRowAxis = Index.of(rowKeys);
-                final Index<C> newColAxis = Index.of(colKeys);
-                final List<Array<?>> newData = rowDim().keys().map(k -> getArray(k).copy(modelIndexes)).collect(Collectors.toList());
-                return new XDataFrameContent<>(newRowAxis, newColAxis, columnStore, newData);
-            } else if (rowDim().isFilter()) {
-                final Array<C> colKeys = colDim().toArray();
-                final Index<R> newRowAxis = rowDim().copy();
-                final Index<C> newColAxis = Index.of(colKeys);
-                final List<Array<?>> newData = rowDim().keys().map(k -> getArray(k).copy()).collect(Collectors.toList());
-                return new XDataFrameContent<>(newRowAxis, newColAxis, columnStore, newData);
+        final int rowCount = rowKeys.size();
+        final Array<R> rowKeys = rowKeyIndex().toArray();
+        final Index<C> colKeys = Index.of(colKeyIndex().type(), colKeyIndex().size());
+        final XDataFrameContent<R,C> newContent = new XDataFrameContent<>(rowKeys, colKeys, Object.class);
+        this.colKeyIndex().forEach(colKey -> {
+            final Class<?> dataType = colType(colKey);
+            final ArrayType type = ArrayType.of(dataType);
+            final int colOrdinal = this.colKeys.getOrdinalForKey(colKey);
+            newContent.addColumn(colKey, Array.of(dataType, rowCount));
+            if (type.isBoolean()) {
+                for (int i=0; i<rowCount; ++i) {
+                    final boolean value = getBoolean(i, colOrdinal);
+                    newContent.setBoolean(i, colOrdinal, value);
+                }
+            } else if (type.isInteger()) {
+                for (int i=0; i<rowCount; ++i) {
+                    final int value = getInt(i, colOrdinal);
+                    newContent.setInt(i, colOrdinal, value);
+                }
+            } else if (type.isLong()) {
+                for (int i=0; i<rowCount; ++i) {
+                    final long value = getLong(i, colOrdinal);
+                    newContent.setLong(i, colOrdinal, value);
+                }
+            } else if (type.isDouble()) {
+                for (int i = 0; i < rowCount; ++i) {
+                    final double value = getDouble(i, colOrdinal);
+                    newContent.setDouble(i, colOrdinal, value);
+                }
             } else {
-                final XDataFrameContent<R,C> clone = (XDataFrameContent<R,C>)super.clone();
-                clone.data = this.data.stream().map(Array::copy).collect(Collectors.toList());
-                clone.rowKeys = this.rowKeys.copy();
-                clone.colKeys = this.colKeys.copy();
-                return clone;
+                for (int i = 0; i < rowCount; ++i) {
+                    final Object value = getValue(i, colOrdinal);
+                    newContent.setValue(i, colOrdinal, value);
+                }
             }
-        } catch (CloneNotSupportedException ex) {
-            throw new DataFrameException("Clone operation not supported", ex);
-        }
+        });
+        return newContent;
     }
 
 
@@ -703,7 +715,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
     @SuppressWarnings("unchecked")
     private XDataFrameContent<R,C> copyColumnStore() {
         try {
-            if (rowDim().isFilter()) {
+            if (rowKeyIndex().isFilter()) {
                 final Array<R> rowKeys = this.rowKeys.toArray();
                 final Array<C> colKeys = this.colKeys.toArray();
                 final int[] modelIndexes = this.rowKeys.indexes().toArray();
@@ -711,7 +723,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
                 final Index<C> newColAxis = Index.of(colKeys);
                 final List<Array<?>> newData = this.colKeys.keys().map(c -> getArray(c).copy(modelIndexes)).collect(Collectors.toList());
                 return new XDataFrameContent<>(newRowAxis, newColAxis, columnStore, newData);
-            } else if (colDim().isFilter()) {
+            } else if (colKeyIndex().isFilter()) {
                 final Array<C> colKeys = this.colKeys.toArray();
                 final Index<R> newRowAxis = rowKeys.copy();
                 final Index<C> newColAxis = Index.of(colKeys);
@@ -1555,7 +1567,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
             }
             final int[] indexes = rowKeys.indexes().toArray();
             for (int j=0; j<colCount; ++j) {
-                final C colKey = colDim().getKey(j);
+                final C colKey = colKeyIndex().getKey(j);
                 final Array<?> array = data.get(j);
                 final Class<?> type = array.type();
                 os.writeObject(colKey);

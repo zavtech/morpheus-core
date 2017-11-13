@@ -18,7 +18,6 @@ package com.zavtech.morpheus.reference;
 import java.util.List;
 
 import com.zavtech.morpheus.frame.DataFrame;
-import com.zavtech.morpheus.frame.DataFrameException;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.stats.StatType;
 

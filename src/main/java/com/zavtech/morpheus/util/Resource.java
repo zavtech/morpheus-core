@@ -25,9 +25,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.zavtech.morpheus.util.http.HttpClient;
-import com.zavtech.morpheus.util.http.HttpRequest;
-
 /**
  * A simple wrapper class that can be used to carry a resource such as a File, URL, Input or Output stream.
  *

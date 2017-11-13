@@ -18,8 +18,6 @@ package com.zavtech.morpheus.frame;
 import java.util.concurrent.Callable;
 import java.util.function.ToIntFunction;
 
-import org.apache.commons.math3.stat.ranking.NaNStrategy;
-
 /**
  * An enum which exposes various options for controlling the behaviour of certain matrix functions.
  *

@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import com.zavtech.morpheus.array.ArrayType;
 import com.zavtech.morpheus.frame.DataFrame;
-import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.util.Bounds;
 import com.zavtech.morpheus.range.Range;
 import org.testng.Assert;

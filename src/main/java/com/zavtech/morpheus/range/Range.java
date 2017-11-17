@@ -44,7 +44,6 @@ import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayUtils;
 import com.zavtech.morpheus.index.Index;
-import com.zavtech.morpheus.util.IO;
 
 /**
  * An interface to a range of some type with a inclusive start and exclusive end

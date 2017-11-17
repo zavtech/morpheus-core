@@ -40,8 +40,6 @@ import com.zavtech.morpheus.frame.DataFrameOptions;
 import com.zavtech.morpheus.frame.DataFrameRow;
 import com.zavtech.morpheus.frame.DataFrameVector;
 import com.zavtech.morpheus.index.Index;
-import com.zavtech.morpheus.stats.StatType;
-import com.zavtech.morpheus.stats.Stats;
 import com.zavtech.morpheus.util.Asserts;
 import com.zavtech.morpheus.util.Parallel;
 import com.zavtech.morpheus.util.Tuple;

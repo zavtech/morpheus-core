@@ -25,7 +25,6 @@ import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameColumn;
 import com.zavtech.morpheus.frame.DataFrameRow;
-import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
 
 /**

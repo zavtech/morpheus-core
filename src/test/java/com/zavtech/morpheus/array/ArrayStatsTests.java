@@ -22,8 +22,6 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.zavtech.morpheus.reference.PCATests;
-
 /**
  * Unit tests for array stats
  *

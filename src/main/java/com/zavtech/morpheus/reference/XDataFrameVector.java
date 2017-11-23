@@ -19,8 +19,10 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Spliterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -128,6 +130,18 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
             }
         }
         return false;
+    }
+
+
+    @Override
+    public int count(Predicate<DataFrameValue<R, C>> predicate) {
+        final AtomicInteger count = new AtomicInteger();
+        this.forEachValue(v -> {
+            if (predicate.test(v)) {
+                count.incrementAndGet();
+            }
+        });
+        return count.get();
     }
 
 
@@ -325,21 +339,25 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
         return values().mapToInt(DataFrameValue::getInt);
     }
 
+
     @Override
     public final LongStream toLongStream() {
         return values().mapToLong(DataFrameValue::getLong);
     }
+
 
     @Override
     public final DoubleStream toDoubleStream() {
         return values().mapToDouble(DataFrameValue::getDouble);
     }
 
+
     @Override
     @SuppressWarnings("unchecked")
     public final <V> Stream<V> toValueStream() {
         return values().map(v -> (V)v.getValue());
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -356,6 +374,7 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
         return builder.toArray();
     }
 
+
     @Override()
     public final Stream<DataFrameValue<R,C>> values() {
         final int valueCount = size();
@@ -363,6 +382,7 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
         final int splitThreshold = Math.max(partitionSize, 5000);
         return StreamSupport.stream(new DataFrameValueSpliterator<>(0, valueCount-1, valueCount, splitThreshold), isParallel());
     }
+
 
     @Override()
     public double compute(Statistic1 statistic, int offset, int length) {

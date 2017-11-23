@@ -15,16 +15,19 @@
  */
 package com.zavtech.morpheus.frame;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+import com.zavtech.morpheus.util.Bounds;
 import com.zavtech.morpheus.util.functions.ToBooleanFunction;
 
 /**
- * An interface to common actions that can be applied to a DataFrame and its affiliated structures.
+ * An interface to common operations that can be applied to a DataFrame and its affiliated structures.
  *
  * @param <R>   the row key type
  * @param <C>   the column key type
@@ -33,7 +36,38 @@ import com.zavtech.morpheus.util.functions.ToBooleanFunction;
  *
  * @author  Xavier Witdouck
  */
-interface DataFrameActions<R,C,T> {
+interface DataFrameOperations<R,C,T> {
+
+    /**
+     * Returns the number of values that match the predicate specified
+     * @param predicate the predicate to count matching values
+     * @return          the number of matching values
+     */
+    int count(Predicate<DataFrameValue<R,C>> predicate);
+
+    /**
+     * Returns the optional minimum value conditional on the predicate specified
+     * @param predicate the predicate to filter values
+     * @param <V>       the value type
+     * @return          the optional match
+     */
+    <V> Optional<V> min(Predicate<DataFrameValue<R,C>> predicate);
+
+    /**
+     * Returns the optional maximum value conditional on the predicate specified
+     * @param predicate the predicate to filter values
+     * @param <V>       the value type
+     * @return          the optional match
+     */
+    <V> Optional<V> max(Predicate<DataFrameValue<R,C>> predicate);
+
+    /**
+     * Returns the optional upper/lower bounds conditional on the predicate specified
+     * @param predicate the predicate to filter values
+     * @param <V>       the value type
+     * @return          the optional match
+     */
+    <V> Optional<Bounds<V>> bounds(Predicate<DataFrameValue<R,C>> predicate);
 
     /**
      * Iterates over all values in the underlying data structure

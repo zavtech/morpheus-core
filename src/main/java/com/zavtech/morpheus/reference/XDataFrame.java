@@ -26,6 +26,7 @@ import java.util.Spliterator;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -68,6 +69,7 @@ import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.stats.Sample;
 import com.zavtech.morpheus.stats.Stats;
 import com.zavtech.morpheus.util.Asserts;
+import com.zavtech.morpheus.util.Bounds;
 import com.zavtech.morpheus.util.functions.ToBooleanFunction;
 import com.zavtech.morpheus.util.text.Formats;
 
@@ -304,6 +306,64 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
     @Override
     public final DataFrameColumn<R,C> colAt(int colIOrdinal) {
         return new XDataFrameColumn<>(this, parallel, colIOrdinal);
+    }
+
+
+    @Override
+    public int count(Predicate<DataFrameValue<R,C>> predicate) {
+        final AtomicInteger count = new AtomicInteger();
+        this.forEachValue(v -> {
+            if (predicate.test(v)) {
+                count.incrementAndGet();
+            }
+        });
+        return count.get();
+    }
+
+
+    @Override()
+    public <V> Optional<V> min(Predicate<DataFrameValue<R,C>> predicate) {
+        if (rowCount() == 0 || colCount() == 0) {
+            return Optional.empty();
+        } else if (rowCount() > colCount()) {
+            final MinMaxValueTask task = new MinMaxValueTask(0, rowCount(), true, predicate);
+            final Optional<DataFrameValue<R,C>> result = isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
+            return result.map(DataFrameValue::<V>getValue);
+        } else {
+            final MinMaxValueTask task = new MinMaxValueTask(0, colCount(), true, predicate);
+            final Optional<DataFrameValue<R,C>> result = isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
+            return result.map(DataFrameValue::<V>getValue);
+        }
+    }
+
+
+    @Override()
+    public <V> Optional<V> max(Predicate<DataFrameValue<R,C>> predicate) {
+        if (rowCount() == 0 || colCount() == 0) {
+            return Optional.empty();
+        } else if (rowCount() > colCount()) {
+            final MinMaxValueTask task = new MinMaxValueTask(0, rowCount(), false, predicate);
+            final Optional<DataFrameValue<R,C>> result = isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
+            return result.map(DataFrameValue::<V>getValue);
+        } else {
+            final MinMaxValueTask task = new MinMaxValueTask(0, colCount(), false, predicate);
+            final Optional<DataFrameValue<R,C>> result = isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
+            return result.map(DataFrameValue::<V>getValue);
+        }
+    }
+
+
+    @Override
+    public <V> Optional<Bounds<V>> bounds(Predicate<DataFrameValue<R, C>> predicate) {
+        if (rowCount() == 0 || colCount() == 0) {
+            return Optional.empty();
+        } else if (rowCount() > colCount()) {
+            final BoundsTask<V> task = new BoundsTask<>(0, rowCount(), predicate);
+            return isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
+        } else {
+            final BoundsTask<V> task = new BoundsTask<>(0, colCount(), predicate);
+            return isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
+        }
     }
 
 
@@ -584,46 +644,6 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
     @Override
     public DataFrameRegression<R, C> regress() {
         return new XDataFrameRegression<>(this);
-    }
-
-
-    @Override
-    public Optional<DataFrameValue<R, C>> min() {
-        return min(v -> true);
-    }
-
-
-    @Override
-    public Optional<DataFrameValue<R, C>> max() {
-        return max(v -> true);
-    }
-
-
-    @Override()
-    public Optional<DataFrameValue<R,C>> min(Predicate<DataFrameValue<R,C>> predicate) {
-        if (rowCount() == 0 || colCount() == 0) {
-            return Optional.empty();
-        } else if (rowCount() > colCount()) {
-            final MinMaxValueTask task = new MinMaxValueTask(0, rowCount(), true, predicate);
-            return isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
-        } else {
-            final MinMaxValueTask task = new MinMaxValueTask(0, colCount(), true, predicate);
-            return isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
-        }
-    }
-
-
-    @Override()
-    public Optional<DataFrameValue<R,C>> max(Predicate<DataFrameValue<R,C>> predicate) {
-        if (rowCount() == 0 || colCount() == 0) {
-            return Optional.empty();
-        } else if (rowCount() > colCount()) {
-            final MinMaxValueTask task = new MinMaxValueTask(0, rowCount(), false, predicate);
-            return isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
-        } else {
-            final MinMaxValueTask task = new MinMaxValueTask(0, colCount(), false, predicate);
-            return isParallel() ? ForkJoinPool.commonPool().invoke(task) : task.compute();
-        }
     }
 
 
@@ -1509,7 +1529,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
          * @param offset    the offset ordinal
          * @param length    the number of items for this task
          * @param min       if true, task finds the min value, else the max value
-         * @param predicate the predicat to filter on values
+         * @param predicate the predicate to filter on values
          */
         MinMaxValueTask(int offset, int length, boolean min, Predicate<DataFrameValue<R,C>> predicate) {
             this.offset = offset;
@@ -1630,6 +1650,151 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
             }
         }
     }
+
+
+
+    /**
+     * A task to find the upper/lower bounds of the DataFrame
+     */
+    private class BoundsTask<V> extends RecursiveTask<Optional<Bounds<V>>> {
+
+        private int offset;
+        private int length;
+        private int threshold = Integer.MAX_VALUE;
+        private Predicate<DataFrameValue<R,C>> predicate;
+
+        /**
+         * Constructor
+         * @param offset    the offset ordinal
+         * @param length    the number of items for this task
+         * @param predicate the predicate to filter on values
+         */
+        BoundsTask(int offset, int length, Predicate<DataFrameValue<R,C>> predicate) {
+            this.offset = offset;
+            this.length = length;
+            this.predicate = predicate;
+            if (isParallel() && rowCount() > colCount()) {
+                this.threshold = DataFrameOptions.getRowSplitThreshold(XDataFrame.this);
+            } else if (isParallel()) {
+                this.threshold = DataFrameOptions.getColumnSplitThreshold(XDataFrame.this);
+            }
+        }
+
+        @Override
+        protected Optional<Bounds<V>> compute() {
+            if (length > threshold) {
+                return split();
+            } else if (rowCount() > colCount()) {
+                return initial().map(initial -> {
+                    final DataFrameCursor<R,C> value = cursor();
+                    final DataFrameCursor<R,C> min = initial.copy();
+                    final DataFrameCursor<R,C> max = initial.copy();
+                    final int rowStart = initial.rowOrdinal() - offset;
+                    for (int i=rowStart; i<length; ++i) {
+                        value.moveToRow(offset + i);
+                        final int colStart = i == rowStart ? initial.colOrdinal() : 0;
+                        for (int j=colStart; j<colCount(); ++j) {
+                            value.moveToColumn(j);
+                            if (predicate.test(value)) {
+                                if (value.compareTo(min) < 0) {
+                                    min.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                } else if (value.compareTo(max) > 0) {
+                                    max.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                }
+                            }
+                        }
+                    }
+                    final V lower = min.getValue();
+                    final V upper = max.getValue();
+                    return Bounds.of(lower, upper);
+                });
+            } else {
+                return initial().map(initial -> {
+                    final DataFrameCursor<R,C> value = cursor();
+                    final DataFrameCursor<R,C> min = initial.copy();
+                    final DataFrameCursor<R,C> max = initial.copy();
+                    final int colStart = initial.colOrdinal() - offset;
+                    for (int i=colStart; i<length; ++i) {
+                        value.moveToColumn(offset + i);
+                        final int rowStart = i == colStart ? initial.rowOrdinal() : 0;
+                        for (int j=rowStart; j<rowCount(); ++j) {
+                            value.moveToRow(j);
+                            if (predicate.test(value)) {
+                                if (value.compareTo(min) < 0) {
+                                    min.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                } else if (value.compareTo(max) > 0) {
+                                    max.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                }
+                            }
+                        }
+                    }
+                    final V lower = min.getValue();
+                    final V upper = max.getValue();
+                    return Bounds.of(lower, upper);
+                });
+            }
+        }
+
+        /**
+         * Initializes the result cursor to an appropriate starting point
+         * @return      the initial result cursor to track min value
+         */
+        private Optional<DataFrameCursor<R,C>> initial() {
+            DataFrameCursor<R,C> result = cursor();
+            if (rowCount() > colCount()) {
+                result.moveTo(offset, 0);
+                for (int i=0; i<length; ++i) {
+                    if (predicate.test(result)) break;
+                    result.moveToRow(offset + i);
+                    for (int j=0; j<colCount(); ++j) {
+                        result.moveToColumn(j);
+                        if (predicate.test(result)) {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                result.moveTo(0, offset);
+                for (int i=0; i<length; ++i) {
+                    if (predicate.test(result)) break;
+                    result.moveToColumn(offset + i);
+                    for (int j=0; j<rowCount(); ++j) {
+                        result.moveToRow(j);
+                        if (predicate.test(result)) {
+                            break;
+                        }
+                    }
+                }
+            }
+            if (predicate.test(result)) {
+                return Optional.of(result);
+            } else {
+                return Optional.empty();
+            }
+        }
+
+        /**
+         * Splits this task into two and computes min across the two tasks
+         * @return      returns the min across the two split tasks
+         */
+        private Optional<Bounds<V>> split() {
+            final int splitLength = length / 2;
+            final int midPoint = offset + splitLength;
+            final BoundsTask<V> leftTask = new BoundsTask<>(offset, splitLength, predicate);
+            final BoundsTask<V> rightTask = new BoundsTask<>(midPoint, length - splitLength, predicate);
+            leftTask.fork();
+            final Optional<Bounds<V>> rightAns = rightTask.compute();
+            final Optional<Bounds<V>> leftAns = leftTask.join();
+            if (leftAns.isPresent() && rightAns.isPresent()) {
+                final Bounds<V> left = leftAns.get();
+                final Bounds<V> right = rightAns.get();
+                return Optional.of(Bounds.ofAll(left, right));
+            } else {
+                return leftAns.isPresent() ? leftAns : rightAns;
+            }
+        }
+    }
+
 
 
     /**

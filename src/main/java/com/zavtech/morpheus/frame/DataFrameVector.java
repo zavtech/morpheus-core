@@ -35,7 +35,7 @@ import com.zavtech.morpheus.util.Bounds;
  *
  * @author  Xavier Witdouck
  */
-public interface DataFrameVector<X,Y,R,C,Z> extends DataFrameActions<R,C,Z>, DataFrameIterators<R,C>, Iterable<DataFrameValue<R,C>> {
+public interface DataFrameVector<X,Y,R,C,Z> extends DataFrameOperations<R,C,Z>, DataFrameIterators<R,C>, Iterable<DataFrameValue<R,C>> {
 
     /**
      * Returns the key for this vector
@@ -238,20 +238,6 @@ public interface DataFrameVector<X,Y,R,C,Z> extends DataFrameActions<R,C,Z>, Dat
      * @return              the index of max value
      */
     Optional<DataFrameValue<R,C>> max(Comparator<DataFrameValue<R,C>> comparator);
-
-    /**
-     * Returns the minimum value for this vector if one exists
-     * @param predicate the predicate for conditional min
-     * @return      the minimum value, empty if no data
-     */
-    Optional<DataFrameValue<R,C>> min(Predicate<DataFrameValue<R,C>> predicate);
-
-    /**
-     * Returns the maximum value for this vector if one exists
-     * @param predicate the predicate for conditional max
-     * @return      the maximum value, empty if no data
-     */
-    Optional<DataFrameValue<R,C>> max(Predicate<DataFrameValue<R,C>> predicate);
 
     /**
      * Finds the first value in this vector that matches the predicate

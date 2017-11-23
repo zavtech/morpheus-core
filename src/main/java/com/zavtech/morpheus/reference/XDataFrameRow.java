@@ -27,6 +27,7 @@ import com.zavtech.morpheus.frame.DataFrameCursor;
 import com.zavtech.morpheus.frame.DataFrameRow;
 import com.zavtech.morpheus.frame.DataFrameValue;
 import com.zavtech.morpheus.index.Index;
+import com.zavtech.morpheus.util.Bounds;
 
 /**
  * An implementation of DataFrameVector which represents a view onto a single row of an underlying DataFrame.
@@ -156,9 +157,8 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
         return Optional.empty();
     }
 
-
     @Override()
-    public final Optional<DataFrameValue<R,C>> min(Predicate<DataFrameValue<R,C>> predicate) {
+    public final <V> Optional<V> min(Predicate<DataFrameValue<R,C>> predicate) {
         if (frame.rowCount() == 0 || frame.colCount() == 0) {
             return Optional.empty();
         } else {
@@ -169,17 +169,17 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
                 for (int i=colStart+1; i<frame.colCount(); ++i) {
                     value.moveToColumn(i);
                     if (predicate.test(value) && value.compareTo(result) < 0) {
-                        result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                        result.moveToColumn(value.colOrdinal());
                     }
                 }
                 return result;
-            });
+            }).map(DataFrameValue::<V>getValue);
         }
     }
 
 
     @Override()
-    public Optional<DataFrameValue<R, C>> max(Predicate<DataFrameValue<R, C>> predicate) {
+    public final <V> Optional<V> max(Predicate<DataFrameValue<R, C>> predicate) {
         if (frame.rowCount() == 0 || frame.colCount() == 0) {
             return Optional.empty();
         } else {
@@ -190,11 +190,11 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
                 for (int i=colStart+1; i<frame.colCount(); ++i) {
                     value.moveToColumn(i);
                     if (predicate.test(value) && value.compareTo(result) > 0) {
-                        result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                        result.moveToColumn(value.colOrdinal());
                     }
                 }
                 return result;
-            });
+            }).map(DataFrameValue::<V>getValue);
         }
     }
 
@@ -209,7 +209,7 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
             for (int i=0; i<frame.colCount(); ++i) {
                 value.moveToColumn(i);
                 if (comparator.compare(value, result) < 0) {
-                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                    result.moveToColumn(value.colOrdinal());
                 }
             }
             return Optional.of(result);
@@ -227,10 +227,39 @@ class XDataFrameRow<R,C> extends XDataFrameVector<R,C,R,C,DataFrameRow<R,C>> imp
             for (int i=0; i<frame.colCount(); ++i) {
                 value.moveToColumn(i);
                 if (comparator.compare(value, result) > 0) {
-                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                    result.moveToColumn(value.colOrdinal());
                 }
             }
             return Optional.of(result);
+        }
+    }
+
+
+    @Override
+    public <V> Optional<Bounds<V>> bounds(Predicate<DataFrameValue<R,C>> predicate) {
+        if (frame.rowCount() == 0 || frame.colCount() == 0) {
+            return Optional.empty();
+        } else {
+            return first(predicate).map(first -> {
+                final int colStart = first.colOrdinal();
+                final DataFrameCursor<R,C> cursor = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> minValue = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> maxValue = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                for (int i=colStart+1; i<frame.colCount(); ++i) {
+                    cursor.moveToColumn(i);
+                    if (predicate.test(cursor)) {
+                        if (minValue.compareTo(cursor) < 0) {
+                            minValue.moveToColumn(cursor.colOrdinal());
+                        }
+                        if (maxValue.compareTo(cursor) > 0) {
+                            maxValue.moveToColumn(cursor.colOrdinal());
+                        }
+                    }
+                }
+                final V lower = minValue.getValue();
+                final V upper = maxValue.getValue();
+                return Bounds.of(lower, upper);
+            });
         }
     }
 

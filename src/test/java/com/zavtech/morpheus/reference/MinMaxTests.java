@@ -58,13 +58,13 @@ public class MinMaxTests {
         Range<Integer> keys = Range.of(0, 10);
         DataFrame<Integer,Integer> frame = DataFrame.ofInts(keys, keys, v -> counter.incrementAndGet());
 
-        Optional<DataFrameValue<Integer,Integer>> result0 = frame.min();
+        Optional<Integer> result0 = frame.min(v -> true);
         Assert.assertTrue(result0.isPresent());
-        Assert.assertEquals(result0.get().getInt(), 1);
+        Assert.assertEquals(result0.get().intValue(), 1);
 
-        Optional<DataFrameValue<Integer,Integer>> result1 = frame.transpose().min();
+        Optional<Integer> result1 = frame.transpose().min(v -> true);
         Assert.assertTrue(result1.isPresent());
-        Assert.assertEquals(result1.get().getInt(), 1);
+        Assert.assertEquals(result1.get().intValue(), 1);
     }
 
 
@@ -74,13 +74,13 @@ public class MinMaxTests {
         Range<Integer> keys = Range.of(0, 10);
         DataFrame<Integer,Integer> frame = DataFrame.ofInts(keys, keys, v -> counter.incrementAndGet());
 
-        Optional<DataFrameValue<Integer,Integer>> result0 = frame.max();
+        Optional<Integer> result0 = frame.max(v -> true);
         Assert.assertTrue(result0.isPresent());
-        Assert.assertEquals(result0.get().getInt(), 100);
+        Assert.assertEquals(result0.get().intValue(), 100);
 
-        Optional<DataFrameValue<Integer,Integer>> result1 = frame.transpose().max();
+        Optional<Integer> result1 = frame.transpose().max(v -> true);
         Assert.assertTrue(result1.isPresent());
-        Assert.assertEquals(result1.get().getInt(), 100);
+        Assert.assertEquals(result1.get().intValue(), 100);
     }
 
 
@@ -90,13 +90,13 @@ public class MinMaxTests {
         Range<Integer> keys = Range.of(0, 10);
         DataFrame<Integer,Integer> frame = DataFrame.ofInts(keys, keys, v -> counter.incrementAndGet());
 
-        Optional<DataFrameValue<Integer,Integer>> result0 = frame.min(v -> v.getInt() > 20);
+        Optional<Integer> result0 = frame.min(v -> v.getInt() > 20);
         Assert.assertTrue(result0.isPresent());
-        Assert.assertEquals(result0.get().getInt(), 21);
+        Assert.assertEquals(result0.get().intValue(), 21);
 
-        Optional<DataFrameValue<Integer,Integer>> result1 = frame.transpose().min(v -> v.getInt() > 20);
+        Optional<Integer> result1 = frame.transpose().min(v -> v.getInt() > 20);
         Assert.assertTrue(result1.isPresent());
-        Assert.assertEquals(result1.get().getInt(), 21);
+        Assert.assertEquals(result1.get().intValue(), 21);
 
     }
 
@@ -107,13 +107,13 @@ public class MinMaxTests {
         Range<Integer> keys = Range.of(0, 10);
         DataFrame<Integer,Integer> frame = DataFrame.ofInts(keys, keys, v -> counter.incrementAndGet());
 
-        Optional<DataFrameValue<Integer,Integer>> result0 = frame.max(v -> v.getInt() < 82);
+        Optional<Integer> result0 = frame.max(v -> v.getInt() < 82);
         Assert.assertTrue(result0.isPresent());
-        Assert.assertEquals(result0.get().getInt(), 81);
+        Assert.assertEquals(result0.get().intValue(), 81);
 
-        Optional<DataFrameValue<Integer,Integer>> result1 = frame.transpose().max(v -> v.getInt() < 82);
+        Optional<Integer> result1 = frame.transpose().max(v -> v.getInt() < 82);
         Assert.assertTrue(result1.isPresent());
-        Assert.assertEquals(result1.get().getInt(), 81);
+        Assert.assertEquals(result1.get().intValue(), 81);
     }
 
 
@@ -131,15 +131,15 @@ public class MinMaxTests {
             }
         });
         DataFrame<Integer,String> target = parallel ? frame.parallel() : frame.sequential();
-        Optional<DataFrameValue<Integer,String>> result0 = target.min(v -> v.getDouble() > lowerBound);
+        Optional<Double> result0 = target.min(v -> v.getDouble() > lowerBound);
         Assert.assertTrue(result0.isPresent());
-        Assert.assertEquals(result0.get().getValue(), expected[0]);
+        Assert.assertEquals(result0.get(), expected[0]);
 
         //Do same test on the transpose of the test frame
         DataFrame<String,Integer> transpose = parallel ? frame.parallel().transpose() : frame.sequential().transpose();
-        Optional<DataFrameValue<String,Integer>> result1 = transpose.min(v -> v.getDouble() > lowerBound);
+        Optional<Double> result1 = transpose.min(v -> v.getDouble() > lowerBound);
         Assert.assertTrue(result1.isPresent());
-        Assert.assertEquals(result1.get().getValue(), expected[0]);
+        Assert.assertEquals(result1.get(), expected[0]);
     }
 
 
@@ -157,15 +157,15 @@ public class MinMaxTests {
             }
         });
         DataFrame<Integer,String> target = parallel ? frame.parallel() : frame.sequential();
-        Optional<DataFrameValue<Integer,String>> result = target.max(v -> v.getDouble() < upperBound);
+        Optional<Double> result = target.max(v -> v.getDouble() < upperBound);
         Assert.assertTrue(result.isPresent());
-        Assert.assertEquals(result.get().getValue(), expected[0]);
+        Assert.assertEquals(result.get(), expected[0]);
 
         //Do same test on the transpose of the test frame
         DataFrame<String,Integer> transpose = parallel ? frame.parallel().transpose() : frame.sequential().transpose();
-        Optional<DataFrameValue<String,Integer>> result1 = transpose.max(v -> v.getDouble() < upperBound);
+        Optional<Double> result1 = transpose.max(v -> v.getDouble() < upperBound);
         Assert.assertTrue(result1.isPresent());
-        Assert.assertEquals(result1.get().getValue(), expected[0]);
+        Assert.assertEquals(result1.get(), expected[0]);
     }
 
 

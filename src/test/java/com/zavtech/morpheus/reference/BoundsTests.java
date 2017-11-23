@@ -83,8 +83,8 @@ public class BoundsTests {
         frame.rows().forEach(row -> {
             final Optional<Bounds<Comparable>> bounds = row.bounds();
             Assert.assertTrue(bounds.isPresent(), "Bounds exist");
-            final Comparable min = row.min(v -> !v.isNull()).map(v -> (Comparable)v.getValue()).orElse(null);
-            final Comparable max = row.max(v -> !v.isNull()).map(v -> (Comparable)v.getValue()).orElse(null);
+            final Comparable min = row.<Comparable>min(v -> !v.isNull()).orElse(null);
+            final Comparable max = row.<Comparable>max(v -> !v.isNull()).orElse(null);
             final Comparable lower = bounds.get().lower();
             final Comparable upper = bounds.get().upper();
             Assert.assertEquals(lower, min, "Lower bounds matches min value");
@@ -105,8 +105,8 @@ public class BoundsTests {
         frame.cols().forEach(column -> {
             final Optional<Bounds<Comparable>> bounds = column.bounds();
             Assert.assertTrue(bounds.isPresent(), "Bounds exist");
-            final Comparable min = column.min().map(v -> (Comparable)v.getValue()).orElse(null);
-            final Comparable max = column.max().map(v -> (Comparable)v.getValue()).orElse(null);
+            final Comparable min = column.min().orElse(null);
+            final Comparable max = column.max().orElse(null);
             final Comparable lower = bounds.get().lower();
             final Comparable upper = bounds.get().upper();
             Assert.assertEquals(lower, min, "Lower bounds matches min value");

@@ -44,7 +44,7 @@ import com.zavtech.morpheus.util.functions.ToBooleanFunction;
  *
  * @author  Xavier Witdouck
  */
-public interface DataFrame<R,C> extends DataFrameActions<R,C,DataFrame<R,C>>, DataFrameIterators<R,C>, DataFrameAlgebra<R,C> {
+public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>, DataFrameIterators<R,C>, DataFrameAlgebra<R,C> {
 
     /**
      * Returns the row count for <code>DataFrame</code>
@@ -261,32 +261,6 @@ public interface DataFrame<R,C> extends DataFrameActions<R,C,DataFrame<R,C>>, Da
      * @return      the regression interface for this DataFrame
      */
     DataFrameRegression<R,C> regress();
-
-    /**
-     * Returns the min value in the Dataframe, Optional.empty() if 0x0
-     * @return  the min value in frame, Optional.empty() if 0x0
-     */
-    Optional<DataFrameValue<R,C>> min();
-
-    /**
-     * Returns the max value in the Dataframe, Optional.empty() if 0x0
-     * @return  the max value in frame, Optional.empty() if 0x0
-     */
-    Optional<DataFrameValue<R,C>> max();
-
-    /**
-     * Returns the min value in the Dataframe conditional on the predicate, Optional.empty() if nothing found
-     * @param predicate the predicate to filter values in min search
-     * @return  the min value in frame, Optional.empty() if 0x0 or no matches to predicate
-     */
-    Optional<DataFrameValue<R,C>> min(Predicate<DataFrameValue<R,C>> predicate);
-
-    /**
-     * Returns the max value in the Dataframe conditional on the predicate, Optional.empty() if nothing found
-     * @param predicate the predicate to filter values in min search
-     * @return  the max value in frame, Optional.empty() if 0x0 or no matches to predicate
-     */
-    Optional<DataFrameValue<R,C>> max(Predicate<DataFrameValue<R,C>> predicate);
 
     /**
      * Adds all rows & columns from the argument that do not exist in this frame, and applies data for added coordinates

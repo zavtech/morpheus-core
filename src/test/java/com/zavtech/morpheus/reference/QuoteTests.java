@@ -91,13 +91,13 @@ public class QuoteTests {
         });
         frame.cols().keys().forEach(columnKey -> {
             if (meanMap.containsKey(columnKey)) {
-                final DataFrameColumn<LocalDate,String> column = frame.colAt(columnKey);
+                final DataFrameColumn<LocalDate,String> column = frame.col(columnKey);
                 final Stats<Double> stats1 = column.stats();
                 Assert.assertEquals(stats1.mean(), meanMap.get(columnKey), 0.01, "Mean of column " + columnKey);
                 Assert.assertEquals(stats1.stdDev(), stdDevSSMap.get(columnKey), 0.01, "StdDev of column " + columnKey);
                 Assert.assertEquals(stats1.median(), medianMap.get(columnKey), 0.01, "Median of column " + columnKey);
 
-                final Stats<Double> stats2 = frame.colAt(columnKey).stats();
+                final Stats<Double> stats2 = frame.col(columnKey).stats();
                 Assert.assertEquals(stats2.mean(), meanMap.get(columnKey), 0.01, "Mean of column " + columnKey);
                 Assert.assertEquals(stats2.stdDev(), stdDevSSMap.get(columnKey), 0.01, "StdDev of column " + columnKey);
                 Assert.assertEquals(stats2.median(), medianMap.get(columnKey), 0.01, "Median of column " + columnKey);
@@ -117,7 +117,7 @@ public class QuoteTests {
             final long t1 = System.currentTimeMillis();
             final double[] sum = new double[1];
             frame.rows().keys().forEach(rowKey -> {
-                final Stats<Double> stats = frame.rowAt(rowKey).stats();
+                final Stats<Double> stats = frame.row(rowKey).stats();
                 final double mean = stats.mean();
                 final double stddev = stats.stdDev();
                 final double min = stats.min();
@@ -141,7 +141,7 @@ public class QuoteTests {
         PerfStat.timeInMicros("Column stats", 20, () -> {
             final double[] sum = new double[1];
             frame.cols().keys().forEach(columnKey -> {
-                final Stats<Double> stats = frame.colAt(columnKey).stats();
+                final Stats<Double> stats = frame.col(columnKey).stats();
                 final double mean = stats.mean();
                 final double stddev = stats.stdDev();
                 final double min = stats.min();
@@ -160,8 +160,8 @@ public class QuoteTests {
         });
         PerfStat.timeInMillis("Row demean", 20, () -> {
             frame.rows().keys().forEach(rowKey -> {
-                final double mean = frame.rowAt(rowKey).stats().mean();
-                frame.rowAt(rowKey).applyValues(v -> v.getDouble() - mean);
+                final double mean = frame.row(rowKey).stats().mean();
+                frame.row(rowKey).applyValues(v -> v.getDouble() - mean);
             });
             return frame;
         });

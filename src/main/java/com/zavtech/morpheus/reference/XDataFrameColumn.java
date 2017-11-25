@@ -76,9 +76,9 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
         final int rowCount = frame.rowCount();
         if (rowCount > 0) {
             final int colOrdinal = ordinal();
-            final DataFrameCursor<R,C> cursor = frame.cursor().moveTo(0, colOrdinal);
+            final DataFrameCursor<R,C> cursor = frame.cursor().atOrdinals(0, colOrdinal);
             for (int i=0; i<rowCount; ++i) {
-                cursor.moveToRow(i);
+                cursor.atRowOrdinal(i);
                 consumer.accept(cursor);
             }
         }
@@ -89,12 +89,12 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
     @Override
     public final Iterator<DataFrameValue<R,C>> iterator() {
         final int colOrdinal = ordinal();
-        final DataFrameCursor<R,C> cursor = frame.cursor().moveToColumn(colOrdinal);
+        final DataFrameCursor<R,C> cursor = frame.cursor().atColOrdinal(colOrdinal);
         return new Iterator<DataFrameValue<R,C>>() {
             private int ordinal = 0;
             @Override
             public DataFrameValue<R,C> next() {
-                return cursor.moveToRow(ordinal++);
+                return cursor.atRowOrdinal(ordinal++);
             }
             @Override
             public boolean hasNext() {
@@ -107,17 +107,17 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
     @Override
     public final Iterator<DataFrameValue<R,C>> iterator(Predicate<DataFrameValue<R,C>> predicate) {
         final int colOrdinal = ordinal();
-        final DataFrameCursor<R,C> cursor = frame.cursor().moveToColumn(colOrdinal);
+        final DataFrameCursor<R,C> cursor = frame.cursor().atColOrdinal(colOrdinal);
         return new Iterator<DataFrameValue<R,C>>() {
             private int ordinal = 0;
             @Override
             public DataFrameValue<R,C> next() {
-                return cursor.moveToRow(ordinal++);
+                return cursor.atRowOrdinal(ordinal++);
             }
             @Override
             public boolean hasNext() {
                 while (ordinal < frame.rowCount()) {
-                    cursor.moveToRow(ordinal);
+                    cursor.atRowOrdinal(ordinal);
                     if (predicate == null || predicate.test(cursor)) {
                         return true;
                     } else {
@@ -133,9 +133,9 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
     @Override()
     public final Optional<DataFrameValue<R,C>> first(Predicate<DataFrameValue<R,C>> predicate) {
         final DataFrameCursor<R,C> value = frame().cursor();
-        value.moveToColumn(ordinal());
+        value.atColOrdinal(ordinal());
         for (int i=0; i<size(); ++i) {
-            value.moveToRow(i);
+            value.atRowOrdinal(i);
             if (predicate.test(value)) {
                 return Optional.of(value);
             }
@@ -147,9 +147,9 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
     @Override()
     public final Optional<DataFrameValue<R,C>> last(Predicate<DataFrameValue<R,C>> predicate) {
         final DataFrameCursor<R,C> value = frame().cursor();
-        value.moveToColumn(ordinal());
+        value.atColOrdinal(ordinal());
         for (int i=size()-1; i>=0; --i) {
-            value.moveToRow(i);
+            value.atRowOrdinal(i);
             if (predicate.test(value)) {
                 return Optional.of(value);
             }
@@ -165,12 +165,12 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
         } else {
             return first(predicate).map(first -> {
                 final int rowStart = first.rowOrdinal();
-                final DataFrameCursor<R,C> result = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
-                final DataFrameCursor<R,C> value = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> result = frame.cursor().atOrdinals(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> value = frame.cursor().atOrdinals(first.rowOrdinal(), first.colOrdinal());
                 for (int i=rowStart+1; i<frame.rowCount(); ++i) {
-                    value.moveToRow(i);
+                    value.atRowOrdinal(i);
                     if (predicate.test(value) && value.compareTo(result) < 0) {
-                        result.moveToRow(value.rowOrdinal());
+                        result.atRowOrdinal(value.rowOrdinal());
                     }
                 }
                 return result;
@@ -186,12 +186,12 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
         } else {
             return first(predicate).map(first -> {
                 final int rowStart = first.rowOrdinal();
-                final DataFrameCursor<R,C> result = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
-                final DataFrameCursor<R,C> value = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> result = frame.cursor().atOrdinals(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> value = frame.cursor().atOrdinals(first.rowOrdinal(), first.colOrdinal());
                 for (int i=rowStart+1; i<frame.rowCount(); ++i) {
-                    value.moveToRow(i);
+                    value.atRowOrdinal(i);
                     if (predicate.test(value) && value.compareTo(result) > 0) {
-                        result.moveToRow(value.rowOrdinal());
+                        result.atRowOrdinal(value.rowOrdinal());
                     }
                 }
                 return result;
@@ -205,12 +205,13 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
         if (frame.rowCount() == 0 || frame.colCount() == 0) {
             return Optional.empty();
         } else {
-            final DataFrameCursor<R,C> result = frame.cursor().moveTo(0, key());
-            final DataFrameCursor<R,C> value = frame.cursor().moveTo(0, key());
+            final C colKey = key();
+            final DataFrameCursor<R,C> result = frame.cursor().atColKey(colKey);
+            final DataFrameCursor<R,C> value = frame.cursor().atColKey(colKey);
             for (int i=0; i<frame.rowCount(); ++i) {
-                value.moveToRow(i);
+                value.atRowOrdinal(i);
                 if (comparator.compare(value, result) < 0) {
-                    result.moveToRow(value.rowOrdinal());
+                    result.atRowOrdinal(value.rowOrdinal());
                 }
             }
             return Optional.of(result);
@@ -223,12 +224,13 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
         if (frame.rowCount() == 0 || frame.colCount() == 0) {
             return Optional.empty();
         } else {
-            final DataFrameCursor<R,C> result = frame.cursor().moveTo(0, key());
-            final DataFrameCursor<R,C> value = frame.cursor().moveTo(0, key());
+            final C colKey = key();
+            final DataFrameCursor<R,C> result = frame.cursor().atColKey(colKey);
+            final DataFrameCursor<R,C> value = frame.cursor().atColKey(colKey);
             for (int i=0; i<frame.rowCount(); ++i) {
-                value.moveToRow(i);
+                value.atRowOrdinal(i);
                 if (comparator.compare(value, result) > 0) {
-                    result.moveToRow(value.rowOrdinal());
+                    result.atRowOrdinal(value.rowOrdinal());
                 }
             }
             return Optional.of(result);
@@ -243,17 +245,17 @@ class XDataFrameColumn<R,C> extends XDataFrameVector<C,R,R,C,DataFrameColumn<R,C
         } else {
             return first(predicate).map(first -> {
                 final int rowStart = first.rowOrdinal();
-                final DataFrameCursor<R,C> cursor = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
-                final DataFrameCursor<R,C> minValue = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
-                final DataFrameCursor<R,C> maxValue = frame.cursor().moveTo(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> cursor = frame.cursor().atOrdinals(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> minValue = frame.cursor().atOrdinals(first.rowOrdinal(), first.colOrdinal());
+                final DataFrameCursor<R,C> maxValue = frame.cursor().atOrdinals(first.rowOrdinal(), first.colOrdinal());
                 for (int i=rowStart+1; i<frame.rowCount(); ++i) {
-                    cursor.moveToRow(i);
+                    cursor.atRowOrdinal(i);
                     if (predicate.test(cursor)) {
                         if (minValue.compareTo(cursor) < 0) {
-                            minValue.moveToRow(cursor.rowOrdinal());
+                            minValue.atRowOrdinal(cursor.rowOrdinal());
                         }
                         if (maxValue.compareTo(cursor) > 0) {
-                            maxValue.moveToRow(cursor.rowOrdinal());
+                            maxValue.atRowOrdinal(cursor.rowOrdinal());
                         }
                     }
                 }

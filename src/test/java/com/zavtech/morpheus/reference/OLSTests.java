@@ -157,7 +157,7 @@ public class OLSTests {
         });
 
         final OLSMultipleLinearRegression model = new OLSMultipleLinearRegression(threshold);
-        final double[] dependent = frame.colAt("Y").toDoubleStream().toArray();
+        final double[] dependent = frame.col("Y").toDoubleStream().toArray();
         final double[][] independent = new double[frame.rows().count()][3];
         frame.rows().forEach(row -> {
             independent[row.ordinal()][0] = row.getDouble("X1");

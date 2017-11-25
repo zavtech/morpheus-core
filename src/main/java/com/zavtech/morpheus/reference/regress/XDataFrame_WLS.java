@@ -82,7 +82,7 @@ class XDataFrame_WLS<R,C> extends XDataFrameLeastSquares<R,C> {
         } else {
             final C regressand = getRegressand();
             final double sumOfWeights = weights.stats().sum().doubleValue();
-            final Array<Double> yValues = Array.of(frame().colAt(regressand).toDoubleStream().toArray());
+            final Array<Double> yValues = Array.of(frame().col(regressand).toDoubleStream().toArray());
             final double weightedAvg = yValues.mapToDoubles(v -> v.getDouble() * weights.getDouble(v.index())).stats().sum().doubleValue() / sumOfWeights;
             final Array<Double> diffSquared = yValues.mapToDoubles(v -> weights.getDouble(v.index()) * Math.pow(v.getDouble() - weightedAvg, 2d));
             return diffSquared.stats().sum().doubleValue();

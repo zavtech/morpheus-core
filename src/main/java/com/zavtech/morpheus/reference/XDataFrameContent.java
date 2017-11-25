@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -173,7 +173,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
      * @return  the newly created cursor
      */
     final DataFrameCursor<R,C> cursor(XDataFrame<R,C> frame) {
-        return new Cursor(frame,  rowKeys.isEmpty() ? -1 : 0, colKeys.isEmpty() ? -1 : 0);
+        return new Cursor(frame, 0, 0);
     }
 
     /**
@@ -391,7 +391,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
                     final Array<?> targetValues = Array.of(Boolean.class, array.length());
                     final Cursor cursor = new Cursor(frame, rowKeys.isEmpty() ? -1 : 0, colOrdinal);
                     for (int i = 0; i < rowCount; ++i) {
-                        cursor.moveToRow(i);
+                        cursor.atRowOrdinal(i);
                         final boolean value = mapper.applyAsBoolean(cursor);
                         targetValues.setBoolean(cursor.rowIndex, value);
                     }
@@ -425,7 +425,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
                     final Array<?> targetValues = Array.of(Integer.class, array.length());
                     final Cursor cursor = new Cursor(frame, rowKeys.isEmpty() ? -1 : 0, colOrdinal);
                     for (int i = 0; i < rowCount; ++i) {
-                        cursor.moveToRow(i);
+                        cursor.atRowOrdinal(i);
                         final int value = mapper.applyAsInt(cursor);
                         targetValues.setInt(cursor.rowIndex, value);
                     }
@@ -459,7 +459,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
                     final Array<?> targetValues = Array.of(Long.class, array.length());
                     final Cursor cursor = new Cursor(frame, rowKeys.isEmpty() ? -1 : 0, colOrdinal);
                     for (int i = 0; i < rowCount; ++i) {
-                        cursor.moveToRow(i);
+                        cursor.atRowOrdinal(i);
                         final long value = mapper.applyAsLong(cursor);
                         targetValues.setLong(cursor.rowIndex, value);
                     }
@@ -493,7 +493,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
                     final Array<?> targetValues = Array.of(Double.class, array.length());
                     final Cursor cursor = new Cursor(frame, rowKeys.isEmpty() ? -1 : 0, colOrdinal);
                     for (int i = 0; i < rowCount; ++i) {
-                        cursor.moveToRow(i);
+                        cursor.atRowOrdinal(i);
                         final double value = mapper.applyAsDouble(cursor);
                         targetValues.setDouble(cursor.rowIndex, value);
                     }
@@ -528,7 +528,7 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
                     final Array<T> targetValues = Array.of(type, array.length());
                     final Cursor cursor = new Cursor(frame, rowKeys.isEmpty() ? -1 : 0, colOrdinal);
                     for (int i = 0; i < rowCount; ++i) {
-                        cursor.moveToRow(i);
+                        cursor.atRowOrdinal(i);
                         final T value = mapper.apply(cursor);
                         targetValues.setValue(cursor.rowIndex, value);
                     }
@@ -1614,8 +1614,8 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
          */
         private Cursor(XDataFrame<R,C> frame, int rowOrdinal, int colOrdinal) {
             this.frame = frame;
-            if (rowOrdinal >= 0) moveToRow(rowOrdinal);
-            if (colOrdinal >= 0) moveToColumn(colOrdinal);
+            if (rowOrdinal >= 0) atRowOrdinal(rowOrdinal);
+            if (colOrdinal >= 0) atColOrdinal(colOrdinal);
         }
 
         @Override
@@ -1852,15 +1852,15 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
         }
 
         @Override
-        public final DataFrameCursor<R,C> moveToRow(int rowOrdinal) {
-            this.rowOrdinal = rowOrdinal;
-            this.rowIndex = rowKeys.getIndexForOrdinal(rowOrdinal);
+        public final DataFrameCursor<R,C> atRowOrdinal(int ordinal) {
+            this.rowOrdinal = ordinal;
+            this.rowIndex = rowKeys.getIndexForOrdinal(ordinal);
             this.array = columnStore ? array : data.get(rowIndex);
             return this;
         }
 
         @Override
-        public final DataFrameCursor<R,C> moveToColumn(int colOrdinal) {
+        public final DataFrameCursor<R,C> atColOrdinal(int colOrdinal) {
             this.colOrdinal = colOrdinal;
             this.colIndex = colKeys.getIndexForOrdinal(colOrdinal);
             this.array = columnStore ? data.get(colIndex) : array;
@@ -1873,33 +1873,23 @@ class XDataFrameContent<R,C> implements DataFrameContent<R,C>, Serializable, Clo
         }
 
         @Override
-        public final DataFrameCursor<R,C> moveToRow(R rowKey) {
-            return moveToRow(rowKeys.getOrdinalForKey(rowKey));
+        public final DataFrameCursor<R,C> atRowKey(R key) {
+            return atRowOrdinal(rowKeys.getOrdinalForKey(key));
         }
 
         @Override
-        public final DataFrameCursor<R,C> moveToColumn(C colKey) {
-            return moveToColumn(colKeys.getOrdinalForKey(colKey));
+        public final DataFrameCursor<R,C> atColKey(C colKey) {
+            return atColOrdinal(colKeys.getOrdinalForKey(colKey));
         }
 
         @Override
-        public final DataFrameCursor<R,C> moveTo(R rowKey, C colKey) {
-            return moveToRow(rowKey).moveToColumn(colKey);
+        public final DataFrameCursor<R,C> atKeys(R rowKey, C colKey) {
+            return atRowKey(rowKey).atColKey(colKey);
         }
 
         @Override
-        public final DataFrameCursor<R,C> moveTo(int rowOrdinal, C colKey) {
-            return moveToRow(rowOrdinal).moveToColumn(colKey);
-        }
-
-        @Override
-        public final DataFrameCursor<R,C> moveTo(R rowKey, int colOrdinal) {
-            return moveToRow(rowKey).moveToColumn(colOrdinal);
-        }
-
-        @Override
-        public final DataFrameCursor<R,C> moveTo(int rowOrdinal, int colOrdinal) {
-            return moveToRow(rowOrdinal).moveToColumn(colOrdinal);
+        public final DataFrameCursor<R,C> atOrdinals(int rowOrdinal, int colOrdinal) {
+            return atRowOrdinal(rowOrdinal).atColOrdinal(colOrdinal);
         }
 
         @Override

@@ -286,7 +286,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
 
 
     @Override
-    public final DataFrameRow<R,C> rowAt(R rowKey) {
+    public final DataFrameRow<R,C> row(R rowKey) {
         return new XDataFrameRow<>(this, parallel, rowKeys().getOrdinalForKey(rowKey));
     }
 
@@ -298,7 +298,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
 
 
     @Override
-    public final DataFrameColumn<R,C> colAt(C colKey) {
+    public final DataFrameColumn<R,C> col(C colKey) {
         return new XDataFrameColumn<>(this, parallel, colKeys().getOrdinalForKey(colKey));
     }
 
@@ -493,13 +493,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
 
     @Override()
     public DataFrameOutput<R,C> out() {
-        return out(new Formats());
-    }
-
-
-    @Override()
-    public DataFrameOutput<R,C> out(Formats formats) {
-        return new XDataFrameOutput<>(this, formats);
+        return new XDataFrameOutput<>(this, new Formats());
     }
 
 
@@ -511,7 +505,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
 
     @Override()
     public final Stats<Double> stats() {
-        return new XDataFrameStats<>(true, (Iterable<DataFrameValue<R,C>>)this);
+        return new XDataFrameStats<>(true, this);
     }
 
 
@@ -692,7 +686,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
             private int colIndex = 0;
             @Override
             public DataFrameValue<R,C> next() {
-                value.moveTo(rowIndex++, colIndex);
+                value.atOrdinals(rowIndex++, colIndex);
                 if (rowIndex == rowCount()) {
                     rowIndex = 0;
                     colIndex++;
@@ -715,7 +709,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
             private int colIndex = 0;
             @Override
             public DataFrameValue<R,C> next() {
-                value.moveTo(rowIndex++, colIndex);
+                value.atOrdinals(rowIndex++, colIndex);
                 if (rowIndex == rowCount()) {
                     rowIndex = 0;
                     colIndex++;
@@ -725,7 +719,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
             @Override
             public boolean hasNext() {
                 while (rowIndex < rowCount() && colIndex < colCount()) {
-                    value.moveTo(rowIndex, colIndex);
+                    value.atOrdinals(rowIndex, colIndex);
                     if (predicate == null || predicate.test(value)) {
                         return true;
                     } else {
@@ -1051,7 +1045,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                 for (int index=from; index<=to; ++index) {
                     final int rowOrdinal = index % rowCount;
                     final int colOrdinal = index / rowCount;
-                    value.moveTo(rowOrdinal, colOrdinal);
+                    value.atOrdinals(rowOrdinal, colOrdinal);
                     final boolean result = mapper.applyAsBoolean(value);
                     value.setBoolean(result);
                 }
@@ -1099,7 +1093,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                 for (int index=from; index<=to; ++index) {
                     final int rowOrdinal = index % rowCount;
                     final int colOrdinal = index / rowCount;
-                    value.moveTo(rowOrdinal, colOrdinal);
+                    value.atOrdinals(rowOrdinal, colOrdinal);
                     final int result = mapper.applyAsInt(value);
                     value.setInt(result);
                 }
@@ -1147,7 +1141,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                 for (int index=from; index<=to; ++index) {
                     final int rowOrdinal = index % rowCount;
                     final int colOrdinal = index / rowCount;
-                    value.moveTo(rowOrdinal, colOrdinal);
+                    value.atOrdinals(rowOrdinal, colOrdinal);
                     final long result = mapper.applyAsLong(value);
                     value.setLong(result);
                 }
@@ -1195,7 +1189,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                 for (int index=from; index<=to; ++index) {
                     final int rowOrdinal = index % rowCount;
                     final int colOrdinal = index / rowCount;
-                    value.moveTo(rowOrdinal, colOrdinal);
+                    value.atOrdinals(rowOrdinal, colOrdinal);
                     final double result = mapper.applyAsDouble(value);
                     value.setDouble(result);
                 }
@@ -1243,7 +1237,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                 for (int index=from; index<=to; ++index) {
                     final int rowOrdinal = index % rowCount;
                     final int colOrdinal = index / rowCount;
-                    value.moveTo(rowOrdinal, colOrdinal);
+                    value.atOrdinals(rowOrdinal, colOrdinal);
                     final Object result = mapper.apply(value);
                     value.setValue(result);
                 }
@@ -1291,7 +1285,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                 for (int index=from; index<=to; ++index) {
                     final int rowOrdinal = index % rowCount;
                     final int colOrdinal = index / rowCount;
-                    value.moveTo(rowOrdinal, colOrdinal);
+                    value.atOrdinals(rowOrdinal, colOrdinal);
                     consumer.accept(value);
                 }
             }
@@ -1339,7 +1333,7 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
             if (position <= end) {
                 final int rowOrdinal = position % rowCount;
                 final int colOrdinal = position / rowCount;
-                this.value.moveTo(rowOrdinal, colOrdinal);
+                this.value.atOrdinals(rowOrdinal, colOrdinal);
                 this.position++;
                 action.accept(value);
                 return true;
@@ -1552,15 +1546,15 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                     DataFrameCursor<R,C> value = cursor();
                     final int rowStart = result.rowOrdinal() - offset;
                     for (int i=rowStart; i<length; ++i) {
-                        value.moveToRow(offset + i);
+                        value.atRowOrdinal(offset + i);
                         final int colStart = i == rowStart ? result.colOrdinal() : 0;
                         for (int j=colStart; j<colCount(); ++j) {
-                            value.moveToColumn(j);
+                            value.atColOrdinal(j);
                             if (predicate.test(value)) {
                                 if (min && value.compareTo(result) < 0) {
-                                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    result.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 } else if (!min && value.compareTo(result) > 0) {
-                                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    result.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 }
                             }
                         }
@@ -1572,15 +1566,15 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                     DataFrameCursor<R,C> value = cursor();
                     final int colStart = result.colOrdinal() - offset;
                     for (int i=colStart; i<length; ++i) {
-                        value.moveToColumn(offset + i);
+                        value.atColOrdinal(offset + i);
                         final int rowStart = i == colStart ? result.rowOrdinal() : 0;
                         for (int j=rowStart; j<rowCount(); ++j) {
-                            value.moveToRow(j);
+                            value.atRowOrdinal(j);
                             if (predicate.test(value)) {
                                 if (min && value.compareTo(result) < 0) {
-                                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    result.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 } else if (!min && value.compareTo(result) > 0) {
-                                    result.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    result.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 }
                             }
                         }
@@ -1597,24 +1591,24 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
         private Optional<DataFrameCursor<R,C>> initial() {
             DataFrameCursor<R,C> result = cursor();
             if (rowCount() > colCount()) {
-                result.moveTo(offset, 0);
+                result.atOrdinals(offset, 0);
                 for (int i=0; i<length; ++i) {
                     if (predicate.test(result)) break;
-                    result.moveToRow(offset + i);
+                    result.atRowOrdinal(offset + i);
                     for (int j=0; j<colCount(); ++j) {
-                        result.moveToColumn(j);
+                        result.atColOrdinal(j);
                         if (predicate.test(result)) {
                             break;
                         }
                     }
                 }
             } else {
-                result.moveTo(0, offset);
+                result.atOrdinals(0, offset);
                 for (int i=0; i<length; ++i) {
                     if (predicate.test(result)) break;
-                    result.moveToColumn(offset + i);
+                    result.atColOrdinal(offset + i);
                     for (int j=0; j<rowCount(); ++j) {
-                        result.moveToRow(j);
+                        result.atRowOrdinal(j);
                         if (predicate.test(result)) {
                             break;
                         }
@@ -1691,15 +1685,15 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                     final DataFrameCursor<R,C> max = initial.copy();
                     final int rowStart = initial.rowOrdinal() - offset;
                     for (int i=rowStart; i<length; ++i) {
-                        value.moveToRow(offset + i);
+                        value.atRowOrdinal(offset + i);
                         final int colStart = i == rowStart ? initial.colOrdinal() : 0;
                         for (int j=colStart; j<colCount(); ++j) {
-                            value.moveToColumn(j);
+                            value.atColOrdinal(j);
                             if (predicate.test(value)) {
                                 if (value.compareTo(min) < 0) {
-                                    min.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    min.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 } else if (value.compareTo(max) > 0) {
-                                    max.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    max.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 }
                             }
                         }
@@ -1715,15 +1709,15 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
                     final DataFrameCursor<R,C> max = initial.copy();
                     final int colStart = initial.colOrdinal() - offset;
                     for (int i=colStart; i<length; ++i) {
-                        value.moveToColumn(offset + i);
+                        value.atColOrdinal(offset + i);
                         final int rowStart = i == colStart ? initial.rowOrdinal() : 0;
                         for (int j=rowStart; j<rowCount(); ++j) {
-                            value.moveToRow(j);
+                            value.atRowOrdinal(j);
                             if (predicate.test(value)) {
                                 if (value.compareTo(min) < 0) {
-                                    min.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    min.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 } else if (value.compareTo(max) > 0) {
-                                    max.moveTo(value.rowOrdinal(), value.colOrdinal());
+                                    max.atOrdinals(value.rowOrdinal(), value.colOrdinal());
                                 }
                             }
                         }
@@ -1742,24 +1736,24 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
         private Optional<DataFrameCursor<R,C>> initial() {
             DataFrameCursor<R,C> result = cursor();
             if (rowCount() > colCount()) {
-                result.moveTo(offset, 0);
+                result.atOrdinals(offset, 0);
                 for (int i=0; i<length; ++i) {
                     if (predicate.test(result)) break;
-                    result.moveToRow(offset + i);
+                    result.atRowOrdinal(offset + i);
                     for (int j=0; j<colCount(); ++j) {
-                        result.moveToColumn(j);
+                        result.atColOrdinal(j);
                         if (predicate.test(result)) {
                             break;
                         }
                     }
                 }
             } else {
-                result.moveTo(0, offset);
+                result.atOrdinals(0, offset);
                 for (int i=0; i<length; ++i) {
                     if (predicate.test(result)) break;
-                    result.moveToColumn(offset + i);
+                    result.atColOrdinal(offset + i);
                     for (int j=0; j<rowCount(); ++j) {
-                        result.moveToRow(j);
+                        result.atRowOrdinal(j);
                         if (predicate.test(result)) {
                             break;
                         }

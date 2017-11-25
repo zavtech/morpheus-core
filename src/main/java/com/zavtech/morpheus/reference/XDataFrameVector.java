@@ -284,12 +284,12 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
                     high = midIndex - 1;
                 } else if (isRow()) {
                     final R rowKey = (R)key();
-                    final DataFrameCursor<R,C> match = frame.cursor();
-                    return Optional.of(match.moveTo(rowKey, midIndex));
+                    final DataFrameCursor<R,C> cursor = frame.cursor();
+                    return Optional.of(cursor.atRowKey(rowKey).atColOrdinal(midIndex));
                 } else {
                     final C colKey = (C)key();
-                    final DataFrameCursor<R,C> match = frame.cursor();
-                    return Optional.of(match.moveTo(midIndex, colKey));
+                    final DataFrameCursor<R,C> cursor = frame.cursor();
+                    return Optional.of(cursor.atRowOrdinal(midIndex).atColKey(colKey));
                 }
             }
             return Optional.empty();
@@ -458,14 +458,14 @@ abstract class XDataFrameVector<X,Y,R,C,Z> implements DataFrameVector<X,Y,R,C,Z>
             this.length = length;
             this.splitThreshold = splitThreshold;
             this.value = (DataFrameCursor<A,B>)frame.cursor();
-            this.value = isRow() ? value.moveToRow(ordinal()) : value.moveToColumn(ordinal());
+            this.value = isRow() ? value.atRowOrdinal(ordinal()) : value.atColOrdinal(ordinal());
         }
 
         @Override
         public boolean tryAdvance(Consumer<? super DataFrameValue<A,B>> action) {
             Asserts.check(action != null, "The consumer action cannot be null");
             if (position <= end) {
-                this.value = isRow() ? value.moveToColumn(position) : value.moveToRow(position);
+                this.value = isRow() ? value.atColOrdinal(position) : value.atRowOrdinal(position);
                 this.position++;
                 action.accept(value);
                 return true;

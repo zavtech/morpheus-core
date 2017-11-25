@@ -51,35 +51,35 @@ public class ColumnAccessTests {
         final DataFrame<String,String> target = source.copy().applyValues(v -> null);
         if (type == boolean.class) {
             source.cols().forEach(column -> {
-                final DataFrameColumn targetColumn = target.colAt(column.key());
+                final DataFrameColumn targetColumn = target.col(column.key());
                 for (int i = 0; i < source.rowCount(); ++i) {
                     targetColumn.setBoolean(i, column.getBoolean(i));
                 }
             });
         } else if (type == int.class) {
             source.cols().forEach(column -> {
-                final DataFrameColumn targetColumn = target.colAt(column.key());
+                final DataFrameColumn targetColumn = target.col(column.key());
                 for (int i = 0; i < source.rowCount(); ++i) {
                     targetColumn.setInt(i, column.getInt(i));
                 }
             });
         } else if (type == long.class) {
             source.cols().forEach(column -> {
-                final DataFrameColumn targetColumn = target.colAt(column.key());
+                final DataFrameColumn targetColumn = target.col(column.key());
                 for (int i = 0; i < source.rowCount(); ++i) {
                     targetColumn.setLong(i, column.getLong(i));
                 }
             });
         } else if (type == double.class) {
             source.cols().forEach(column -> {
-                final DataFrameColumn targetColumn = target.colAt(column.key());
+                final DataFrameColumn targetColumn = target.col(column.key());
                 for (int i = 0; i < source.rowCount(); ++i) {
                     targetColumn.setDouble(i, column.getDouble(i));
                 }
             });
         } else if (type == Object.class) {
             source.cols().forEach(column -> {
-                final DataFrameColumn targetColumn = target.colAt(column.key());
+                final DataFrameColumn targetColumn = target.col(column.key());
                 for (int i = 0; i < source.rowCount(); ++i) {
                     targetColumn.setValue(i, column.getValue(i));
                 }
@@ -98,31 +98,31 @@ public class ColumnAccessTests {
         if (type == boolean.class) {
             source.cols().forEach(column -> {
                 Assert.assertTrue(column.isColumn());
-                final DataFrameColumn<String, String> targetColumn = target.colAt(column.key());
+                final DataFrameColumn<String, String> targetColumn = target.col(column.key());
                 source.rows().keys().forEach(key -> targetColumn.setBoolean(key, column.getBoolean(key)));
             });
         } else if (type == int.class) {
             source.cols().forEach(column -> {
                 Assert.assertTrue(column.isColumn());
-                final DataFrameColumn<String, String> targetColumn = target.colAt(column.key());
+                final DataFrameColumn<String, String> targetColumn = target.col(column.key());
                 source.rows().keys().forEach(key -> targetColumn.setInt(key, column.getInt(key)));
             });
         } else if (type == long.class) {
             source.cols().forEach(column -> {
                 Assert.assertTrue(column.isColumn());
-                final DataFrameColumn<String, String> targetColumn = target.colAt(column.key());
+                final DataFrameColumn<String, String> targetColumn = target.col(column.key());
                 source.rows().keys().forEach(key -> targetColumn.setLong(key, column.getLong(key)));
             });
         } else if (type == double.class) {
             source.cols().forEach(column -> {
                 Assert.assertTrue(column.isColumn());
-                final DataFrameColumn<String, String> targetColumn = target.colAt(column.key());
+                final DataFrameColumn<String, String> targetColumn = target.col(column.key());
                 source.rows().keys().forEach(key -> targetColumn.setDouble(key, column.getDouble(key)));
             });
         } else if (type == Object.class) {
             source.cols().forEach(column -> {
                 Assert.assertTrue(column.isColumn());
-                final DataFrameColumn<String, String> targetColumn = target.colAt(column.key());
+                final DataFrameColumn<String, String> targetColumn = target.col(column.key());
                 source.rows().keys().forEach(key -> targetColumn.setValue(key, column.getValue(key)));
             });
         } else {

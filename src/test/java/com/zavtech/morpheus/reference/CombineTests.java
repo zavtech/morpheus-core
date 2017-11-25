@@ -111,14 +111,14 @@ public class CombineTests {
         IntStream.range(0, 5).forEach(rowIndex -> {
             Array.of("D", "E").forEach(colKey -> {
                 final double value = cursor.getDouble();
-                Assert.assertTrue(cursor.moveTo(rowIndex, colKey).isNull());
+                Assert.assertTrue(cursor.atKeys(rowIndex, colKey).isNull());
             });
         });
 
         IntStream.range(5, frame3.rowCount()).forEach(rowIndex -> {
             Array.of("D", "E").forEach(colKey -> {
                 final double expected = frame2.data().getDouble(rowIndex-5, colKey);
-                final double actual = cursor.moveTo(rowIndex, colKey).getDouble();
+                final double actual = cursor.atKeys(rowIndex, colKey).getDouble();
                 Assert.assertEquals(actual, expected);
             });
         });
@@ -158,7 +158,7 @@ public class CombineTests {
         DataFrameCursor<Integer,String> cursor = frame3.cursor();
         IntStream.range(0, 5).forEach(rowIndex -> {
             Array.of("D", "E").forEach(colKey -> {
-                Assert.assertTrue(cursor.moveTo(rowIndex, colKey).isNull());
+                Assert.assertTrue(cursor.atKeys(rowIndex, colKey).isNull());
             });
         });
 
@@ -173,7 +173,7 @@ public class CombineTests {
         IntStream.range(5, frame3.rowCount()).forEach(rowIndex -> {
             Array.of("D", "E").forEach(colKey -> {
                 final double expected = frame2.data().getDouble(rowIndex-5, colKey);
-                final double actual = cursor.moveTo(rowIndex, colKey).getDouble();
+                final double actual = cursor.atKeys(rowIndex, colKey).getDouble();
                 Assert.assertEquals(actual, expected);
             });
         });

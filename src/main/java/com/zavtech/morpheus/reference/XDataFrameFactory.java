@@ -90,7 +90,7 @@ public class XDataFrameFactory extends DataFrameFactory {
                     column.forEach(v -> {
                         final R rowKey = v.rowKey();
                         final C colKey = v.colKey();
-                        if (cursor.moveTo(rowKey, colKey).isNull()) {
+                        if (cursor.atKeys(rowKey, colKey).isNull()) {
                             switch (type) {
                                 case BOOLEAN:   cursor.setBoolean(v.getBoolean());  break;
                                 case INTEGER:   cursor.setInt(v.getInt());          break;

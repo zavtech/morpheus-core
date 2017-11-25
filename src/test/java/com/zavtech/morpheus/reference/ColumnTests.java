@@ -187,7 +187,7 @@ public class ColumnTests {
     public void testForEachValue(Class type, boolean parallel) {
         final DataFrame<String,String> frame = TestDataFrames.random(type, 10, 10000);
         final DataFrameColumns<String,String> columns = parallel ? frame.cols().parallel() : frame.cols().sequential();
-        columns.keys().forEach(key -> frame.colAt(key).forEachValue(value -> {
+        columns.keys().forEach(key -> frame.col(key).forEachValue(value -> {
             final String rowKey = value.rowKey();
             final String colKey = value.colKey();
             final int rowOrdinal = value.rowOrdinal();
@@ -248,7 +248,7 @@ public class ColumnTests {
         final DataFrame<String,String> frame = TestDataFrames.random(double.class, 1000000, 1);
         final String colKey = frame.cols().key(0);
         frame.applyDoubles(v -> Math.random() * 100);
-        frame.parallel().colAt(colKey).forEachValue(v -> {
+        frame.parallel().col(colKey).forEachValue(v -> {
             final double actual = v.getDouble();
             final double expected = frame.data().getDouble(v.rowKey(), v.colKey());
             Assert.assertEquals(actual, expected, "Values match for " + v);
@@ -377,8 +377,8 @@ public class ColumnTests {
     public void testColumnIteratorWithPredicate() throws IOException {
         final DataFrame<String, String> frame = TestDataFrames.random(double.class, 20, 20);
         frame.applyValues(v -> Math.random() * 10);
-        frame.rowAt("R5").applyDoubles(v -> Double.NaN);
-        frame.rowAt("R10").applyDoubles(v -> Double.NaN);
+        frame.row("R5").applyDoubles(v -> Double.NaN);
+        frame.row("R10").applyDoubles(v -> Double.NaN);
         frame.cols().forEach(column -> {
             int count = 0;
             final PrimitiveIterator.OfDouble iterator1 = column.values().filter(v -> !v.isNull()).mapToDouble(DataFrameValue::getDouble).iterator();
@@ -400,7 +400,7 @@ public class ColumnTests {
     @Test(dataProvider = "args1")
     public void testColumnToDataFrame(Class type) throws Exception {
         final DataFrame<String, String> frame = TestDataFrames.random(type, 10, 10);
-        final DataFrameColumn<String,String> column = frame.colAt("C5");
+        final DataFrameColumn<String,String> column = frame.col("C5");
         if (type == boolean.class) {
             column.forEachValue(v -> Assert.assertEquals(v.getBoolean(), frame.data().getBoolean(v.rowKey(), v.colKey())));
             final DataFrame<String,String> columnFrame = column.toDataFrame();
@@ -458,19 +458,19 @@ public class ColumnTests {
         final DataFrame<String,String> source = TestDataFrames.random(type, rowKeys, rowKeys);
         final DataFrame<String,String> target = TestDataFrames.random(type, rowKeys, rowKeys);
         if (type == boolean.class) {
-            target.cols().keys().forEach(colKey -> target.colAt(colKey).applyBooleans(v -> source.data().getBoolean(v.rowOrdinal(), colKey)));
+            target.cols().keys().forEach(colKey -> target.col(colKey).applyBooleans(v -> source.data().getBoolean(v.rowOrdinal(), colKey)));
             DataFrameAsserts.assertEqualsByIndex(source, target);
         } else if (type == int.class) {
-            target.cols().keys().forEach(colKey -> target.colAt(colKey).applyInts(v -> source.data().getInt(v.rowKey(), colKey)));
+            target.cols().keys().forEach(colKey -> target.col(colKey).applyInts(v -> source.data().getInt(v.rowKey(), colKey)));
             DataFrameAsserts.assertEqualsByIndex(source, target);
         } else if (type == long.class) {
-            target.cols().keys().forEach(colKey -> target.colAt(colKey).applyLongs(v -> source.data().getLong(v.rowKey(), colKey)));
+            target.cols().keys().forEach(colKey -> target.col(colKey).applyLongs(v -> source.data().getLong(v.rowKey(), colKey)));
             DataFrameAsserts.assertEqualsByIndex(source, target);
         } else if (type == double.class) {
-            target.cols().keys().forEach(colKey -> target.colAt(colKey).applyDoubles(v -> source.data().getDouble(v.rowKey(), colKey)));
+            target.cols().keys().forEach(colKey -> target.col(colKey).applyDoubles(v -> source.data().getDouble(v.rowKey(), colKey)));
             DataFrameAsserts.assertEqualsByIndex(source, target);
         } else {
-            target.cols().keys().forEach(colKey -> target.colAt(colKey).applyValues(v -> source.data().getValue(v.rowKey(), colKey)));
+            target.cols().keys().forEach(colKey -> target.col(colKey).applyValues(v -> source.data().getValue(v.rowKey(), colKey)));
             DataFrameAsserts.assertEqualsByIndex(source, target);
         }
     }
@@ -481,7 +481,7 @@ public class ColumnTests {
         final DataFrame<String,String> frame = TestDataFrames.random(double.class, 100, 100);
         final List<String> keyList = new ArrayList<>();
         final String keyToFind = frame.cols().key(85);
-        final DataFrameColumn<String,String> columnToFind = frame.colAt(keyToFind);
+        final DataFrameColumn<String,String> columnToFind = frame.col(keyToFind);
         final Optional<DataFrameColumn<String,String>> columnMatch = frame.cols().first(column -> {
             keyList.add(column.key());
             return columnToFind.equals(column);
@@ -501,7 +501,7 @@ public class ColumnTests {
         final DataFrame<String,String> frame = TestDataFrames.random(double.class, 100, 100);
         final List<String> keyList = new ArrayList<>();
         final String keyToFind = frame.cols().key(85);
-        final DataFrameColumn<String,String> columnToFind = frame.colAt(keyToFind);
+        final DataFrameColumn<String,String> columnToFind = frame.col(keyToFind);
         final Optional<DataFrameColumn<String,String>> match = frame.cols().last(column -> {
             keyList.add(column.key());
             if (column.key().equals(keyToFind)) {
@@ -522,8 +522,8 @@ public class ColumnTests {
     @Test()
     public void testColumnStats() {
         final DataFrame<String, String> frame = TestDataFrames.random(double.class, 100, 100);
-        final Stats<Double> stats1 = frame.colAt("C3").stats();
-        final Stats<Double> stats2 = frame.colAt("C3").toDataFrame().stats();
+        final Stats<Double> stats1 = frame.col("C3").stats();
+        final Stats<Double> stats2 = frame.col("C3").toDataFrame().stats();
         for (StatType stat : StatType.univariate()) {
             final double v1 = stat.apply(stats1);
             final double v2 = stat.apply(stats2);
@@ -563,7 +563,7 @@ public class ColumnTests {
             colCount[0]++;
             final String colKey = column.key();
             Assert.assertEquals(column.size(), frame.rowCount(), "Row count matched");
-            final DataFrameColumn<LocalDate,String> expected = frame.colAt(colKey);
+            final DataFrameColumn<LocalDate,String> expected = frame.col(colKey);
             for (int i=0; i<frame.cols().count(); ++i) {
                 final double v1 = column.getDouble(i);
                 final double v2 = expected.getDouble(i);
@@ -590,7 +590,7 @@ public class ColumnTests {
             final DataFrameColumn<LocalDate,String> column = iterator.next();
             Assert.assertEquals(column.size(), frame.rowCount(), "Row count matched");
             final String colKey = column.key();
-            final DataFrameColumn<LocalDate,String> expected = frame.colAt(colKey);
+            final DataFrameColumn<LocalDate,String> expected = frame.col(colKey);
             for (int i=0; i<frame.cols().count(); ++i) {
                 final double v1 = column.getDouble(i);
                 final double v2 = expected.getDouble(i);

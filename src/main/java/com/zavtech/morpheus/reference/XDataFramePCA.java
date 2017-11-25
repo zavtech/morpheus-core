@@ -268,7 +268,7 @@ class XDataFramePCA<R,C> implements DataFramePCA<R,C> {
          * Adds two columns to the eigenvalue data frame, one for percent of variance, and for cumulative percent of variance
          */
         private void addVariancePercentages() {
-            final double sum = eigenValues.colAt(Field.EIGENVALUE).stats().sum();
+            final double sum = eigenValues.col(Field.EIGENVALUE).stats().sum();
             this.eigenValues.cols().add(Field.VAR_PERCENT, Double.class, v -> v.row().getDouble(Field.EIGENVALUE) / sum);
             this.eigenValues.cols().add(Field.VAR_PERCENT_CUM, Double.class, v -> {
                 switch (v.rowOrdinal()) {

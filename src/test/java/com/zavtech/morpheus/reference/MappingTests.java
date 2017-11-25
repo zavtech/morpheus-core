@@ -181,7 +181,7 @@ public class MappingTests {
             source.cols().select(col -> !col.key().equals("D")),
             target.cols().select(col -> !col.key().equals("D"))
         );
-        Assert.assertEquals(target.colAt("D").typeInfo(), Boolean.class);
+        Assert.assertEquals(target.col("D").typeInfo(), Boolean.class);
         source.forEachValue(v -> {
             if (v.colKey().equals("D")) {
                 final boolean expected = v.getDouble() > 0.5d;
@@ -204,7 +204,7 @@ public class MappingTests {
             source.cols().select(col -> !col.key().equals("D")),
             target.cols().select(col -> !col.key().equals("D"))
         );
-        Assert.assertEquals(target.colAt("D").typeInfo(), Integer.class);
+        Assert.assertEquals(target.col("D").typeInfo(), Integer.class);
         source.forEachValue(v -> {
             if (v.colKey().equals("D")) {
                 final int expected = (int)(v.getDouble() * 100);
@@ -227,7 +227,7 @@ public class MappingTests {
             source.cols().select(col -> !col.key().equals("D")),
             target.cols().select(col -> !col.key().equals("D"))
         );
-        Assert.assertEquals(target.colAt("D").typeInfo(), Long.class);
+        Assert.assertEquals(target.col("D").typeInfo(), Long.class);
         source.forEachValue(v -> {
             if (v.colKey().equals("D")) {
                 final long expected = (long)(v.getDouble() * 100);
@@ -250,7 +250,7 @@ public class MappingTests {
             source.cols().select(col -> !col.key().equals("E")),
             target.cols().select(col -> !col.key().equals("E"))
         );
-        Assert.assertEquals(target.colAt("E").typeInfo(), Double.class);
+        Assert.assertEquals(target.col("E").typeInfo(), Double.class);
         source.forEachValue(v -> {
             if (v.colKey().equals("E")) {
                 final double expected = v.<LocalDate>getValue().getDayOfMonth() * 10d;

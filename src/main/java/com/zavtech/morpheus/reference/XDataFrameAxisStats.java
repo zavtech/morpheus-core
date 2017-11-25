@@ -176,8 +176,8 @@ class XDataFrameAxisStats<K,R,C,X,Y> extends XDataFrameStatsBase<X,Y> implements
         if (rowCount == 0 || colCount == 0) {
             return Double.NaN;
         } else if (isRow()) {
-            final DataFrameRow<R,C> row1 = frame.rowAt((R) key1);
-            final DataFrameRow<R,C> row2 = frame.rowAt((R) key2);
+            final DataFrameRow<R,C> row1 = frame.row((R) key1);
+            final DataFrameRow<R,C> row2 = frame.row((R) key2);
             final Statistic2 correlation = new Covariance();
             for (int i = 0; i < colCount; ++i) {
                 final double v1 = row1.getDouble(i);
@@ -186,8 +186,8 @@ class XDataFrameAxisStats<K,R,C,X,Y> extends XDataFrameStatsBase<X,Y> implements
             }
             return correlation.getValue();
         } else {
-            final DataFrameColumn<R,C> column1 = frame.colAt((C) key1);
-            final DataFrameColumn<R,C> column2 = frame.colAt((C) key2);
+            final DataFrameColumn<R,C> column1 = frame.col((C) key1);
+            final DataFrameColumn<R,C> column2 = frame.col((C) key2);
             final Statistic2 correlation = new Covariance();
             for (int i = 0; i < rowCount; ++i) {
                 final double v1 = column1.getDouble(i);
@@ -207,8 +207,8 @@ class XDataFrameAxisStats<K,R,C,X,Y> extends XDataFrameStatsBase<X,Y> implements
         if (rowCount == 0 || colCount == 0) {
             return Double.NaN;
         } else if (isRow()) {
-            final DataFrameRow<R,C> row1 = frame.rowAt((R) key1);
-            final DataFrameRow<R,C> row2 = frame.rowAt((R) key2);
+            final DataFrameRow<R,C> row1 = frame.row((R) key1);
+            final DataFrameRow<R,C> row2 = frame.row((R) key2);
             final Statistic2 correlation = new Correlation();
             for (int i = 0; i < colCount; ++i) {
                 final double v1 = row1.getDouble(i);
@@ -217,8 +217,8 @@ class XDataFrameAxisStats<K,R,C,X,Y> extends XDataFrameStatsBase<X,Y> implements
             }
             return correlation.getValue();
         } else {
-            final DataFrameColumn<R,C> column1 = frame.colAt((C) key1);
-            final DataFrameColumn<R,C> column2 = frame.colAt((C) key2);
+            final DataFrameColumn<R,C> column1 = frame.col((C) key1);
+            final DataFrameColumn<R,C> column2 = frame.col((C) key2);
             final Statistic2 correlation = new Correlation();
             for (int i = 0; i < rowCount; ++i) {
                 final double v1 = column1.getDouble(i);
@@ -398,14 +398,14 @@ class XDataFrameAxisStats<K,R,C,X,Y> extends XDataFrameStatsBase<X,Y> implements
                 final double weight = Math.log(0.5d) / halfLife;
                 final double alpha = 1d - Math.exp(weight);
                 for (int colOrdinal=from; colOrdinal<=to; ++colOrdinal) {
-                    final DataFrameCursor<R,C> source = frame.cursor().moveTo(0, colOrdinal);
-                    final DataFrameCursor<R,C> target = result.cursor().moveTo(0, colOrdinal);
+                    final DataFrameCursor<R,C> source = frame.cursor().atOrdinals(0, colOrdinal);
+                    final DataFrameCursor<R,C> target = result.cursor().atOrdinals(0, colOrdinal);
                     if (rowCount > 0) target.setDouble(source.getDouble());
                     for (int rowOrdinal=1; rowOrdinal<rowCount; ++rowOrdinal) {
-                        final double rawValue = source.moveToRow(rowOrdinal).getDouble();
-                        final double emaPrior = target.moveToRow(rowOrdinal-1).getDouble();
+                        final double rawValue = source.atRowOrdinal(rowOrdinal).getDouble();
+                        final double emaPrior = target.atRowOrdinal(rowOrdinal-1).getDouble();
                         final double emaValue = rawValue * alpha + (1d - alpha) * emaPrior;
-                        target.moveToRow(rowOrdinal).setDouble(emaValue);
+                        target.atRowOrdinal(rowOrdinal).setDouble(emaValue);
                     }
                 }
             } else {

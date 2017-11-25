@@ -46,8 +46,8 @@ public class ContentTests {
         final DataFrameCursor<String,LocalDate> cursor1 = transpose.cursor();
         for (int i=0; i<frame.rowCount(); ++i) {
             for (int j=0; j<frame.colCount(); ++j) {
-                cursor0.moveTo(i, j);
-                cursor1.moveTo(j, i);
+                cursor0.atOrdinals(i, j);
+                cursor1.atOrdinals(j, i);
                 cursor0.setDouble(Math.random() * 10);
                 Assert.assertEquals(cursor0.rowKey(), frame.rows().key(i), "Row keys match at " + i);
                 Assert.assertEquals(cursor0.colKey(), frame.cols().key(j), "Column keys match at " + j);

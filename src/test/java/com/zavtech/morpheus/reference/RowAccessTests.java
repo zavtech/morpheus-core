@@ -51,35 +51,35 @@ public class RowAccessTests {
         final DataFrame<String,String> target = source.copy().applyValues(v -> null);
         if (type == boolean.class) {
             source.rows().forEach(row -> {
-                final DataFrameRow targetRow = target.rowAt(row.key());
+                final DataFrameRow targetRow = target.row(row.key());
                 for (int i = 0; i < source.colCount(); ++i) {
                     targetRow.setBoolean(i, row.getBoolean(i));
                 }
             });
         } else if (type == int.class) {
             source.rows().forEach(row -> {
-                final DataFrameRow targetRow = target.rowAt(row.key());
+                final DataFrameRow targetRow = target.row(row.key());
                 for (int i = 0; i < source.colCount(); ++i) {
                     targetRow.setInt(i, row.getInt(i));
                 }
             });
         } else if (type == long.class) {
             source.rows().forEach(row -> {
-                final DataFrameRow targetRow = target.rowAt(row.key());
+                final DataFrameRow targetRow = target.row(row.key());
                 for (int i = 0; i < source.colCount(); ++i) {
                     targetRow.setLong(i, row.getLong(i));
                 }
             });
         } else if (type == double.class) {
             source.rows().forEach(row -> {
-                final DataFrameRow targetRow = target.rowAt(row.key());
+                final DataFrameRow targetRow = target.row(row.key());
                 for (int i = 0; i < source.colCount(); ++i) {
                     targetRow.setDouble(i, row.getDouble(i));
                 }
             });
         } else if (type == Object.class) {
             source.rows().forEach(row -> {
-                final DataFrameRow targetRow = target.rowAt(row.key());
+                final DataFrameRow targetRow = target.row(row.key());
                 for (int i = 0; i < source.colCount(); ++i) {
                     targetRow.setValue(i, row.getValue(i));
                 }
@@ -98,31 +98,31 @@ public class RowAccessTests {
         if (type == boolean.class) {
             source.rows().forEach(row -> {
                 Assert.assertTrue(row.isRow());
-                final DataFrameRow<String,String> targetRow = target.rowAt(row.key());
+                final DataFrameRow<String,String> targetRow = target.row(row.key());
                 source.cols().keys().forEach(key -> targetRow.setBoolean(key, row.getBoolean(key)));
             });
         } else if (type == int.class) {
             source.rows().forEach(row -> {
                 Assert.assertTrue(row.isRow());
-                final DataFrameRow<String,String> targetRow = target.rowAt(row.key());
+                final DataFrameRow<String,String> targetRow = target.row(row.key());
                 source.cols().keys().forEach(key -> targetRow.setInt(key, row.getInt(key)));
             });
         } else if (type == long.class) {
             source.rows().forEach(row -> {
                 Assert.assertTrue(row.isRow());
-                final DataFrameRow<String,String> targetRow = target.rowAt(row.key());
+                final DataFrameRow<String,String> targetRow = target.row(row.key());
                 source.cols().keys().forEach(key -> targetRow.setLong(key, row.getLong(key)));
             });
         } else if (type == double.class) {
             source.rows().forEach(row -> {
                 Assert.assertTrue(row.isRow());
-                final DataFrameRow<String,String> targetRow = target.rowAt(row.key());
+                final DataFrameRow<String,String> targetRow = target.row(row.key());
                 source.cols().keys().forEach(key -> targetRow.setDouble(key, row.getDouble(key)));
             });
         } else if (type == Object.class) {
             source.rows().forEach(row -> {
                 Assert.assertTrue(row.isRow());
-                final DataFrameRow<String,String> targetRow = target.rowAt(row.key());
+                final DataFrameRow<String,String> targetRow = target.row(row.key());
                 source.cols().keys().forEach(key -> targetRow.setValue(key, row.getValue(key)));
             });
         } else {

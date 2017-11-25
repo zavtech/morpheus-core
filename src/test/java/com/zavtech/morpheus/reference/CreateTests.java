@@ -53,27 +53,27 @@ public class CreateTests {
         final DataFrame<String,String> frame2 = template.copy();
         final DataFrame<String,String> frame3 = template.copy();
 
-        frame1.colAt("C1").applyDoubles(v -> Math.random());
-        frame1.colAt("C2").applyInts(v -> (int) (Math.random() * 100));
-        frame1.colAt("C3").applyBooleans(v -> Math.random() > 0.5);
-        frame1.colAt("C4").applyDoubles(v -> Math.random());
-        frame1.colAt("C5").applyLongs(v -> (long) (Math.random() * 100000));
-        frame1.colAt("C6").applyValues(v -> String.valueOf(Math.random()));
+        frame1.col("C1").applyDoubles(v -> Math.random());
+        frame1.col("C2").applyInts(v -> (int) (Math.random() * 100));
+        frame1.col("C3").applyBooleans(v -> Math.random() > 0.5);
+        frame1.col("C4").applyDoubles(v -> Math.random());
+        frame1.col("C5").applyLongs(v -> (long) (Math.random() * 100000));
+        frame1.col("C6").applyValues(v -> String.valueOf(Math.random()));
 
-        frame2.colAt("C1").applyDoubles(v -> frame1.data().getDouble(v.rowKey(), "C1"));
-        frame2.colAt("C2").applyInts(v -> frame1.data().getInt(v.rowKey(), "C2"));
-        frame2.colAt("C3").applyBooleans(v -> frame1.data().getBoolean(v.rowKey(), "C3"));
-        frame2.colAt("C4").applyDoubles(v -> frame1.data().getDouble(v.rowKey(), "C4"));
-        frame2.colAt("C5").applyLongs(v -> frame1.data().getLong(v.rowKey(), "C5"));
-        frame2.colAt("C6").applyValues(v -> frame1.data().getValue(v.rowKey(), "C6"));
+        frame2.col("C1").applyDoubles(v -> frame1.data().getDouble(v.rowKey(), "C1"));
+        frame2.col("C2").applyInts(v -> frame1.data().getInt(v.rowKey(), "C2"));
+        frame2.col("C3").applyBooleans(v -> frame1.data().getBoolean(v.rowKey(), "C3"));
+        frame2.col("C4").applyDoubles(v -> frame1.data().getDouble(v.rowKey(), "C4"));
+        frame2.col("C5").applyLongs(v -> frame1.data().getLong(v.rowKey(), "C5"));
+        frame2.col("C6").applyValues(v -> frame1.data().getValue(v.rowKey(), "C6"));
 
-        frame3.rowAt("R1").applyValues(v -> frame1.data().getValue("R1", v.colKey()));
-        frame3.rowAt("R2").applyValues(v -> frame1.data().getValue("R2", v.colKey()));
-        frame3.rowAt("R3").applyValues(v -> frame1.data().getValue("R3", v.colKey()));
-        frame3.rowAt("R4").applyValues(v -> frame1.data().getValue("R4", v.colKey()));
-        frame3.rowAt("R5").applyValues(v -> frame1.data().getValue("R5", v.colKey()));
-        frame3.rowAt("R6").applyValues(v -> frame1.data().getValue("R6", v.colKey()));
-        frame3.rowAt("R7").applyValues(v -> frame1.data().getValue("R7", v.colKey()));
+        frame3.row("R1").applyValues(v -> frame1.data().getValue("R1", v.colKey()));
+        frame3.row("R2").applyValues(v -> frame1.data().getValue("R2", v.colKey()));
+        frame3.row("R3").applyValues(v -> frame1.data().getValue("R3", v.colKey()));
+        frame3.row("R4").applyValues(v -> frame1.data().getValue("R4", v.colKey()));
+        frame3.row("R5").applyValues(v -> frame1.data().getValue("R5", v.colKey()));
+        frame3.row("R6").applyValues(v -> frame1.data().getValue("R6", v.colKey()));
+        frame3.row("R7").applyValues(v -> frame1.data().getValue("R7", v.colKey()));
 
         DataFrameAsserts.assertEqualsByIndex(frame1, frame2);
         DataFrameAsserts.assertEqualsByIndex(frame1, frame3);

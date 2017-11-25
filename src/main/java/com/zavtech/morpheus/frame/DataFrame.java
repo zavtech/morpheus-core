@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -34,7 +33,6 @@ import javax.imageio.ImageIO;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
 import com.zavtech.morpheus.stats.Stats;
-import com.zavtech.morpheus.util.text.Formats;
 import com.zavtech.morpheus.util.functions.ToBooleanFunction;
 
 /**
@@ -89,13 +87,6 @@ public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>,
     DataFrameOutput<R,C> out();
 
     /**
-     * Returns a reference to the output interface for this <code>DataFrame</code>
-     * @param formats   custom formats for output rendering
-     * @return  the output interface for this <code>DataFrame</code>
-     */
-    DataFrameOutput<R,C> out(Formats formats);
-
-    /**
      * Returns a reference to the content of this DataFrame
      * @return  the data access interface for this frame
      */
@@ -124,24 +115,24 @@ public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>,
      * @param rowKey    the row key to match
      * @return          the matching row
      */
-    DataFrameRow<R,C> rowAt(R rowKey);
-
-    /**
-     * Returns a reference to a row for the index specified
-     * @param rowOrdinal    the row ordinal
-     * @return              the matching row
-     */
-    DataFrameRow<R,C> rowAt(int rowOrdinal);
+    DataFrameRow<R,C> row(R rowKey);
 
     /**
      * Returns a reference to the column for the key specified
      * @param colKey    the column key to match
      * @return          the matching column
      */
-    DataFrameColumn<R,C> colAt(C colKey);
+    DataFrameColumn<R,C> col(C colKey);
 
     /**
-     * Returns a reference to a column for the index specified
+     * Returns a reference to a row for the ordinal specified
+     * @param rowOrdinal    the row ordinal
+     * @return              the matching row
+     */
+    DataFrameRow<R,C> rowAt(int rowOrdinal);
+
+    /**
+     * Returns a reference to a column for the ordinal specified
      * @param colIOrdinal   the column ordinal
      * @return              the matching column
      */
@@ -162,7 +153,7 @@ public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>,
     /**
      * Returns the sign DataFrame of -1, 0, 1 for negative, zero and positive elements
      * @return  a DataFrame of -1, 0, 1 for negative, zero and positive elements
-     * @see <span>For details, see <a href="http://en.wikipedia.org/wiki/Signum_function">Wikiepdia Reference</a></span>
+     * @see <a href="http://en.wikipedia.org/wiki/Signum_function">Wikiepdia Reference</a>
      */
     DataFrame<R,C> sign();
 
@@ -855,9 +846,7 @@ public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>,
             final BufferedImage image = ImageIO.read(file);
             final Range<Integer> rowKeys = Range.of(0, image.getHeight());
             final Range<Integer> colKeys = Range.of(0, image.getWidth());
-            return DataFrame.ofInts(rowKeys, colKeys, v -> {
-                return image.getRGB(v.colOrdinal(), v.rowOrdinal());
-            });
+            return DataFrame.ofInts(rowKeys, colKeys, v -> image.getRGB(v.colOrdinal(), v.rowOrdinal()));
         } catch (Exception ex) {
             throw new DataFrameException("Failed to initialize DataFrame from image file: " + file.getAbsolutePath(), ex);
         }
@@ -874,9 +863,7 @@ public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>,
             final BufferedImage image = ImageIO.read(url);
             final Range<Integer> rowKeys = Range.of(0, image.getHeight());
             final Range<Integer> colKeys = Range.of(0, image.getWidth());
-            return DataFrame.ofInts(rowKeys, colKeys, v -> {
-                return image.getRGB(v.colOrdinal(), v.rowOrdinal());
-            });
+            return DataFrame.ofInts(rowKeys, colKeys, v -> image.getRGB(v.colOrdinal(), v.rowOrdinal()));
         } catch (Exception ex) {
             throw new DataFrameException("Failed to initialize DataFrame from image url: " + url, ex);
         }
@@ -894,9 +881,7 @@ public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>,
             final BufferedImage image = ImageIO.read(inputStream);
             final Range<Integer> rowKeys = Range.of(0, image.getHeight());
             final Range<Integer> colKeys = Range.of(0, image.getWidth());
-            return DataFrame.ofInts(rowKeys, colKeys, v -> {
-                return image.getRGB(v.colOrdinal(), v.rowOrdinal());
-            });
+            return DataFrame.ofInts(rowKeys, colKeys, v -> image.getRGB(v.colOrdinal(), v.rowOrdinal()));
         } catch (Exception ex) {
             throw new DataFrameException("Failed to initialize DataFrame from image input stream", ex);
         }

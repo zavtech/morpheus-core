@@ -163,8 +163,8 @@ public class DimensionTests {
         final DataFrame<String,String> frame4 = frame1.copy().cols().select(k -> true);
         Stream.of(frame1, frame2, frame3, frame4).forEach(frame -> {
             frame.applyDoubles(v -> Math.random() * 100d);
-            frame.rowAt("R7").applyDoubles(v -> 1000d * v.colOrdinal());
-            frame.rowAt("R9").applyDoubles(v -> 1000d * v.colOrdinal());
+            frame.row("R7").applyDoubles(v -> 1000d * v.colOrdinal());
+            frame.row("R9").applyDoubles(v -> 1000d * v.colOrdinal());
             final Optional<DataFrameRow<String, String>> rowOption = frame.rows().first(row -> row.getDouble(3) == 1000d * 3);
             Assert.assertTrue(rowOption.isPresent(), "A row was found");
             Assert.assertEquals(rowOption.get().key(), "R7", "The row key matches");
@@ -180,8 +180,8 @@ public class DimensionTests {
         final DataFrame<String,String> frame4 = frame1.copy().cols().select(k -> true);
         Stream.of(frame1, frame2, frame3, frame4).forEach(frame -> {
             frame.applyDoubles(v -> Math.random() * 100d);
-            frame.colAt("C15").applyDoubles(v -> 1000d * v.rowOrdinal());
-            frame.colAt("C22").applyDoubles(v -> 1000d * v.rowOrdinal());
+            frame.col("C15").applyDoubles(v -> 1000d * v.rowOrdinal());
+            frame.col("C22").applyDoubles(v -> 1000d * v.rowOrdinal());
             final Optional<DataFrameColumn<String, String>> colOption = frame.cols().first(column -> column.getDouble(3) == 1000d * 3);
             Assert.assertTrue(colOption.isPresent(), "A column was found");
             Assert.assertEquals(colOption.get().key(), "C15", "The column key matches");
@@ -195,8 +195,8 @@ public class DimensionTests {
         final DataFrame<String,String> frame2 = frame1.select(r -> true, c -> true);
         Stream.of(frame1, frame2).forEach(frame -> {
             frame.applyDoubles(v -> Math.random() * 100d);
-            frame.rowAt("R7").applyDoubles(v -> 1000d * v.colOrdinal());
-            frame.rowAt("R9").applyDoubles(v -> 1000d * v.colOrdinal());
+            frame.row("R7").applyDoubles(v -> 1000d * v.colOrdinal());
+            frame.row("R9").applyDoubles(v -> 1000d * v.colOrdinal());
             final Optional<DataFrameRow<String, String>> rowOption = frame.rows().last(row -> row.getDouble(3) == 1000d * 3);
             Assert.assertTrue(rowOption.isPresent(), "A row was found");
             Assert.assertEquals(rowOption.get().key(), "R9", "The row key matches");
@@ -210,8 +210,8 @@ public class DimensionTests {
         final DataFrame<String,String> frame2 = frame1.select(r -> true, c -> true);
         Stream.of(frame1, frame2).forEach(frame -> {
             frame.applyDoubles(v -> Math.random() * 100d);
-            frame.colAt("C15").applyDoubles(v -> 1000d * v.rowOrdinal());
-            frame.colAt("C22").applyDoubles(v -> 1000d * v.rowOrdinal());
+            frame.col("C15").applyDoubles(v -> 1000d * v.rowOrdinal());
+            frame.col("C22").applyDoubles(v -> 1000d * v.rowOrdinal());
             final Optional<DataFrameColumn<String, String>> colOption = frame.cols().last(column -> column.getDouble(3) == 1000d * 3);
             Assert.assertTrue(colOption.isPresent(), "A column was found");
             Assert.assertEquals(colOption.get().key(), "C22", "The column key matches");

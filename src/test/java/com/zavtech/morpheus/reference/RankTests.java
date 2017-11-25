@@ -43,7 +43,7 @@ public class RankTests {
         rankFrame.out().print();
         rankFrame.rows().forEach(rankRow -> {
             final String key = rankRow.key();
-            final double[] values = frame.rowAt(key).toDoubleStream().toArray();
+            final double[] values = frame.row(key).toDoubleStream().toArray();
             final NaturalRanking ranking = new NaturalRanking();
             final double[] ranks = ranking.rank(values);
             for (int i = 0; i < ranks.length; ++i) {
@@ -68,7 +68,7 @@ public class RankTests {
         rankFrame.out().print();
         rankFrame.cols().forEach(rankColumn -> {
             final String key = rankColumn.key();
-            final double[] values = frame.colAt(key).toDoubleStream().toArray();
+            final double[] values = frame.col(key).toDoubleStream().toArray();
             final NaturalRanking ranking = new NaturalRanking();
             final double[] ranks = ranking.rank(values);
             for (int i=0; i<ranks.length; ++i) {

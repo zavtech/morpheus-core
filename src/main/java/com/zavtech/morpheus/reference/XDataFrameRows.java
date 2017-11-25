@@ -80,9 +80,9 @@ class XDataFrameRows<R,C> extends XDataFrameAxisBase<R,C,R,C,DataFrameRow<R,C>,D
             final XDataFrame<R,C> frame = frame();
             final int ordinal = content.rowKeyIndex().getOrdinalForKey(key);
             if (initials != null) {
-                final DataFrameCursor<R,C> value = frame.cursor().moveToRow(ordinal);
+                final DataFrameCursor<R,C> value = frame.cursor().atRowOrdinal(ordinal);
                 for (int i=0; i<frame.colCount(); ++i) {
-                    value.moveToColumn(i);
+                    value.atColOrdinal(i);
                     final Object result = initials.apply(value);
                     value.setValue(result);
                 }
@@ -104,9 +104,9 @@ class XDataFrameRows<R,C> extends XDataFrameAxisBase<R,C,R,C,DataFrameRow<R,C>,D
         if (initials != null) {
             final DataFrameCursor<R,C> cursor = frame().cursor();
             added.forEach(rowKey -> {
-                cursor.moveToRow(rowKey);
+                cursor.atRowKey(rowKey);
                 for (int i=0; i<frame().colCount(); ++i) {
-                    cursor.moveToColumn(i);
+                    cursor.atColOrdinal(i);
                     Object value = initials.apply(cursor);
                     cursor.setValue(value);
                 }

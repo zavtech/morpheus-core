@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,63 +34,47 @@ public interface DataFrameCursor<R,C> extends DataFrameValue<R,C> {
     DataFrameCursor<R,C> copy();
 
     /**
-     * Moves this cursor to the row location specified, leaving column location unchanged
-     * @param rowKey    the row key
-     * @return          this cursor
+     * Moves this cursor to the row key specified, leaving column location unchanged
+     * @param key   the row key
+     * @return      this cursor
      */
-    DataFrameCursor<R,C> moveToRow(R rowKey);
+    DataFrameCursor<R,C> atRowKey(R key);
 
     /**
-     * Moves this cursor to the row location specified, leaving column location unchanged
-     * @param rowOrdinal  the row index
+     * Moves this cursor to the row ordinal specified, leaving column location unchanged
+     * @param ordinal   the row ordinal
      * @return          this cursor
      */
-    DataFrameCursor<R,C> moveToRow(int rowOrdinal);
+    DataFrameCursor<R,C> atRowOrdinal(int ordinal);
 
     /**
-     * Moves this cursor to the column location specified, leaving row location unchanged
+     * Moves this cursor to the column key specified, leaving row location unchanged
      * @param colKey    the column key
      * @return          this cursor
      */
-    DataFrameCursor<R,C> moveToColumn(C colKey);
+    DataFrameCursor<R,C> atColKey(C colKey);
 
     /**
-     * Moves this cursor to the column location specified, leaving row location unchanged
+     * Moves this cursor to the column ordinal specified, leaving row location unchanged
      * @param colOrdinal    the column ordinal
      * @return              this cursor
      */
-    DataFrameCursor<R,C> moveToColumn(int colOrdinal);
+    DataFrameCursor<R,C> atColOrdinal(int colOrdinal);
 
     /**
-     * Moves this cursor to the location specified
+     * Moves this cursor to the row and column key specified
      * @param rowKey    the row key
      * @param colKey    the column key
      * @return          this cursor
      */
-    DataFrameCursor<R,C> moveTo(R rowKey, C colKey);
+    DataFrameCursor<R,C> atKeys(R rowKey, C colKey);
 
     /**
-     * Moves this cursor to the location specified
-     * @param rowOrdinal    the row ordinal
-     * @param colKey        the row key
-     * @return              this cursor
-     */
-    DataFrameCursor<R,C> moveTo(int rowOrdinal, C colKey);
-
-    /**
-     * Moves this cursor to the location specified
-     * @param rowKey        the row key
-     * @param colOrdinal    the column ordinal
-     * @return              this cursor
-     */
-    DataFrameCursor<R,C> moveTo(R rowKey, int colOrdinal);
-
-    /**
-     * Moves this cursor to the location specified
+     * Moves this cursor to the row and column ordinals specified
      * @param rowOrdinal    the row ordinal
      * @param colOrdinal    the column ordinal
      * @return              this cursor
      */
-    DataFrameCursor<R,C> moveTo(int rowOrdinal, int colOrdinal);
+    DataFrameCursor<R,C> atOrdinals(int rowOrdinal, int colOrdinal);
 
 }

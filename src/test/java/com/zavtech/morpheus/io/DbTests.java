@@ -174,9 +174,9 @@ public class DbTests {
         Assert.assertTrue(frame.cols().containsAll(Arrays.asList("Node", "ExecutablePath", "TerminationDate", "MinimumWorkingSetSize")));
         Assert.assertEquals(frame.rowCount(), 39);
         Assert.assertTrue(frame.rows().containsAll(Arrays.asList(1, 2, 3)));
-        Assert.assertTrue(frame.colAt("ExecutablePath").toValueStream().anyMatch("C:\\Windows\\system32\\taskhost.exe"::equals));
-        Assert.assertEquals(frame.colAt("TerminationDate").typeInfo(), LocalDate.class);
-        Assert.assertEquals(frame.colAt("MinimumWorkingSetSize").typeInfo(), Long.class);
+        Assert.assertTrue(frame.col("ExecutablePath").toValueStream().anyMatch("C:\\Windows\\system32\\taskhost.exe"::equals));
+        Assert.assertEquals(frame.col("TerminationDate").typeInfo(), LocalDate.class);
+        Assert.assertEquals(frame.col("MinimumWorkingSetSize").typeInfo(), Long.class);
         frame.out().print();
     }
 
@@ -191,9 +191,9 @@ public class DbTests {
         Assert.assertTrue(frame.cols().containsAll(Arrays.asList("Ticker", "Fund Name", "Issuer", "AUM", "P/E")));
         Assert.assertEquals(frame.rowCount(), 1685);
         Assert.assertTrue(frame.rows().containsAll(Arrays.asList("SPY", "QQQ", "IWD")));
-        Assert.assertTrue(frame.colAt("Issuer").toValueStream().anyMatch("BlackRock"::equals));
-        Assert.assertEquals(frame.colAt("Issuer").typeInfo(), String.class);
-        Assert.assertEquals(frame.colAt("P/E").typeInfo(), Double.class);
+        Assert.assertTrue(frame.col("Issuer").toValueStream().anyMatch("BlackRock"::equals));
+        Assert.assertEquals(frame.col("Issuer").typeInfo(), String.class);
+        Assert.assertEquals(frame.col("P/E").typeInfo(), Double.class);
         frame.out().print();
     }
 
@@ -208,19 +208,19 @@ public class DbTests {
         Assert.assertTrue(frame.cols().containsAll(Arrays.asList("Name", "Size", "Volume", "Price", "SomeDate", "SomeTimestamp")));
         Assert.assertEquals(frame.rowCount(), 3);
         Assert.assertTrue(frame.rows().containsAll(Arrays.asList(1, 2, 3)));
-        Assert.assertTrue(frame.colAt("Name").toValueStream().anyMatch("Apple Computer"::equals));
-        Assert.assertEquals(frame.colAt("Name").typeInfo(), String.class);
-        Assert.assertEquals(frame.colAt("IsNew").typeInfo(), Boolean.class);
-        Assert.assertEquals(frame.colAt("Size").typeInfo(), Double.class);
-        Assert.assertEquals(frame.colAt("Price").typeInfo(), Double.class);
-        Assert.assertEquals(frame.colAt("Volume").typeInfo(), Long.class);
-        Assert.assertEquals(frame.colAt("SomeTimestamp").typeInfo(), LocalDateTime.class);
-        Assert.assertEquals(frame.colAt("SomeDateTime").typeInfo(), LocalDateTime.class);
-        Assert.assertEquals(frame.colAt("SomeDate").typeInfo(), LocalDate.class);
-        Assert.assertEquals(frame.colAt("CharData").typeInfo(), String.class);
-        Assert.assertEquals(frame.colAt("TinyIntData").typeInfo(), Integer.class);
-        Assert.assertEquals(frame.colAt("SmallIntData").typeInfo(), Integer.class);
-        Assert.assertEquals(frame.colAt("RealData").typeInfo(), Double.class);
+        Assert.assertTrue(frame.col("Name").toValueStream().anyMatch("Apple Computer"::equals));
+        Assert.assertEquals(frame.col("Name").typeInfo(), String.class);
+        Assert.assertEquals(frame.col("IsNew").typeInfo(), Boolean.class);
+        Assert.assertEquals(frame.col("Size").typeInfo(), Double.class);
+        Assert.assertEquals(frame.col("Price").typeInfo(), Double.class);
+        Assert.assertEquals(frame.col("Volume").typeInfo(), Long.class);
+        Assert.assertEquals(frame.col("SomeTimestamp").typeInfo(), LocalDateTime.class);
+        Assert.assertEquals(frame.col("SomeDateTime").typeInfo(), LocalDateTime.class);
+        Assert.assertEquals(frame.col("SomeDate").typeInfo(), LocalDate.class);
+        Assert.assertEquals(frame.col("CharData").typeInfo(), String.class);
+        Assert.assertEquals(frame.col("TinyIntData").typeInfo(), Integer.class);
+        Assert.assertEquals(frame.col("SmallIntData").typeInfo(), Integer.class);
+        Assert.assertEquals(frame.col("RealData").typeInfo(), Double.class);
         frame.out().print();
     }
 

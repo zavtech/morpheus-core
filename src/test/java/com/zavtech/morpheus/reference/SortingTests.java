@@ -363,7 +363,7 @@ public class SortingTests {
                 final int int2 = df1.data().getInt(j, "Integers");
                 Assert.assertTrue(Integer.compare(int1, int2) <= 0, "Integers are sorted for boolean=" + booleanValue + ": " + int1 + " > " + int2);
             }
-            final int[] intValues = df1.colAt("Integers").toIntStream().distinct().toArray();
+            final int[] intValues = df1.col("Integers").toIntStream().distinct().toArray();
             for (int intValue: intValues) {
                 final DataFrame<LocalDate,String> df2 = df1.rows().select(row -> row.getInt("Integers") == intValue);
                 Assert.assertTrue(df2.rowCount() > 0, "There is at least one row with value = " + intValue);
@@ -372,7 +372,7 @@ public class SortingTests {
                     final long long2 = df2.data().getLong(j, "Longs");
                     Assert.assertTrue(Long.compare(long1, long2) <= 0, "Longs are sorted for int=" + intValue);
                 }
-                final long[] longValues = df2.colAt("Longs").toLongStream().distinct().toArray();
+                final long[] longValues = df2.col("Longs").toLongStream().distinct().toArray();
                 for (long longValue: longValues) {
                     final DataFrame<LocalDate,String> df3 = df2.rows().select(row -> row.getLong("Longs") == longValue);
                     Assert.assertTrue(df3.rowCount() > 0, "There is at least one row with value = " + longValue);
@@ -381,7 +381,7 @@ public class SortingTests {
                         final double v2 = df3.data().getDouble(j, "Doubles");
                         Assert.assertTrue(Double.compare(v1, v2) <= 0, "Doubles are sorted for long=" + longValue);
                     }
-                    final double[] doubleValues = df3.colAt("Doubles").toDoubleStream().distinct().toArray();
+                    final double[] doubleValues = df3.col("Doubles").toDoubleStream().distinct().toArray();
                     for (double doubleValue: doubleValues) {
                         final DataFrame<LocalDate,String> df4 = df3.rows().select(row -> row.getDouble("Doubles") == doubleValue);
                         Assert.assertTrue(df4.rowCount() > 0, "There is at least one row with value = " + doubleValue);
@@ -444,7 +444,7 @@ public class SortingTests {
                 final int int2 = df1.data().getInt(j, "Integers");
                 Assert.assertTrue(Integer.compare(int1, int2) <= 0, "Integers are sorted for boolean=" + booleanValue);
             }
-            final int[] intValues = df1.colAt("Integers").toIntStream().distinct().toArray();
+            final int[] intValues = df1.col("Integers").toIntStream().distinct().toArray();
             for (int intValue: intValues) {
                 final DataFrame<LocalDate,String> df2 = df1.rows().select(row -> row.getInt("Integers") == intValue);
                 Assert.assertTrue(df2.rowCount() > 0, "There is at least one row with value = " + intValue);
@@ -453,7 +453,7 @@ public class SortingTests {
                     final long long2 = df2.data().getLong(j, "Longs");
                     Assert.assertTrue(Long.compare(long1, long2) <= 0, "Longs are sorted for int=" + intValue);
                 }
-                final long[] longValues = df2.colAt("Longs").toLongStream().distinct().toArray();
+                final long[] longValues = df2.col("Longs").toLongStream().distinct().toArray();
                 for (long longValue: longValues) {
                     final DataFrame<LocalDate,String> df3 = df2.rows().select(row -> row.getLong("Longs") == longValue);
                     Assert.assertTrue(df3.rowCount() > 0, "There is at least one row with value = " + longValue);
@@ -462,7 +462,7 @@ public class SortingTests {
                         final double v2 = df3.data().getDouble(j, "Doubles");
                         Assert.assertTrue(Double.compare(v1, v2) <= 0, "Doubles are sorted for long=" + longValue);
                     }
-                    final double[] doubleValues = df3.colAt("Doubles").toDoubleStream().distinct().toArray();
+                    final double[] doubleValues = df3.col("Doubles").toDoubleStream().distinct().toArray();
                     for (double doubleValue: doubleValues) {
                         final DataFrame<LocalDate,String> df4 = df3.rows().select(row -> row.getDouble("Doubles") == doubleValue);
                         Assert.assertTrue(df4.rowCount() > 0, "There is at least one row with value = " + doubleValue);
@@ -621,7 +621,7 @@ public class SortingTests {
                 frame.cols().addAll(columns, type);
                 IntStream.range(0, (colCount - 1) / intervalSize).forEach(i -> {
                     final LocalDate colKey = frame.cols().key(i * intervalSize);
-                    frame.colAt(colKey).applyBooleans(v -> random.nextBoolean());
+                    frame.col(colKey).applyBooleans(v -> random.nextBoolean());
                 });
                 frame.fill().right(100);
                 break;
@@ -629,7 +629,7 @@ public class SortingTests {
                 frame.cols().addAll(columns, type);
                 IntStream.range(0, (colCount - 1) / intervalSize).forEach(i -> {
                     final LocalDate colKey = frame.cols().key(i * intervalSize);
-                    frame.colAt(colKey).applyInts(v -> random.nextInt());
+                    frame.col(colKey).applyInts(v -> random.nextInt());
                 });
                 frame.fill().right(100);
                 break;
@@ -637,7 +637,7 @@ public class SortingTests {
                 frame.cols().addAll(columns, type);
                 IntStream.range(0, (colCount - 1) / intervalSize).forEach(i -> {
                     final LocalDate colKey = frame.cols().key(i * intervalSize);
-                    frame.colAt(colKey).applyLongs(v -> random.nextLong());
+                    frame.col(colKey).applyLongs(v -> random.nextLong());
                 });
                 frame.fill().right(100);
                 break;
@@ -645,7 +645,7 @@ public class SortingTests {
                 frame.cols().addAll(columns, type);
                 IntStream.range(0, (colCount - 1) / intervalSize).forEach(i -> {
                     final LocalDate colKey = frame.cols().key(i * intervalSize);
-                    frame.colAt(colKey).applyDoubles(v -> random.nextDouble());
+                    frame.col(colKey).applyDoubles(v -> random.nextDouble());
                 });
                 frame.fill().right(100);
                 break;
@@ -653,7 +653,7 @@ public class SortingTests {
                 frame.cols().addAll(columns, type);
                 IntStream.range(0, (colCount - 1) / intervalSize).forEach(i -> {
                     final LocalDate colKey = frame.cols().key(i * intervalSize);
-                    frame.colAt(colKey).applyValues(v -> "X:" + random.nextDouble());
+                    frame.col(colKey).applyValues(v -> "X:" + random.nextDouble());
                 });
                 frame.fill().right(100);
                 break;
@@ -661,7 +661,7 @@ public class SortingTests {
                 frame.cols().addAll(columns, type);
                 IntStream.range(0, (colCount - 1) / intervalSize).forEach(i -> {
                     final LocalDate colKey = frame.cols().key(i * intervalSize);
-                    frame.colAt(colKey).applyValues(v -> "X:" + random.nextDouble());
+                    frame.col(colKey).applyValues(v -> "X:" + random.nextDouble());
                 });
                 frame.fill().right(100);
                 break;

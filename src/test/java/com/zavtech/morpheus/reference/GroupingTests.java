@@ -60,7 +60,7 @@ public class GroupingTests {
     public void testGroupRows1D(boolean parallel) throws Exception {
         final DataFrame<String,String> source = frame();
         final DataFrameGrouping.Rows<String,String> grouping = parallel ? source.rows().parallel().groupBy("Niche") : source.rows().sequential().groupBy("Niche");
-        final Set<String> expectedGroupSet = source.colAt("Niche").<String>toValueStream().distinct().collect(Collectors.toSet());
+        final Set<String> expectedGroupSet = source.col("Niche").<String>toValueStream().distinct().collect(Collectors.toSet());
         Assert.assertEquals(grouping.getDepth(), 1);
         Assert.assertEquals(grouping.getGroupCount(0), expectedGroupSet.size(), "The group count matches");
         grouping.getGroupKeys(0).forEach(groupKey -> {
@@ -68,14 +68,14 @@ public class GroupingTests {
             final DataFrame<String,String> group = grouping.getGroup(groupKey);
             final DataFrame<String, String> selection = source.rows().select(row -> niche.equals(row.getValue("Niche")));
             Assert.assertEquals(group.rowCount(), selection.rowCount(), "Row counts match");
-            final DataFrameColumn<String, String> aumColumn = selection.colAt("AUM");
-            assertEquals(group.colAt("AUM").stats().sum(), aumColumn.stats().sum(), 0.01, "The AUM sums match for " + niche);
-            assertEquals(group.colAt("AUM").stats().mean(), aumColumn.stats().mean(), 0.01, "The AUM mean match for " + niche);
-            assertEquals(group.colAt("AUM").stats().min(), aumColumn.stats().min(), 0.01, "The AUM min match for " + niche);
-            assertEquals(group.colAt("AUM").stats().max(), aumColumn.stats().max(), 0.01, "The AUM max match for " + niche);
-            assertEquals(group.colAt("AUM").stats().median(), aumColumn.stats().median(), 0.01, "The AUM median match for " + niche);
-            assertEquals(group.colAt("AUM").stats().stdDev(), aumColumn.stats().stdDev(), 0.01, "The AUM stdDevS match for " + niche);
-            assertEquals(group.colAt("AUM").stats().kurtosis(), aumColumn.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
+            final DataFrameColumn<String, String> aumColumn = selection.col("AUM");
+            assertEquals(group.col("AUM").stats().sum(), aumColumn.stats().sum(), 0.01, "The AUM sums match for " + niche);
+            assertEquals(group.col("AUM").stats().mean(), aumColumn.stats().mean(), 0.01, "The AUM mean match for " + niche);
+            assertEquals(group.col("AUM").stats().min(), aumColumn.stats().min(), 0.01, "The AUM min match for " + niche);
+            assertEquals(group.col("AUM").stats().max(), aumColumn.stats().max(), 0.01, "The AUM max match for " + niche);
+            assertEquals(group.col("AUM").stats().median(), aumColumn.stats().median(), 0.01, "The AUM median match for " + niche);
+            assertEquals(group.col("AUM").stats().stdDev(), aumColumn.stats().stdDev(), 0.01, "The AUM stdDevS match for " + niche);
+            assertEquals(group.col("AUM").stats().kurtosis(), aumColumn.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
             assertEquals(group.rowCount(), aumColumn.size(), 0.01, "The count matches for " + niche);
         });
     }
@@ -94,14 +94,14 @@ public class GroupingTests {
             final DataFrame<String,String> group = grouping.getGroup(groupKey);
             final DataFrame<String, String> selection = source.rows().select(row -> issuer.equals(row.getValue("Issuer")) && niche.equals(row.getValue("Niche")));
             Assert.assertEquals(group.rowCount(), selection.rowCount(), "Row counts match");
-            final DataFrameColumn<String, String> aumColumn = selection.colAt("AUM");
-            assertEquals(group.colAt("AUM").stats().sum(), aumColumn.stats().sum(), 0.01, "The AUM sums match for " + niche);
-            assertEquals(group.colAt("AUM").stats().mean(), aumColumn.stats().mean(), 0.01, "The AUM mean match for " + niche);
-            assertEquals(group.colAt("AUM").stats().min(), aumColumn.stats().min(), 0.01, "The AUM min match for " + niche);
-            assertEquals(group.colAt("AUM").stats().max(), aumColumn.stats().max(), 0.01, "The AUM max match for " + niche);
-            assertEquals(group.colAt("AUM").stats().median(), aumColumn.stats().median(), 0.01, "The AUM median match for " + niche);
-            assertEquals(group.colAt("AUM").stats().stdDev(), aumColumn.stats().stdDev(), 0.01, "The AUM stdDevS match for " + niche);
-            assertEquals(group.colAt("AUM").stats().kurtosis(), aumColumn.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
+            final DataFrameColumn<String, String> aumColumn = selection.col("AUM");
+            assertEquals(group.col("AUM").stats().sum(), aumColumn.stats().sum(), 0.01, "The AUM sums match for " + niche);
+            assertEquals(group.col("AUM").stats().mean(), aumColumn.stats().mean(), 0.01, "The AUM mean match for " + niche);
+            assertEquals(group.col("AUM").stats().min(), aumColumn.stats().min(), 0.01, "The AUM min match for " + niche);
+            assertEquals(group.col("AUM").stats().max(), aumColumn.stats().max(), 0.01, "The AUM max match for " + niche);
+            assertEquals(group.col("AUM").stats().median(), aumColumn.stats().median(), 0.01, "The AUM median match for " + niche);
+            assertEquals(group.col("AUM").stats().stdDev(), aumColumn.stats().stdDev(), 0.01, "The AUM stdDevS match for " + niche);
+            assertEquals(group.col("AUM").stats().kurtosis(), aumColumn.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
             assertEquals(group.rowCount(), aumColumn.size(), 0.01, "The count matches for " + niche);
         });
     }
@@ -113,7 +113,7 @@ public class GroupingTests {
         final DataFrame<String,String> frame = source.transpose();
         DataFrameAsserts.assertEqualsByIndex(source, transpose(frame));
         final DataFrameGrouping.Cols<String,String> grouping = parallel ? frame.cols().parallel().groupBy("Niche") : frame.cols().groupBy("Niche");
-        final Set<String> expectedGroupSet = frame.rowAt("Niche").<String>toValueStream().distinct().collect(Collectors.toSet());
+        final Set<String> expectedGroupSet = frame.row("Niche").<String>toValueStream().distinct().collect(Collectors.toSet());
         Assert.assertEquals(grouping.getDepth(), 1);
         Assert.assertEquals(grouping.getGroupCount(0), expectedGroupSet.size(), "The group count matches");
         grouping.getGroupKeys(0).forEach(groupKey -> {
@@ -121,14 +121,14 @@ public class GroupingTests {
             final DataFrame<String,String> group = grouping.getGroup(groupKey);
             final DataFrame<String,String> selection = frame.cols().select(column -> niche.equals(column.getValue("Niche")));
             Assert.assertEquals(group.colCount(), selection.colCount(), "Column counts match");
-            final DataFrameRow<String, String> aumRow = selection.rowAt("AUM");
-            assertEquals(group.rowAt("AUM").stats().sum(), aumRow.stats().sum(), 0.01, "The AUM sums match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().mean(), aumRow.stats().mean(), 0.01, "The AUM mean match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().min(), aumRow.stats().min(), 0.01, "The AUM min match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().max(), aumRow.stats().max(), 0.01, "The AUM max match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().median(), aumRow.stats().median(), 0.01, "The AUM median match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().stdDev(), aumRow.stats().stdDev(), 0.01, "The AUM stdDevS match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().kurtosis(), aumRow.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
+            final DataFrameRow<String, String> aumRow = selection.row("AUM");
+            assertEquals(group.row("AUM").stats().sum(), aumRow.stats().sum(), 0.01, "The AUM sums match for " + niche);
+            assertEquals(group.row("AUM").stats().mean(), aumRow.stats().mean(), 0.01, "The AUM mean match for " + niche);
+            assertEquals(group.row("AUM").stats().min(), aumRow.stats().min(), 0.01, "The AUM min match for " + niche);
+            assertEquals(group.row("AUM").stats().max(), aumRow.stats().max(), 0.01, "The AUM max match for " + niche);
+            assertEquals(group.row("AUM").stats().median(), aumRow.stats().median(), 0.01, "The AUM median match for " + niche);
+            assertEquals(group.row("AUM").stats().stdDev(), aumRow.stats().stdDev(), 0.01, "The AUM stdDevS match for " + niche);
+            assertEquals(group.row("AUM").stats().kurtosis(), aumRow.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
             assertEquals(group.colCount(), aumRow.size(), 0.01, "The count matches for " + niche);
         });
     }
@@ -140,7 +140,7 @@ public class GroupingTests {
         final DataFrame<String,String> frame = transpose(source);
         DataFrameAsserts.assertEqualsByIndex(source, transpose(frame));
         final DataFrameGrouping.Cols<String,String> grouping = parallel ? frame.cols().parallel().groupBy("Issuer", "Niche") : frame.cols().groupBy("Issuer", "Niche");
-        final Array<Tuple> expectedGroupSet = frame.rowAt("Issuer").distinct().map(v -> Tuple.of(v.<String>getValue()));
+        final Array<Tuple> expectedGroupSet = frame.row("Issuer").distinct().map(v -> Tuple.of(v.<String>getValue()));
         Assert.assertEquals(grouping.getDepth(), 2);
         Assert.assertEquals(grouping.getGroupCount(0), expectedGroupSet.length(), "The group count matches");
         grouping.getGroupKeys(1).forEach(groupKey -> {
@@ -149,14 +149,14 @@ public class GroupingTests {
             final DataFrame<String,String> group = grouping.getGroup(groupKey);
             final DataFrame<String, String> selection = frame.cols().select(column -> issuer.equals(column.getValue("Issuer")) && niche.equals(column.getValue("Niche")));
             Assert.assertEquals(group.colCount(), selection.colCount(), "Column counts match");
-            final DataFrameRow<String, String> aumRow = selection.rowAt("AUM");
-            assertEquals(group.rowAt("AUM").stats().sum(), aumRow.stats().sum(), 0.01, "The AUM sums match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().mean(), aumRow.stats().mean(), 0.01, "The AUM mean match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().min(), aumRow.stats().min(), 0.01, "The AUM min match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().max(), aumRow.stats().max(), 0.01, "The AUM max match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().median(), aumRow.stats().median(), 0.01, "The AUM median match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().stdDev(), aumRow.stats().stdDev(), 0.01, "The AUM stdDev match for " + niche);
-            assertEquals(group.rowAt("AUM").stats().kurtosis(), aumRow.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
+            final DataFrameRow<String, String> aumRow = selection.row("AUM");
+            assertEquals(group.row("AUM").stats().sum(), aumRow.stats().sum(), 0.01, "The AUM sums match for " + niche);
+            assertEquals(group.row("AUM").stats().mean(), aumRow.stats().mean(), 0.01, "The AUM mean match for " + niche);
+            assertEquals(group.row("AUM").stats().min(), aumRow.stats().min(), 0.01, "The AUM min match for " + niche);
+            assertEquals(group.row("AUM").stats().max(), aumRow.stats().max(), 0.01, "The AUM max match for " + niche);
+            assertEquals(group.row("AUM").stats().median(), aumRow.stats().median(), 0.01, "The AUM median match for " + niche);
+            assertEquals(group.row("AUM").stats().stdDev(), aumRow.stats().stdDev(), 0.01, "The AUM stdDev match for " + niche);
+            assertEquals(group.row("AUM").stats().kurtosis(), aumRow.stats().kurtosis(), 0.01, "The AUM kurtosis match for " + niche);
             assertEquals(group.colCount(), aumRow.size(), 0.01, "The count matches for " + niche);
         });
     }

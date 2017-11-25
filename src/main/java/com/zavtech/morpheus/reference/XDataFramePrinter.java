@@ -118,9 +118,9 @@ class XDataFramePrinter {
         final Printer<Object> rowKeyPrinter = formats.getPrinterOrFail(frame.rows().keyType(), Object.class);
         final List<Printer<Object>> printers = getColumnPrinters(frame);
         final String[][] data = new String[rowCount][colCount];
-        final DataFrameCursor<?,?> cursor = frame.cursor().moveTo(0, 0);
+        final DataFrameCursor<?,?> cursor = frame.cursor().atOrdinals(0, 0);
         for (int i=0; i<rowCount; ++i) {
-            cursor.moveToRow(i);
+            cursor.atRowOrdinal(i);
             for (int j=0; j<=frame.colCount(); ++j) {
                 try {
                     if (j == 0) {
@@ -128,7 +128,7 @@ class XDataFramePrinter {
                         final String rowText = rowKeyPrinter.apply(rowKey);
                         data[i][j] = rowText;
                     } else {
-                        cursor.moveToColumn(j-1);
+                        cursor.atColOrdinal(j-1);
                         final Printer<Object> printer = printers.get(j -1);
                         final Object value = cursor.getValue();
                         final String text =  printer.apply(value);

@@ -94,7 +94,7 @@ public class StructureTests {
         final DataFrame<String,String> actual = TestDataFrames.random(type, Index.of(rows.getKey(0)), columns);
         expected.rows().keys().forEach(key -> {
             actual.rows().add(key);
-            actual.rowAt(key).applyValues(v -> expected.data().getValue(v.rowKey(), v.colKey()));
+            actual.row(key).applyValues(v -> expected.data().getValue(v.rowKey(), v.colKey()));
             DataFrameAsserts.assertEqualsByIndex(expected.select(r -> actual.rows().contains(r.key()), c -> actual.cols().contains(c.key())), actual);
         });
     }
@@ -120,7 +120,7 @@ public class StructureTests {
         final DataFrame<String,String> actual = TestDataFrames.random(type, rows, Index.of(columns.getKey(0)));
         expected.cols().keys().forEach(key -> {
             actual.cols().add(key, type);
-            actual.colAt(key).forEachValue(v -> v.setValue(expected.data().getValue(v.rowKey(), v.colKey())));
+            actual.col(key).forEachValue(v -> v.setValue(expected.data().getValue(v.rowKey(), v.colKey())));
             DataFrameAsserts.assertEqualsByIndex(expected.select(row -> actual.rows().contains(row.key()), c -> actual.cols().contains(c.key())), actual);
         });
     }
@@ -133,7 +133,7 @@ public class StructureTests {
         final Array<String> colKeys = expected.cols().keyArray();
         actual.cols().addAll(colKeys, type);
         actual.cols().keys().forEach(key -> {
-            actual.colAt(key).forEachValue(v -> {
+            actual.col(key).forEachValue(v -> {
                 v.setValue(expected.data().getValue(v.rowKey(), v.colKey()));
             });
         });
@@ -144,7 +144,7 @@ public class StructureTests {
     @Test(dataProvider="frameTypes")
     public void testRowSelectionOfOne(Class type) throws Exception {
         final DataFrame<String,String> frame = TestDataFrames.random(type, rows, columns);
-        final DataFrameRow<String,String> row = frame.rowAt("R2");
+        final DataFrameRow<String,String> row = frame.row("R2");
         row.forEachValue(value -> {
             Object actual = value.getValue();
             Object expected = frame.data().getValue(value.rowKey(), value.colKey());
@@ -156,7 +156,7 @@ public class StructureTests {
     @Test(dataProvider="frameTypes")
     public void testColumnSelectionOfOne(Class type) throws Exception {
         final DataFrame<String,String> frame = TestDataFrames.random(type, rows, columns);
-        final DataFrameColumn<String,String> column = frame.colAt("C4");
+        final DataFrameColumn<String,String> column = frame.col("C4");
         column.forEachValue(value -> {
             Object actual = value.getValue();
             Object expected = frame.data().getValue(value.rowKey(), value.colKey());
@@ -191,7 +191,7 @@ public class StructureTests {
         final DataFrame<String,String> frame = DataFrame.of(rows, columns, Double.class);
         frame.rows().forEach(row -> row.applyDoubles(v -> Math.random() * 100d));
         final String rowKeyToFind = frame.rows().key(85);
-        final DataFrameRow<String,String> rowToFind = frame.rowAt(rowKeyToFind);
+        final DataFrameRow<String,String> rowToFind = frame.row(rowKeyToFind);
         final List<String> rowKeys = new ArrayList<>();
         final Optional<DataFrameRow<String,String>> rowMatch = frame.rows().first(row -> {
             rowKeys.add(row.key());
@@ -212,7 +212,7 @@ public class StructureTests {
         final DataFrame<String,String> frame = DataFrame.of(rows, columns, Double.class);
         frame.rows().forEach(row -> row.applyDoubles(v -> Math.random() * 100d));
         final String rowKeyToFind = frame.rows().key(85);
-        final DataFrameRow<String,String> rowToFind = frame.rowAt(rowKeyToFind);
+        final DataFrameRow<String,String> rowToFind = frame.row(rowKeyToFind);
         final List<String> rowKeys = new ArrayList<>();
         final Optional<DataFrameRow<String,String>> rowMatch = frame.rows().last(row -> {
             rowKeys.add(row.key());

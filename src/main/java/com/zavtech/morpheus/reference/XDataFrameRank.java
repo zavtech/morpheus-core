@@ -98,7 +98,7 @@ class XDataFrameRank<R,C> implements DataFrameRank<R,C> {
                     values[i] = frame.data().getDouble(rowIndex, colIndexes[i]);
                 }
                 final double[] ranks = XDataFrameRank.rank(values);
-                result.rowAt(rowKey).applyDoubles(v -> ranks[v.colOrdinal()]);
+                result.row(rowKey).applyDoubles(v -> ranks[v.colOrdinal()]);
             });
             return result;
         } catch (Throwable t) {
@@ -116,12 +116,12 @@ class XDataFrameRank<R,C> implements DataFrameRank<R,C> {
             final DataFrame<R,C> result = DataFrame.ofDoubles(rowKeys, colKeys);
             final double[] values = new double[rowKeys.size()];
             frame.cols().keys().forEach(colKey -> {
-                final DataFrameCursor<R,C> cursor = frame.cursor().moveToColumn(colKey);
+                final DataFrameCursor<R,C> cursor = frame.cursor().atColKey(colKey);
                 for (int rowIndex=0; rowIndex<rowCount; ++rowIndex) {
-                    values[rowIndex] = cursor.moveToRow(rowIndex).getDouble();
+                    values[rowIndex] = cursor.atRowOrdinal(rowIndex).getDouble();
                 }
                 final double[] ranks = XDataFrameRank.rank(values);
-                result.colAt(colKey).applyDoubles(v -> ranks[v.rowOrdinal()]);
+                result.col(colKey).applyDoubles(v -> ranks[v.rowOrdinal()]);
             });
             return result;
         } catch (Throwable t) {

@@ -77,7 +77,7 @@ class XDataFrameColumns<R,C> extends XDataFrameAxisBase<C,R,R,C,DataFrameColumn<
 
     @Override
     public final DataFrameColumn<R,C> add(C key, Iterable<?> values) {
-        return addColumns().andThen(notifyEvent()).andThen(keys -> frame().colAt(key)).apply(columnMap -> {
+        return addColumns().andThen(notifyEvent()).andThen(keys -> frame().col(key)).apply(columnMap -> {
             if (!contains(key)) {
                 columnMap.put(key, values);
             }
@@ -87,7 +87,7 @@ class XDataFrameColumns<R,C> extends XDataFrameAxisBase<C,R,R,C,DataFrameColumn<
 
     @Override
     public final DataFrameColumn<R,C> add(C key, Class<?> type) {
-        return addColumns().andThen(notifyEvent()).andThen(keys -> frame().colAt(key)).apply(columnMap -> {
+        return addColumns().andThen(notifyEvent()).andThen(keys -> frame().col(key)).apply(columnMap -> {
             if (!contains(key)) {
                 final int rowCapacity = frame().content().rowCapacity();
                 columnMap.put(key, Array.of(type, rowCapacity));

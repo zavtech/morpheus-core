@@ -39,10 +39,10 @@ public class FillTests {
         final Range<String> rowKeys = Range.of(0, 100, 1).map(i -> "R" + i);
         final Range<String> colKeys = Range.of(0, 10).map(i -> "C" + i);
         final DataFrame<String,String> frame = DataFrame.ofDoubles(rowKeys, colKeys);
-        frame.rowAt("R6").applyDoubles(v -> 6d);
-        frame.rowAt("R20").applyDoubles(v -> 20d);
-        frame.rowAt("R60").applyDoubles(v -> 60d);
-        frame.rowAt("R70").applyDoubles(v -> 70d);
+        frame.row("R6").applyDoubles(v -> 6d);
+        frame.row("R20").applyDoubles(v -> 20d);
+        frame.row("R60").applyDoubles(v -> 60d);
+        frame.row("R70").applyDoubles(v -> 70d);
         frame.fill().down(100);
         frame.rows().forEach(row -> {
             final int rowIndex = row.ordinal();
@@ -67,10 +67,10 @@ public class FillTests {
         final Range<String> rowKeys = Range.of(0, 100, 1).map(i -> "R" + i);
         final Range<String> colKeys = Range.of(0, 10).map(i -> "C" + i);
         final DataFrame<String,String> frame = DataFrame.ofDoubles(rowKeys, colKeys);
-        frame.rowAt("R6").applyDoubles(v -> 6d);
-        frame.rowAt("R20").applyDoubles(v -> 20d);
-        frame.rowAt("R60").applyDoubles(v -> 60d);
-        frame.rowAt("R70").applyDoubles(v -> 70d);
+        frame.row("R6").applyDoubles(v -> 6d);
+        frame.row("R20").applyDoubles(v -> 20d);
+        frame.row("R60").applyDoubles(v -> 60d);
+        frame.row("R70").applyDoubles(v -> 70d);
         frame.fill().up(100);
         frame.rows().forEach(row -> {
             final int rowIndex = row.ordinal();
@@ -95,10 +95,10 @@ public class FillTests {
         final Range<String> rowKeys = Range.of(0, 100, 1).map(i -> "R" + i);
         final Range<String> colKeys = Range.of(0, 40).map(i -> "C" + i);
         final DataFrame<String,String> frame = DataFrame.ofDoubles(rowKeys, colKeys);
-        frame.colAt("C6").applyDoubles(v -> 6d);
-        frame.colAt("C12").applyDoubles(v -> 20d);
-        frame.colAt("C20").applyDoubles(v -> 60d);
-        frame.colAt("C30").applyDoubles(v -> 70d);
+        frame.col("C6").applyDoubles(v -> 6d);
+        frame.col("C12").applyDoubles(v -> 20d);
+        frame.col("C20").applyDoubles(v -> 60d);
+        frame.col("C30").applyDoubles(v -> 70d);
         frame.fill().right(20);
         frame.out().print();
         frame.cols().forEach(column -> {
@@ -124,10 +124,10 @@ public class FillTests {
         final Range<String> rowKeys = Range.of(0, 100, 1).map(i -> "R" + i);
         final Range<String> colKeys = Range.of(0, 40).map(i -> "C" + i);
         final DataFrame<String,String> frame = DataFrame.ofDoubles(rowKeys, colKeys);
-        frame.colAt("C6").applyDoubles(v -> 6d);
-        frame.colAt("C12").applyDoubles(v -> 20d);
-        frame.colAt("C20").applyDoubles(v -> 60d);
-        frame.colAt("C30").applyDoubles(v -> 70d);
+        frame.col("C6").applyDoubles(v -> 6d);
+        frame.col("C12").applyDoubles(v -> 20d);
+        frame.col("C20").applyDoubles(v -> 60d);
+        frame.col("C30").applyDoubles(v -> 70d);
         frame.fill().left(20);
         frame.cols().forEach(column -> {
             final int colIndex = column.ordinal();

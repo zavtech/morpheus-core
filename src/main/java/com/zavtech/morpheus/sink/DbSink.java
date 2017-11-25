@@ -208,7 +208,7 @@ public class DbSink<R,C> implements DataFrameSink<R,C,DbSinkOptions<R,C>> {
                 } else if (options.getAutoIncrementColumnName().map(name -> !name.equalsIgnoreCase(sqlColName)).orElse(true)) {
                     final C colKey = columnMap2.get(sqlColName);
                     final Class<?> dataType = frame.cols().type(colKey);
-                    final DataFrameCursor<R,C> cursor = frame.cursor().moveToColumn(colKey);
+                    final DataFrameCursor<R,C> cursor = frame.cursor().atColKey(colKey);
                     final Function1<DataFrameValue<R,C>,?> mapper = options.getColumnMappings().getMapper(dataType);
                     columnList.add(new ValueAdapter(sqlColName, sqlType, cursor, mapper));
                 }
@@ -422,7 +422,7 @@ public class DbSink<R,C> implements DataFrameSink<R,C,DbSinkOptions<R,C>> {
         @Override()
         void apply(PreparedStatement stmt, int stmtIndex, DataFrameRow<R,C> row) {
             try {
-                this.cursor.moveToRow(row.ordinal());
+                this.cursor.atRowOrdinal(row.ordinal());
                 if (cursor.isNull()) {
                     stmt.setNull(stmtIndex, colType.getTypeCode());
                 } else {

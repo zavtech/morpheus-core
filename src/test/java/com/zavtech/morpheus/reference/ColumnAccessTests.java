@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@ import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.frame.DataFrameColumn;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

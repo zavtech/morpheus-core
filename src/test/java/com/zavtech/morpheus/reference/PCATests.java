@@ -19,8 +19,8 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameAsserts;
@@ -132,7 +132,7 @@ public class PCATests {
             IntStream.of(30, 50, 100).forEach(nComps -> {
 
                 String scoreFile = "./src/test/resources/pca/evd_cov/poppet-evd-scores-" + nComps + ".csv";
-                String projectionFile = "./src/test/resources/pca_cov/evd/poppet-evd-projection-" + nComps + ".csv";
+                String projectionFile = "./src/test/resources/pca/evd_cov/poppet-evd-projection-" + nComps + ".csv";
 
                 final DataFrame<Integer,String> actualScores = model.getScores(nComps).cols().mapKeys(c -> String.valueOf(c.key()));
                 Assert.assertEquals(actualScores.rowCount(), 504);
@@ -207,7 +207,7 @@ public class PCATests {
     }
 
 
-    @Test(expected = DataFrameException.class)
+    @Test(expectedExceptions = DataFrameException.class)
     public void testFailureOnWrongDimensionsSVD() {
         final DataFrame<Integer,Integer> data = poppet().mapToDoubles(v -> v.getDouble());
         data.pca().apply(true, DataFramePCA.Solver.EVD_COV, model -> {
@@ -218,7 +218,7 @@ public class PCATests {
     }
 
 
-    @Test(expected = DataFrameException.class)
+    @Test(expectedExceptions = DataFrameException.class)
     public void testFailureOnWrongDimensionsEVD() {
         final DataFrame<Integer,Integer> data = poppet().mapToDoubles(v -> v.getDouble());
         data.pca().apply(true, DataFramePCA.Solver.SVD, model -> {

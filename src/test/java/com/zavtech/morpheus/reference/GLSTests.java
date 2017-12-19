@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,8 @@ package com.zavtech.morpheus.reference;
 import java.time.Year;
 import java.util.Optional;
 
-import org.junit.Test;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.frame.DataFrame;

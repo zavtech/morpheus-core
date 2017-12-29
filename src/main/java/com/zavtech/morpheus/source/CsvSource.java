@@ -363,7 +363,7 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
                     final String colName = headers[i] != null ? headers[i] : "Column-" + i;
                     try {
                         final String[] rawValues = batch.colData(i);
-                        final Optional<Parser<?>> userParser = getParser(colName);
+                        final Optional<Parser<?>> userParser = getParser(options.getFormats(), colName);
                         final Optional<Class<?>> colType = getColumnType(colName);
                         if (colType.isPresent()) {
                             final Class<?> type = colType.get();
@@ -406,29 +406,7 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
         }
 
 
-        /**
-         * Returns the user configured parser for column name
-         * @param colName   the column name
-         * @return          the parser match
-         */
-        private Optional<Parser<?>> getParser(String colName) {
-            final Formats formats = options.getFormats();
-            final Parser<?> userParser = formats.getParser(colName);
-            if (userParser != null) {
-                return Optional.of(userParser);
-            } else {
-                for (Object key : formats.getParserKeys()) {
-                    if (key instanceof String) {
-                        final String keyString = key.toString();
-                        if (colName.matches(keyString)) {
-                            final Parser<?> parser = formats.getParserOrFail(keyString);
-                            return Optional.ofNullable(parser);
-                        }
-                    }
-                }
-                return Optional.empty();
-            }
-        }
+
 
 
         /**
@@ -474,13 +452,35 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
         }
     }
 
+    /**
+     * Returns the user configured parser for column name
+     * @param colName   the column name
+     * @return          the parser match
+     */
+    protected static Optional<Parser<?>> getParser(Formats formats, String colName) {
+        final Parser<?> userParser = formats.getParser(colName);
+        if (userParser != null) {
+            return Optional.of(userParser);
+        } else {
+            for (Object key : formats.getParserKeys()) {
+                if (key instanceof String) {
+                    final String keyString = key.toString();
+                    if (colName.matches(keyString)) {
+                        final Parser<?> parser = formats.getParserOrFail(keyString);
+                        return Optional.ofNullable(parser);
+                    }
+                }
+            }
+            return Optional.empty();
+        }
+    }
 
 
     /**
      * A class that represents a batch of raw CSV that needs to be parsed into type specific values
      * @param <X>       the row key type
      */
-    private class DataBatch<X> {
+    protected static class DataBatch<X> {
 
         private Array<X> keys;
         private int rowCount;
@@ -492,15 +492,19 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
          * @param colCount  the column count for this batch
          */
         private DataBatch(CsvSourceOptions<X> request, int colCount) {
-            this.keys = Array.of(request.getRowAxisType(), request.getReadBatchSize());
-            this.data = new String[colCount][request.getReadBatchSize()];
+            this( request.getRowAxisType(), request.getReadBatchSize(), colCount);
+        }
+
+        protected DataBatch(Class<X> rowAxisType, int readBatchSize, int colCount) {
+            this.keys = Array.of(rowAxisType, readBatchSize);
+            this.data = new String[colCount][readBatchSize];
         }
 
         /**
          * Returns the row count for this batch
          * @return  the populated row count
          */
-        private int rowCount() {
+        protected int rowCount() {
             return rowCount;
         }
 
@@ -508,7 +512,7 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
          * Returns the keys for this batch
          * @return  the keys for this batch
          */
-        private Array<X> keys() {
+        protected Array<X> keys() {
             return keys;
         }
 
@@ -517,14 +521,14 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
          * @param colIndex  the column index
          * @return          the column vector
          */
-        private String[] colData(int colIndex) {
+        protected String[] colData(int colIndex) {
             return data[colIndex];
         }
 
         /**
          * Resets this batch so that it can be used again
          */
-        private void clear() {
+        protected void clear() {
             this.rowCount = 0;
             this.keys.fill(null);
             for (int i=0; i<data.length; ++i) {
@@ -540,7 +544,7 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
          * @param rowValues the row value tokens
          * @return          the row index in batch
          */
-        private int addRow(X rowKey, String[] rowValues) {
+        protected int addRow(X rowKey, String[] rowValues) {
             this.keys.setValue(rowCount, rowKey);
             for (int i=0; i<rowValues.length; ++i) {
                 this.data[i][rowCount] = rowValues[i];
@@ -554,7 +558,7 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
          * @param rowValues the row value tokens
          * @return          the row index in batch
          */
-        private int addRow(int rowKey, String[] rowValues) {
+        protected int addRow(int rowKey, String[] rowValues) {
             this.keys.setInt(rowCount, rowKey);
             for (int i=0; i<rowValues.length; ++i) {
                 this.data[i][rowCount] = rowValues[i];

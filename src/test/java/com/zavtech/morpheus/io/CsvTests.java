@@ -173,6 +173,13 @@ public class CsvTests {
         }
     }
 
+    @Test()
+    public void testBasicReadCars() throws Exception {
+        final DataFrame<Integer, String> frame = DataFrame.read().csv(options -> {
+            options.setResource("/csv/cars93.csv");
+
+        });
+    }
 
     @Test(dataProvider = "parallel")
     public void testRowKeyParser(boolean parallel) throws Exception {

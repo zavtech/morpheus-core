@@ -1,19 +1,16 @@
 package com.zavtech.morpheus.io;
 
 import com.zavtech.morpheus.frame.DataFrame;
-import com.zavtech.morpheus.source.ExcelSource;
 import com.zavtech.morpheus.util.Predicates;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.xml.crypto.Data;
-import java.io.*;
-import java.net.URL;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static com.zavtech.morpheus.source.ExcelSourceOptions.ExcelType.getTypeEnum;
+import static org.testng.Assert.*;
 
 /**
  * A unit test of the DataFrame Excel reader
@@ -24,40 +21,70 @@ import static org.testng.Assert.assertTrue;
  */
 public class ExcelTests {
 
-    @Test
-    public void readFromInputStream() throws IOException{
+    @DataProvider(name="excelType")
+    public Object[][] excelTypes() {
+        return new Object[][] {
+                {"xlsx"},
+                {"xls"}
+        };
+    }
 
-        try(InputStream excelInputStream = getClass().getResourceAsStream("/xls/cars93.xlsx")){
-            DataFrame<Integer,String> frame = DataFrame.read().excel(excelInputStream);
+    @Test(dataProvider = "excelType")
+    public void readFromInputStream(String excelType) throws IOException{
+        try(InputStream excelInputStream = getClass().getResourceAsStream("/xls/cars93." + excelType)){
+            DataFrame<Integer,String> frame = DataFrame.read().excel( options ->{
+                options.setInputStream(excelInputStream);
+                options.setExcelType(getTypeEnum(excelType));
+            });
             assertNotNull(frame);
             assertEquals(frame.rowCount(), 93);
-            assertEquals(frame.cols().count(), 27);
+            assertEquals(frame.cols().count(), 28);
         }
     }
 
-
-    @Test
-    public void readFromStringResource(){
-        DataFrame<Integer,String> frame = DataFrame.read().excel("/xls/cars93.xlsx");
-        assertNotNull(frame);
-        assertEquals(frame.rowCount(), 93);
-        assertEquals(frame.cols().count(), 27);
-    }
-
-
-    @Test
-    public void basicExcelRead(){
-        final DataFrame<Integer,String> frame = DataFrame.read().excel( options->{
-            options.setResource("/xls/cars93.xlsx");
+    @Test(dataProvider = "excelType")
+    public void readFromFile(String excelType){
+        DataFrame<Integer,String> frame = DataFrame.read().excel( options ->{
+            options.setResource("/xls/cars93." + excelType);
+            // No need to set the type - it's autodetected from the extension
         });
         assertNotNull(frame);
         assertEquals(frame.rowCount(), 93);
-        assertEquals(frame.cols().count(), 27);
+        assertEquals(frame.cols().count(), 28);
+    }
+
+
+
+    @Test(dataProvider = "excelType")
+    public void readFromStringResource(String excelType){
+        DataFrame<Integer,String> frame = DataFrame.read().excel("/xls/cars93." + excelType);
+        assertNotNull(frame);
+        assertEquals(frame.rowCount(), 93);
+        assertEquals(frame.cols().count(), 28);
+
         assertTrue(frame.cols().keys().allMatch(Predicates.in(
-                "Manufacturer","Model","Type","Min.Price","Price","Max.Price","MPG.city","MPG.highway","AirBags","DriveTrain",
+                "", "Manufacturer","Model","Type","Min.Price","Price","Max.Price","MPG.city","MPG.highway","AirBags","DriveTrain",
                 "Cylinders","EngineSize","Horsepower","RPM","Rev.per.mile",	"Man.trans.avail",	"Fuel.tank.capacity",
                 "Passengers","Length","Wheelbase","Width","Turn.circle","Rear.seat.room","Luggage.room","Weight","Origin","Make"
         )));
+    }
+
+    @Test
+    public void readXlsKeys() {
+        DataFrame<Integer, String> carsCsv = DataFrame.read().csv("/csv/cars93.csv");
+        DataFrame<Integer, String> carsXls = DataFrame.read().excel("/xls/cars93.xls");
+        assertEquals( carsCsv.cols().count(),28);
+        assertEquals( carsXls.cols().count(),28);
+    }
+
+    @Test()
+    public void testBasicRead() throws Exception {
+        final DataFrame<Integer, String> frame = DataFrame.read().csv(options -> {
+            options.setResource("/csv/aapl.csv");
+            options.getFormats().setParser("Volume", Long.class);
+        });
+        assertTrue(frame.rows().count() > 0, "There is at least one row");
+        assertTrue(frame.cols().count() == 7, "There are 7 columns");
     }
 
     @Test
@@ -111,21 +138,22 @@ public class ExcelTests {
         assertEquals(frame.cols().count() ,7);
     }
 
-    @Test
-    public void readSpecifiedSheet(){
-        DataFrame<Integer,String> frame = DataFrame.read().excel("/xls/ApplesAndCars.xlsx");
+    @Test(dataProvider = "excelType")
+    public void readFromNamedSheet(String excelType){
+        final String fileName = "/xls/ApplesAndCars." + excelType;
+        DataFrame<Integer,String> frame = DataFrame.read().excel(fileName);
         assertEquals(frame.cols().count() ,7);
 
         frame = DataFrame.read().excel(options ->{
-            options.setResource("/xls/ApplesAndCars.xlsx");
+            options.setResource(fileName);
             options.setSheetName("Apples");
         });
         assertEquals(frame.cols().count() ,7);
 
         frame = DataFrame.read().excel(options ->{
-            options.setResource("/xls/ApplesAndCars.xlsx");
+            options.setResource(fileName);
             options.setSheetName("Cars");
         });
-        assertEquals(frame.cols().count() ,6);
+        assertEquals(frame.cols().count() ,7);
     }
 }

@@ -173,7 +173,6 @@ public class CsvTests {
         }
     }
 
-
     @Test(dataProvider = "parallel")
     public void testRowKeyParser(boolean parallel) throws Exception {
         final DataFrame<LocalDate,String> frame = DataFrame.read().csv(options -> {

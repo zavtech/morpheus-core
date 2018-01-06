@@ -256,7 +256,7 @@ public class CsvSourceOptions<R> implements DataFrameSource.Options<R,String> {
      * Applies to resource to load CSV content from
      * @param resource  the resource to load from (file, URL or Classpath resource)
      */
-    public final void setResource(String resource) {
+    public void setResource(String resource) {
         Objects.requireNonNull(resource, "The resource cannot be null");
         this.resource = Resource.of(resource);
     }

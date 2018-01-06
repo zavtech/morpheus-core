@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import com.zavtech.morpheus.source.CsvSourceOptions;
 import com.zavtech.morpheus.source.DbSourceOptions;
+import com.zavtech.morpheus.source.ExcelSourceOptions;
 import com.zavtech.morpheus.source.JsonSourceOptions;
 
 /**
@@ -72,6 +73,38 @@ public interface DataFrameRead {
      * @return              the resulting DataFrame
      */
     <R> DataFrame<R,String> csv(Consumer<CsvSourceOptions<R>> configurator);
+
+    /**
+     * Reads a DataFrame from a excel InputStream
+     * @param is        the input stream to read from
+     * @param <R>       the row key type
+     * @return          the resulting DataFrame
+     */
+    <R> DataFrame<R,String> excel(InputStream is);
+
+    /**
+     * Reads a DataFrame from a url based on the options configurator
+     * @param url      a filename or URL
+     * @param <R>           the row key type
+     * @return              the resulting DataFrame
+     */
+    <R> DataFrame<R,String> excel(URL url);
+
+    /**
+     * Reads a DataFrame from a Excel resource based on the options configurator
+     * @param resource      a filename or URL
+     * @param <R>           the row key type
+     * @return              the resulting DataFrame
+     */
+    <R> DataFrame<R,String> excel(String resource);
+
+    /**
+     * Reads a DataFrame from a Excel resource based on the options configurator
+     * @param configurator  the configurator for Excel options
+     * @param <R>           the row key type
+     * @return              the resulting DataFrame
+     */
+    <R> DataFrame<R,String> excel(Consumer<ExcelSourceOptions<R>> configurator);
 
     /**
      * Reads a DataFrame from a JSON file

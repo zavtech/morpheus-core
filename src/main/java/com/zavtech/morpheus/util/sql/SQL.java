@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,15 +66,17 @@ public class SQL implements java.io.Serializable {
     /**
      * Executes this SQL query using the database connection provided
      * @param conn      the database connection
+     * @param fetchSize the fetch size for query
      * @param handler   the ResultSet handler
      * @param <T>       the type of the return Object
      * @return          the resulting object
      * @throws SQLException if the query fails
      */
-    public <T> T executeQuery(Connection conn, Function<ResultSet,T> handler) throws SQLException {
+    public <T> T executeQuery(Connection conn, int fetchSize, Function<ResultSet,T> handler) throws SQLException {
         try {
             if (args != null && args.length > 0) {
                 try (PreparedStatement stmt = conn.prepareStatement(expression)) {
+                    stmt.setFetchSize(fetchSize > 0 ? fetchSize : 1000);
                     final ResultSet resultSet = bindArgs(stmt).executeQuery();
                     return handler.apply(resultSet);
                 }

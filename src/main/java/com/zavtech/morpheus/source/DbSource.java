@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,8 +59,11 @@ public class DbSource<R> extends DataFrameSource<R,String,DbSourceOptions<R>> {
     public DataFrame<R, String> read(Consumer<DbSourceOptions<R>> configurator) throws DataFrameException {
         final DbSourceOptions<R> options = initOptions(new DbSourceOptions<>(), configurator);
         try (Connection conn = options.getConnection()) {
+            conn.setAutoCommit(options.isAutoCommit());
+            conn.setReadOnly(options.isReadOnly());
+            final int fetchSize = options.getFetchSize().orElse(1000);
             final SQL sql = SQL.of(options.getSql(), options.getParameters().orElse(new Object[0]));
-            return sql.executeQuery(conn, rs -> read(rs, options));
+            return sql.executeQuery(conn, fetchSize, rs -> read(rs, options));
         } catch (Exception ex) {
             throw new DataFrameException("Failed to create DataFrame from database request: " + options, ex);
         }
@@ -224,9 +227,8 @@ public class DbSource<R> extends DataFrameSource<R,String,DbSourceOptions<R>> {
         /**
          * Applies the ResultSet to this column for current row
          * @param rs    the ResultSet reference
-         * @throws SQLException if database access error
          */
-        final void apply(ResultSet rs) throws SQLException {
+        final void apply(ResultSet rs) {
             try {
                 switch (typeCode) {
                     case BOOLEAN:   array.addBoolean(extractor.getBoolean(rs, index));  break;

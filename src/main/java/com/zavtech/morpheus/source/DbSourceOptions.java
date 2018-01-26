@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014-2017 Xavier Witdouck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,8 +47,11 @@ public class DbSourceOptions<R> implements DataFrameSource.Options<R,String> {
 
     private String sql;
     private int rowCapacity;
+    private int fetchSize;
     private Connection connection;
     private Object[] parameters;
+    private boolean autoCommit = true;
+    private boolean readOnly = false;
     private Set<String> excludeColumnSet;
     private Function<ResultSet,R> rowKeyFunction;
     private Map<String,SQLExtractor> extractorMap;
@@ -124,7 +127,6 @@ public class DbSourceOptions<R> implements DataFrameSource.Options<R,String> {
         }
     }
 
-
     /**
      * Sets the JDBC connection URL and optional credentials
      * This method should ideally only be used for testing, a connection pool is preferable for production
@@ -175,6 +177,36 @@ public class DbSourceOptions<R> implements DataFrameSource.Options<R,String> {
     }
 
     /**
+     * Sets the fetch size for the statement when executing queries
+     * @param fetchSize the fetch size
+     * @return          these options
+     */
+    public DbSourceOptions<R> withFetchSize(int fetchSize) {
+        this.fetchSize = fetchSize;
+        return this;
+    }
+
+    /**
+     * Sets the connection auto commit state
+     * @param autoCommit    true to enable auto commit
+     * @return              these options
+     */
+    public DbSourceOptions<R> withAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+        return this;
+    }
+
+    /**
+     * Sets the connection read only setting
+     * @param readOnly  true for read only
+     * @return          these options
+     */
+    public DbSourceOptions<R> withReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+        return this;
+    }
+
+    /**
      * Sets the extractor to use for the column name
      * @param colName   the JDBC column name
      * @param extractor the extractor to use for column
@@ -220,11 +252,35 @@ public class DbSourceOptions<R> implements DataFrameSource.Options<R,String> {
     }
 
     /**
+     * Returns the connection auto commit preference
+     * @return  true for auto commit
+     */
+    boolean isAutoCommit() {
+        return autoCommit;
+    }
+
+    /**
+     * Returns the connection read only setting
+     * @return  true for read only
+     */
+    boolean isReadOnly() {
+        return readOnly;
+    }
+
+    /**
      * Returns the set of columns to exclude
      * @return  the set of columns to exclude
      */
     Set<String> getExcludeColumnSet() {
         return excludeColumnSet;
+    }
+
+    /**
+     * Returns the statement fetch size for queries
+     * @return      the statement fetch size
+     */
+    Optional<Integer> getFetchSize() {
+        return fetchSize <= 0 ? Optional.empty() : Optional.of(fetchSize);
     }
 
     /**

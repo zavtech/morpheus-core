@@ -84,7 +84,8 @@ public class DataFrameAsserts {
                         final double v1 = ((Number)expectedValue).doubleValue();
                         final double v2 = ((Number)actualValue).doubleValue();
                         if (!Double.isNaN(v1) || !Double.isNaN(v2)) {
-                            Asserts.assertEquals(v2, v1, 0.00000001, "The DataFrame doubles match at (" + i + "," + j + ")");
+                            final double delta = Math.max(0.00000001, Math.min(Math.abs(v1), Math.abs(v2)) * 0.00000001);
+                            Asserts.assertEquals(v2, v1, delta, "The DataFrame doubles match at (" + i + "," + j + ")");
                         }
                     } else {
                         Asserts.assertEquals(actualValue, expectedValue, "The DataFrame values match at (" + i + "," + j + ")");

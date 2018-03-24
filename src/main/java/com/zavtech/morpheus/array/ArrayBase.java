@@ -169,7 +169,7 @@ public abstract class ArrayBase<T> implements Array<T> {
         final Array<T> result = Array.of(clazz, length() + other.length());
         final int[] indexes1 = IntStream.range(0, length()).toArray();
         final int[] indexes2 = IntStream.range(0, other.length()).toArray();
-        final int[] indexes3 = IntStream.range(0, other.length()).map(i -> i+other.length()).toArray();
+        final int[] indexes3 = IntStream.range(0, other.length()).map(i -> i+this.length()).toArray();
         result.update(this, indexes1, indexes1);
         result.update(other, indexes2, indexes3);
         return result;

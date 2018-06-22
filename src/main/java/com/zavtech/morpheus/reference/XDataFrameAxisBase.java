@@ -152,6 +152,11 @@ abstract class XDataFrameAxisBase<X,Y,R,C,V extends DataFrameVector<?,?,R,C,?>,T
     }
 
     @Override
+    public boolean isEmpty() {
+        return count() == 0;
+    }
+
+    @Override
     public boolean isParallel() {
         return parallel;
     }

@@ -58,6 +58,12 @@ public interface DataFrameAxis<X,Y,R,C,V extends DataFrameVector,T extends DataF
     }
 
     /**
+     * Checks if this axis is empty, according to its number of entries.
+     * @return  true if the axis is empty, false otherwise
+     */
+    boolean isEmpty();
+
+    /**
      * Returns the number of entries in this axis
      * @return  the count for this axis
      */

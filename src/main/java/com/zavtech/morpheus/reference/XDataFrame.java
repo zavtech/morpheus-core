@@ -254,6 +254,10 @@ class XDataFrame<R,C> implements DataFrame<R,C>, Serializable, Cloneable {
         return colKeys().size();
     }
 
+    @Override
+    public boolean isEmpty() {
+        return rowCount() == 0;
+    }
 
     @Override()
     public final boolean isParallel() {

@@ -43,6 +43,11 @@ import com.zavtech.morpheus.util.functions.ToBooleanFunction;
  * @author  Xavier Witdouck
  */
 public interface DataFrame<R,C> extends DataFrameOperations<R,C,DataFrame<R,C>>, DataFrameIterators<R,C>, DataFrameAlgebra<R,C> {
+    /**
+     * Checks if this DataFrame is empty, according to its number of rows.
+     * @return  true if the DataFrame is empty, false otherwise
+     */
+    boolean isEmpty();
 
     /**
      * Returns the row count for <code>DataFrame</code>

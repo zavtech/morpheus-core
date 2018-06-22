@@ -22,8 +22,8 @@ import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.coding.IntCoding;
 import com.zavtech.morpheus.array.coding.WithIntCoding;
 
-import gnu.trove.map.TIntIntMap;
-import gnu.trove.map.hash.TIntIntHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 
 /**
  * An Index implementation designed to efficiently store Object values that can be coded as a long value
@@ -36,7 +36,7 @@ class IndexWithIntCoding<T> extends IndexBase<T> implements WithIntCoding<T> {
 
     private static final long serialVersionUID = 1L;
 
-    private TIntIntMap indexMap;
+    private Int2IntMap indexMap;
     private IntCoding<T> coding;
 
     /**
@@ -48,7 +48,8 @@ class IndexWithIntCoding<T> extends IndexBase<T> implements WithIntCoding<T> {
     IndexWithIntCoding(Class<T> type, IntCoding<T> coding, int capacity) {
         super(Array.of(type, capacity));
         this.coding = coding;
-        this.indexMap = new TIntIntHashMap(capacity, 0.75f, -1, -1);
+        this.indexMap = new Int2IntOpenHashMap(capacity, 0.75f);
+        this.indexMap.defaultReturnValue(-1);
     }
 
     /**
@@ -59,7 +60,8 @@ class IndexWithIntCoding<T> extends IndexBase<T> implements WithIntCoding<T> {
     IndexWithIntCoding(Iterable<T> iterable, IntCoding<T> coding) {
         super(iterable);
         this.coding = coding;
-        this.indexMap = new TIntIntHashMap(keyArray().length(), 0.75f, -1, -1);
+        this.indexMap = new Int2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final int index = v.index();
             final int code = v.getInt();
@@ -79,7 +81,8 @@ class IndexWithIntCoding<T> extends IndexBase<T> implements WithIntCoding<T> {
     private IndexWithIntCoding(Iterable<T> iterable, IntCoding<T> coding, IndexWithIntCoding<T> parent) {
         super(iterable, parent);
         this.coding = coding;
-        this.indexMap = new TIntIntHashMap(keyArray().length(), 0.75f, -1, -1);
+        this.indexMap = new Int2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final int code = v.getInt();
             final int index = parent.indexMap.get(code);
@@ -164,7 +167,7 @@ class IndexWithIntCoding<T> extends IndexBase<T> implements WithIntCoding<T> {
     public final Index<T> copy() {
         try {
             final IndexWithIntCoding<T> clone = (IndexWithIntCoding<T>)super.copy();
-            clone.indexMap = new TIntIntHashMap(indexMap);
+            clone.indexMap = new Int2IntOpenHashMap(indexMap);
             clone.coding = coding;
             return clone;
         } catch (Exception ex) {

@@ -19,8 +19,9 @@ import java.util.function.Predicate;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBuilder;
-import gnu.trove.map.TLongIntMap;
-import gnu.trove.map.hash.TLongIntHashMap;
+
+import it.unimi.dsi.fastutil.longs.Long2IntMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 
 /**
  * An Index implementation designed to efficiently store long values
@@ -33,7 +34,7 @@ class IndexOfLongs extends IndexBase<Long> {
 
     private static final long serialVersionUID = 1L;
 
-    private TLongIntMap indexMap;
+    private Long2IntMap indexMap;
 
     /**
      * Constructor
@@ -41,7 +42,8 @@ class IndexOfLongs extends IndexBase<Long> {
      */
     IndexOfLongs(int initialSize) {
         super(Array.of(Long.class, initialSize));
-        this.indexMap = new TLongIntHashMap(initialSize, 0.75f, -1, -1);
+        this.indexMap = new Long2IntOpenHashMap(initialSize, 0.75f);
+        this.indexMap.defaultReturnValue(-1);
     }
 
     /**
@@ -50,7 +52,8 @@ class IndexOfLongs extends IndexBase<Long> {
      */
     IndexOfLongs(Iterable<Long> iterable) {
         super(iterable);
-        this.indexMap = new TLongIntHashMap(keyArray().length(), 0.75f, -1, -1);
+        this.indexMap = new Long2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final int index = v.index();
             final long key = v.getLong();
@@ -68,7 +71,8 @@ class IndexOfLongs extends IndexBase<Long> {
      */
     private IndexOfLongs(Iterable<Long> iterable, IndexOfLongs parent) {
         super(iterable, parent);
-        this.indexMap = new TLongIntHashMap(keyArray().length(), 0.75f, -1, -1);
+        this.indexMap = new Long2IntOpenHashMap(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final long key = v.getLong();
             final int index = parent.indexMap.get(key);
@@ -110,7 +114,7 @@ class IndexOfLongs extends IndexBase<Long> {
                 final int index = indexMap.size();
                 this.ensureCapacity(index + 1);
                 this.keyArray().setValue(index, key);
-                this.indexMap.put(key, index);
+                this.indexMap.put((long) key, index);
                 return true;
             }
         }
@@ -143,7 +147,7 @@ class IndexOfLongs extends IndexBase<Long> {
     public final Index<Long> copy() {
         try {
             final IndexOfLongs clone = (IndexOfLongs)super.copy();
-            clone.indexMap = new TLongIntHashMap(indexMap);
+            clone.indexMap = new Long2IntOpenHashMap(indexMap);
             return clone;
         } catch (Exception ex) {
             throw new IndexException("Failed to clone index", ex);
@@ -157,7 +161,7 @@ class IndexOfLongs extends IndexBase<Long> {
 
     @Override
     public int getIndexForKey(Long key) {
-        final int index = indexMap.get(key);
+        final int index = indexMap.get(key.longValue());
         if (index < 0) {
             throw new IndexException("No match for key in index: " + key);
         } else {
@@ -172,7 +176,7 @@ class IndexOfLongs extends IndexBase<Long> {
 
     @Override
     public final int replace(Long existing, Long replacement) {
-        final int index = indexMap.remove(existing);
+        final int index = indexMap.remove(existing.longValue());
         if (index == -1) {
             throw new IndexException("No match for key: " + existing);
         } else {
@@ -180,7 +184,7 @@ class IndexOfLongs extends IndexBase<Long> {
                 throw new IndexException("The replacement key already exists: " + replacement);
             } else {
                 final int ordinal = getOrdinalForIndex(index);
-                this.indexMap.put(replacement, index);
+                this.indexMap.put((long) replacement, index);
                 this.keyArray().setValue(ordinal, replacement);
                 return index;
             }
@@ -192,7 +196,7 @@ class IndexOfLongs extends IndexBase<Long> {
         final int size = size();
         for (int i=0; i<size; ++i) {
             final Long key = keyArray().getValue(i);
-            final int index = indexMap.get(key);
+            final int index = indexMap.get(key.longValue());
             consumer.accept(key, index);
         }
     }

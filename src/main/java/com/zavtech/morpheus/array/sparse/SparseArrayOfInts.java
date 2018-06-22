@@ -20,18 +20,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
+import com.zavtech.morpheus.array.Array;
+import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
-import com.zavtech.morpheus.array.Array;
-import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
 
-import gnu.trove.map.TIntIntMap;
-import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.set.TIntSet;
-import gnu.trove.set.hash.TIntHashSet;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 /**
  * An Array implementation designed to hold a sparse array of int values
@@ -45,7 +45,7 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
     private static final long serialVersionUID = 1L;
 
     private int length;
-    private TIntIntMap values;
+    private Int2IntMap values;
     private int defaultValue;
 
     /**
@@ -57,7 +57,8 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
         super(Integer.class, ArrayStyle.SPARSE, false);
         this.length = length;
         this.defaultValue = defaultValue != null ? defaultValue : 0;
-        this.values = new TIntIntHashMap((int)Math.max(length * 0.5, 10d), 0.8f, -1, this.defaultValue);
+        this.values = new Int2IntOpenHashMap((int)Math.max(length * 0.5, 10d), 0.8f);
+        this.values.defaultReturnValue(this.defaultValue);
     }
 
     /**
@@ -107,7 +108,7 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
     public final Array<Integer> copy() {
         try {
             final SparseArrayOfInts copy = (SparseArrayOfInts)super.clone();
-            copy.values = new TIntIntHashMap(values);
+            copy.values = new Int2IntOpenHashMap(values);
             copy.defaultValue = this.defaultValue;
             return copy;
         } catch (Exception ex) {
@@ -288,7 +289,7 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
             this.values.remove(index);
             return oldValue;
         } else {
-            this.values.put(index, value);
+            this.values.put((int) index, (int) value);
             return oldValue;
         }
     }
@@ -316,8 +317,8 @@ class SparseArrayOfInts extends ArrayBase<Integer> {
 
     @Override
     public final Array<Integer> distinct(int limit) {
-        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TIntSet set = new TIntHashSet(capacity);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final IntSet set = new IntOpenHashSet(capacity);
         final ArrayBuilder<Integer> builder = ArrayBuilder.of(capacity, Integer.class);
         for (int i=0; i<length(); ++i) {
             final int value = getInt(i);

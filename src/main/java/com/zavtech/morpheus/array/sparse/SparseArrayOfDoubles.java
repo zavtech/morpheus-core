@@ -20,11 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
-import gnu.trove.map.TIntDoubleMap;
-import gnu.trove.map.hash.TIntDoubleHashMap;
-import gnu.trove.set.TDoubleSet;
-import gnu.trove.set.hash.TDoubleHashSet;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -32,6 +27,11 @@ import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
+
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
+import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
+import it.unimi.dsi.fastutil.ints.Int2DoubleOpenHashMap;
 
 /**
  * An Array implementation designed to hold a sparse array of double values
@@ -45,7 +45,7 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
     private static final long serialVersionUID = 1L;
 
     private int length;
-    private TIntDoubleMap values;
+    private Int2DoubleMap values;
     private double defaultValue;
 
     /**
@@ -57,7 +57,8 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
         super(Double.class, ArrayStyle.SPARSE, false);
         this.length = length;
         this.defaultValue = defaultValue != null ? defaultValue : Double.NaN;
-        this.values = new TIntDoubleHashMap((int)Math.max(length * 0.5, 10d), 0.8f, -1, this.defaultValue);
+        this.values = new Int2DoubleOpenHashMap((int)Math.max(length * 0.5, 10d), 0.8f);
+        this.values.defaultReturnValue(this.defaultValue);
     }
 
     /**
@@ -107,7 +108,7 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
     public final Array<Double> copy() {
         try {
             final SparseArrayOfDoubles copy = (SparseArrayOfDoubles)super.clone();
-            copy.values = new TIntDoubleHashMap(values);
+            copy.values = new Int2DoubleOpenHashMap(values);
             copy.defaultValue = this.defaultValue;
             return copy;
         } catch (Exception ex) {
@@ -277,7 +278,7 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
             this.values.remove(index);
             return oldValue;
         } else {
-            this.values.put(index, value);
+            this.values.put(index, (double) value);
             return oldValue;
         }
     }
@@ -305,8 +306,8 @@ class SparseArrayOfDoubles extends ArrayBase<Double> {
 
     @Override
     public final Array<Double> distinct(int limit) {
-        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TDoubleSet set = new TDoubleHashSet(capacity);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final DoubleSet set = new DoubleOpenHashSet(capacity);
         final ArrayBuilder<Double> builder = ArrayBuilder.of(capacity, Double.class);
         for (int i=0; i<length(); ++i) {
             final double value = getDouble(i);

@@ -24,16 +24,16 @@ import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.util.function.Predicate;
 
-import gnu.trove.set.TShortSet;
-import gnu.trove.set.hash.TShortHashSet;
-
+import com.zavtech.morpheus.array.Array;
+import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
-import com.zavtech.morpheus.array.Array;
-import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
+
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+import it.unimi.dsi.fastutil.shorts.ShortSet;
 
 /**
  * An Array implementation designed to hold a mapped array of boolean values
@@ -342,7 +342,8 @@ class MappedArrayOfBooleans extends ArrayBase<Boolean> {
 
     @Override
     public Array<Boolean> distinct(int limit) {
-        final TShortSet set = new TShortHashSet(limit);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final ShortSet set = new ShortOpenHashSet(capacity);
         final ArrayBuilder<Boolean> builder = ArrayBuilder.of(2, Boolean.class);
         for (int i=0; i<length(); ++i) {
             final boolean value = getBoolean(i);

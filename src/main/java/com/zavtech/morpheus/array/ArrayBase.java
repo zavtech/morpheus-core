@@ -57,6 +57,8 @@ import com.zavtech.morpheus.util.IntComparator;
 import com.zavtech.morpheus.util.SortAlgorithm;
 import com.zavtech.morpheus.util.functions.ToBooleanFunction;
 
+import it.unimi.dsi.fastutil.Arrays;
+
 /**
  * A convenience base class used to build Morpheus Array implementations
  *
@@ -184,7 +186,7 @@ public abstract class ArrayBase<T> implements Array<T> {
 
     @Override()
     public Array<T> distinct() {
-        return distinct(Integer.MAX_VALUE);
+        return distinct(Arrays.MAX_ARRAY_SIZE);
     }
 
 
@@ -196,7 +198,7 @@ public abstract class ArrayBase<T> implements Array<T> {
             case LONG:      return (Array<T>)ArrayUtils.distinct(stream().longs(), limit);
             case DOUBLE:    return (Array<T>)ArrayUtils.distinct(stream().doubles(), limit);
             default:
-                final int capacity = limit < Integer.MAX_VALUE ? limit : 16;
+                final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
                 final Set<T> set = new HashSet<>(capacity);
                 final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
                 for (int i=0; i<length(); ++i) {

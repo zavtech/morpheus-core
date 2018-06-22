@@ -21,9 +21,6 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import gnu.trove.set.TLongSet;
-import gnu.trove.set.hash.TLongHashSet;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -33,6 +30,9 @@ import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
 import com.zavtech.morpheus.array.coding.LongCoding;
 import com.zavtech.morpheus.array.coding.WithLongCoding;
+
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
 /**
  * A dense array implementation that maintains a primitive long array of codes that apply to Object values exposed through the LongCoding interface.
@@ -289,8 +289,8 @@ class DenseArrayWithLongCoding<T> extends ArrayBase<T> implements WithLongCoding
 
     @Override
     public Array<T> distinct(int limit) {
-        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TLongSet set = new TLongHashSet(capacity);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final LongSet set = new LongOpenHashSet(capacity);
         final ArrayBuilder<T> builder = ArrayBuilder.of(capacity, type());
         for (int i=0; i<length(); ++i) {
             final long code = getLong(i);

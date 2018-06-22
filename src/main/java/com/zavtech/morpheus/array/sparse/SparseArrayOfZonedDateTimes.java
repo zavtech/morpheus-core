@@ -25,17 +25,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import gnu.trove.map.TIntLongMap;
-import gnu.trove.map.TIntShortMap;
-import gnu.trove.map.hash.TIntLongHashMap;
-import gnu.trove.map.hash.TIntShortHashMap;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
+
+import it.unimi.dsi.fastutil.ints.Int2LongMap;
+import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ShortMap;
+import it.unimi.dsi.fastutil.ints.Int2ShortOpenHashMap;
 
 /**
  * An Array implementation containing a sparse array of LocalDateTine values stored as a long of epoch milliseconds.
@@ -69,8 +69,8 @@ class SparseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
     private static final short UTC_ZONE = zoneIdMap1.get(ZoneId.of("UTC"));
 
     private int length;
-    private TIntLongMap values;
-    private TIntShortMap zoneIds;
+    private Int2LongMap values;
+    private Int2ShortMap zoneIds;
     private ZonedDateTime defaultValue;
     private final short defaultZoneId;
     private long defaultValueAsLong;
@@ -85,8 +85,10 @@ class SparseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
         this.defaultValue = defaultValue;
         this.defaultValueAsLong = defaultValue != null ? defaultValue.toInstant().toEpochMilli() : nullValue;
         this.defaultZoneId = defaultValue != null ? zoneIdMap1.get(defaultValue.getZone()) : NULL_ZONE;
-        this.values = new TIntLongHashMap((int)Math.max(length * 0.5, 10d), 0.8f, -1, defaultValueAsLong);
-        this.zoneIds = new TIntShortHashMap((int)Math.max(length * 0.5, 10d), 0.8f, -1, defaultZoneId);
+        this.values = new Int2LongOpenHashMap((int)Math.max(length * 0.5, 10d), 0.8f);
+        this.values.defaultReturnValue(this.defaultValueAsLong);
+        this.zoneIds = new Int2ShortOpenHashMap((int)Math.max(length * 0.5, 10d), 0.8f);
+        this.zoneIds.defaultReturnValue(this.defaultZoneId);
     }
 
     /**
@@ -138,8 +140,8 @@ class SparseArrayOfZonedDateTimes extends ArrayBase<ZonedDateTime> {
     public final Array<ZonedDateTime> copy() {
         try {
             final SparseArrayOfZonedDateTimes copy = (SparseArrayOfZonedDateTimes)super.clone();
-            copy.values = new TIntLongHashMap(values);
-            copy.zoneIds = new TIntShortHashMap(zoneIds);
+            copy.values = new Int2LongOpenHashMap(values);
+            copy.zoneIds = new Int2ShortOpenHashMap(zoneIds);
             copy.defaultValue = this.defaultValue;
             copy.defaultValueAsLong = this.defaultValueAsLong;
             return copy;

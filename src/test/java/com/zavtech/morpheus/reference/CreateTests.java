@@ -17,15 +17,17 @@ package com.zavtech.morpheus.reference;
 
 import java.time.LocalDate;
 
+import org.testng.annotations.Test;
+
 import com.zavtech.morpheus.frame.DataFrame;
 import com.zavtech.morpheus.frame.DataFrameAsserts;
 import com.zavtech.morpheus.index.Index;
 import com.zavtech.morpheus.range.Range;
-import gnu.trove.map.TLongIntMap;
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TLongIntHashMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
-import org.testng.annotations.Test;
+
+import it.unimi.dsi.fastutil.longs.Long2IntMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 /**
  * A unit test to exercise the various mechanisms for constructing DataFrames.
@@ -84,9 +86,9 @@ public class CreateTests {
     @Test()
     public void testMapCreateTest() {
         final long t1 = System.nanoTime();
-        final TObjectIntMap<String> map1 = new TObjectIntHashMap<>(5000000, 0.8f, -1);
+        final Object2IntMap<String> map1 = new Object2IntOpenHashMap<>(5000000, 0.8f);
         final long t2 = System.nanoTime();
-        final TLongIntMap map2 = new TLongIntHashMap();
+        final Long2IntMap map2 = new Long2IntOpenHashMap();
         final long t3 = System.nanoTime();
         System.out.println("Map1:" + ((t2-t1)/1000000d) + " Map2:" + ((t3-t2)/100000d));
     }

@@ -19,8 +19,8 @@ import java.util.function.Predicate;
 
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBuilder;
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 /**
  * An Index implementation designed to efficiently store String values
@@ -33,7 +33,7 @@ class IndexOfStrings extends IndexBase<String> {
 
     private static final long serialVersionUID = 1L;
 
-    private TObjectIntMap<String> indexMap;
+    private Object2IntMap<String> indexMap;
 
     /**
      * Constructor
@@ -41,7 +41,8 @@ class IndexOfStrings extends IndexBase<String> {
      */
     IndexOfStrings(int initialSize) {
         super(Array.of(String.class, initialSize));
-        this.indexMap = new TObjectIntHashMap<>(initialSize, 0.75f, -1);
+        this.indexMap = new Object2IntOpenHashMap<>(initialSize, 0.75f);
+        this.indexMap.defaultReturnValue(-1);
     }
 
     /**
@@ -50,7 +51,8 @@ class IndexOfStrings extends IndexBase<String> {
      */
     IndexOfStrings(Iterable<String> iterable) {
         super(iterable);
-        this.indexMap = new TObjectIntHashMap<>(keyArray().length(), 0.75f, -1);
+        this.indexMap = new Object2IntOpenHashMap<>(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final int index = v.index();
             final String key = v.getValue();
@@ -68,10 +70,11 @@ class IndexOfStrings extends IndexBase<String> {
      */
     private IndexOfStrings(Iterable<String> iterable, IndexOfStrings parent) {
         super(iterable, parent);
-        this.indexMap = new TObjectIntHashMap<>(keyArray().length(), 0.75f, -1);
+        this.indexMap = new Object2IntOpenHashMap<>(keyArray().length(), 0.75f);
+        this.indexMap.defaultReturnValue(-1);
         this.keyArray().sequential().forEachValue(v -> {
             final String key = v.getValue();
-            final int index = parent.indexMap.get(key);
+            final int index = parent.indexMap.getInt(key);
             if (index < 0) throw new IndexException("No match for key: " + v.getValue());
             final int existing = indexMap.put(key, index);
             if (existing >= 0) {
@@ -142,7 +145,7 @@ class IndexOfStrings extends IndexBase<String> {
     public final Index<String> copy() {
         try {
             final IndexOfStrings clone = (IndexOfStrings)super.copy();
-            clone.indexMap = new TObjectIntHashMap<>(indexMap);
+            clone.indexMap = new Object2IntOpenHashMap<>(indexMap);
             return clone;
         } catch (Exception ex) {
             throw new IndexException("Failed to clone index", ex);
@@ -156,7 +159,7 @@ class IndexOfStrings extends IndexBase<String> {
 
     @Override
     public final int getIndexForKey(String key) {
-        final int index = indexMap.get(key);
+        final int index = indexMap.getInt(key);
         if (index < 0) {
             throw new IndexException("No match for key in index: " + key);
         } else {
@@ -171,7 +174,7 @@ class IndexOfStrings extends IndexBase<String> {
 
     @Override
     public final int replace(String existing, String replacement) {
-        final int index = indexMap.remove(existing);
+        final int index = indexMap.removeInt(existing);
         if (index == -1) {
             throw new IndexException("No match key for " + existing);
         } else {
@@ -191,7 +194,7 @@ class IndexOfStrings extends IndexBase<String> {
         final int size = size();
         for (int i=0; i<size; ++i) {
             final String key = keyArray().getValue(i);
-            final int index = indexMap.get(key);
+            final int index = indexMap.getInt(key);
             consumer.accept(key, index);
         }
     }

@@ -21,9 +21,6 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import gnu.trove.set.TIntSet;
-import gnu.trove.set.hash.TIntHashSet;
-
 import com.zavtech.morpheus.array.Array;
 import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
@@ -31,6 +28,9 @@ import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
+
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 /**
  * An Array implementation designed to hold a dense array of int values
@@ -272,8 +272,8 @@ class DenseArrayOfInts extends ArrayBase<Integer> {
 
     @Override
     public final Array<Integer> distinct(int limit) {
-        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TIntSet set = new TIntHashSet(capacity);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 100;
+        final IntSet set = new IntOpenHashSet(capacity);
         final ArrayBuilder<Integer> builder = ArrayBuilder.of(capacity, Integer.class);
         for (int i=0; i<length(); ++i) {
             final int value = getInt(i);

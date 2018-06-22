@@ -20,18 +20,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Predicate;
 
+import com.zavtech.morpheus.array.Array;
+import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayBuilder;
 import com.zavtech.morpheus.array.ArrayCursor;
 import com.zavtech.morpheus.array.ArrayException;
-import com.zavtech.morpheus.array.Array;
-import com.zavtech.morpheus.array.ArrayBase;
 import com.zavtech.morpheus.array.ArrayStyle;
 import com.zavtech.morpheus.array.ArrayValue;
 
-import gnu.trove.map.TIntLongMap;
-import gnu.trove.map.hash.TIntLongHashMap;
-import gnu.trove.set.TLongSet;
-import gnu.trove.set.hash.TLongHashSet;
+import it.unimi.dsi.fastutil.ints.Int2LongMap;
+import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
 /**
  * An Array implementation designed to hold a sparse array of long values
@@ -45,7 +45,7 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
     private static final long serialVersionUID = 1L;
 
     private int length;
-    private TIntLongMap values;
+    private Int2LongMap values;
     private long defaultValue;
 
     /**
@@ -57,7 +57,8 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
         super(Long.class, ArrayStyle.SPARSE, false);
         this.length = length;
         this.defaultValue = defaultValue != null ? defaultValue : 0L;
-        this.values = new TIntLongHashMap((int)Math.max(length * 0.5, 10d), 0.8f, -1, this.defaultValue);
+        this.values = new Int2LongOpenHashMap((int)Math.max(length * 0.5, 10d), 0.8f);
+        this.values.defaultReturnValue(this.defaultValue);
     }
 
     /**
@@ -107,7 +108,7 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
     public final Array<Long> copy() {
         try {
             final SparseArrayOfLongs copy = (SparseArrayOfLongs)super.clone();
-            copy.values = new TIntLongHashMap(values);
+            copy.values = new Int2LongOpenHashMap(values);
             copy.defaultValue = this.defaultValue;
             return copy;
         } catch (Exception ex) {
@@ -284,7 +285,7 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
             this.values.remove(index);
             return oldValue;
         } else {
-            this.values.put(index,value);
+            this.values.put(index, (long) value);
             return oldValue;
         }
     }
@@ -312,8 +313,8 @@ class SparseArrayOfLongs extends ArrayBase<Long> {
 
     @Override
     public final Array<Long> distinct(int limit) {
-        final int capacity = limit < Integer.MAX_VALUE ? limit : 100;
-        final TLongSet set = new TLongHashSet(capacity);
+        final int capacity = limit < it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE ? limit : 1000;
+        final LongSet set = new LongOpenHashSet(capacity);
         final ArrayBuilder<Long> builder = ArrayBuilder.of(capacity, Long.class);
         for (int i=0; i<length(); ++i) {
             final long value = getLong(i);

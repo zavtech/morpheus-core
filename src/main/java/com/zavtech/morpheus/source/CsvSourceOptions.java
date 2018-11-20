@@ -40,11 +40,8 @@ import com.zavtech.morpheus.util.text.parser.Parser;
 /**
  * A DataFrameRequest used to load a DataFrame from a Resource expressed in ASCII CSV format.
  *
- * @param <R>   the row key type
- *
- * <p><strong>This is open source software released under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 License</a></strong></p>
- *
- * @author  Xavier Witdouck
+ * @param <R> the row key type <p><strong>This is open source software released under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 License</a></strong></p>
+ * @author Xavier Witdouck
  */
 public class CsvSourceOptions<R> implements DataFrameSource.Options<R,String> {
 
@@ -64,7 +61,7 @@ public class CsvSourceOptions<R> implements DataFrameSource.Options<R,String> {
     private Predicate<Integer> colIndexPredicate;
     private Map<String,Class<?>> colTypeMap = new HashMap<>();
     private ObjectIntBiFunction<String,String> columnNameMapping;
-
+    private int maxColumns;
 
     /**
      * Constructor
@@ -74,6 +71,7 @@ public class CsvSourceOptions<R> implements DataFrameSource.Options<R,String> {
         this.header = true;
         this.rowCapacity = 1000;
         this.readBatchSize = 1000;
+        this.maxColumns = 10_000;
         this.formats = new Formats();
         this.rowAxisType = (Class<R>)Integer.class;
         this.charset = StandardCharsets.UTF_8;
@@ -166,6 +164,15 @@ public class CsvSourceOptions<R> implements DataFrameSource.Options<R,String> {
      */
     public Optional<Integer> getRowCapacity() {
         return Optional.ofNullable(rowCapacity);
+    }
+
+
+    /**
+     * Returns the optional maximal columns for this request
+     * @return      the maximal columns for request
+     */
+    public Optional<Integer> getMaxColumns() {
+        return Optional.ofNullable(maxColumns);
     }
 
     /**
@@ -354,6 +361,14 @@ public class CsvSourceOptions<R> implements DataFrameSource.Options<R,String> {
      */
     public void setRowCapacity(int rowCapacity) {
         this.rowCapacity = rowCapacity;
+    }
+
+    /**
+     * Sets the max columns to parse for this request
+     * @param maxColumns   the max columns
+     */
+    public void setMaxColumns(int maxColumns) {
+        this.maxColumns = maxColumns;
     }
 
     /**

@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
+import com.zavtech.morpheus.frame.DataFrameException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -509,6 +510,27 @@ public class CsvTests {
         assertEquals(frame.data().getDouble(LocalDate.of(2014, 8, 29), "Close"), 102.5, 0.00001);
         assertEquals(frame.data().getLong(LocalDate.of(2014, 8, 29), "Volume"), 44595000L);
         assertEquals(frame.data().getDouble(LocalDate.of(2014, 8, 29), "Adj Close"), 101.65627, 0.00001);
+    }
+
+    @Test
+    public void testMaxColumns() {
+        DataFrame<String, String> frame = DataFrame.read()
+                .csv( options -> {
+                    options.setResource("/csv/10001_columns.csv");
+                    options.setMaxColumns(10_0001);
+                    options.setHeader(false);
+                });
+
+        assertEquals(frame.rowCount(), 1, "Must be only one row");
+        assertEquals(frame.colCount(), 10001, "Must be default columns + 1");
+    }
+
+    @Test(expectedExceptions = {DataFrameException.class})
+    public void testMaxColumnsError() {
+        DataFrame.read().csv(options -> {
+            options.setResource("/csv/10001_columns.csv");
+            options.setHeader(false);
+        });
     }
 
 

@@ -129,10 +129,10 @@ public class CsvSource<R> extends DataFrameSource<R,String,CsvSourceOptions<R>> 
             settings.getFormat().setDelimiter(options.getDelimiter());
             settings.setHeaderExtractionEnabled(options.isHeader());
             settings.setLineSeparatorDetectionEnabled(true);
-            settings.setRowProcessor(handler);
+            settings.setProcessor(handler);
             settings.setIgnoreTrailingWhitespaces(true);
             settings.setIgnoreLeadingWhitespaces(true);
-            settings.setMaxColumns(10000);
+            settings.setMaxColumns(options.getMaxColumns().orElse(10_000));
             settings.setReadInputOnSeparateThread(false);
             final CsvParser parser = new CsvParser(settings);
             parser.parse(reader);

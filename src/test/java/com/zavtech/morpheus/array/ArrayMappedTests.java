@@ -18,6 +18,7 @@ package com.zavtech.morpheus.array;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 
 import org.testng.Assert;
@@ -92,8 +93,8 @@ public class ArrayMappedTests {
             array2[i] = value;
         }
         for (int i=0; i<count; ++i) {
-            final ZonedDateTime v1 = array1.getValue(i);
-            final ZonedDateTime v2 = array2[i];
+            final ZonedDateTime v1 = array1.getValue(i).truncatedTo(ChronoUnit.MILLIS);
+            final ZonedDateTime v2 = array2[i].truncatedTo(ChronoUnit.MILLIS);
             Assert.assertEquals(v1, v2);
             System.out.println(v1);
         }

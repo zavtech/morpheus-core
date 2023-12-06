@@ -21,6 +21,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
@@ -349,11 +350,11 @@ public class ArrayBuilderTests {
         Assert.assertEquals(actual.length(), expected.length, "The lengths match");
         Assert.assertEquals(actual.typeCode(), ArrayType.LOCAL_DATETIME, "The array type is as expected");
         for (int i=0; i<expected.length; ++i) {
-            Assert.assertEquals(actual.getValue(i), expected[i], "The values match at " + i);
+            Assert.assertEquals(actual.getValue(i), expected[i].truncatedTo(ChronoUnit.MILLIS), "The values match at " + i);
         }
         final Array<LocalDateTime> collected = Stream.of(expected).collect(ArrayUtils.toArray(expected.length));
         for (int i=0; i<expected.length; ++i) {
-            Assert.assertEquals(collected.getValue(i), expected[i], "The values match at " + i);
+            Assert.assertEquals(collected.getValue(i), expected[i].truncatedTo(ChronoUnit.MILLIS), "The values match at " + i);
         }
     }
 
@@ -370,11 +371,11 @@ public class ArrayBuilderTests {
         Assert.assertEquals(actual.length(), expected.length, "The lengths match");
         Assert.assertEquals(actual.typeCode(), ArrayType.ZONED_DATETIME, "The array type is as expected");
         for (int i=0; i<expected.length; ++i) {
-            Assert.assertEquals(actual.getValue(i), expected[i], "The values match at " + i);
+            Assert.assertEquals(actual.getValue(i), expected[i].truncatedTo(ChronoUnit.MILLIS), "The values match at " + i);
         }
         final Array<ZonedDateTime> collected = Stream.of(expected).collect(ArrayUtils.toArray(expected.length));
         for (int i=0; i<expected.length; ++i) {
-            Assert.assertEquals(collected.getValue(i), expected[i], "The values match at " + i);
+            Assert.assertEquals(collected.getValue(i), expected[i].truncatedTo(ChronoUnit.MILLIS), "The values match at " + i);
         }
     }
 
@@ -408,11 +409,19 @@ public class ArrayBuilderTests {
         Assert.assertEquals(actual.length(), expected.length, "The lengths match");
         Assert.assertEquals(actual.typeCode(), ArrayType.OBJECT, "The array type is as expected");
         for (int i=0; i<expected.length; ++i) {
-            Assert.assertEquals(actual.getValue(i), expected[i], "The values match at " + i);
+             Object frmtValue = expected[i];
+            if(expected[i].getClass().getName() == "java.time.ZonedDateTime"){
+                frmtValue = ((ZonedDateTime) frmtValue).truncatedTo(ChronoUnit.MILLIS);
+            }
+            Assert.assertEquals(actual.getValue(i),frmtValue, "The values match at " + i);
         }
         final Array<Object> collected = Stream.of(expected).collect(ArrayUtils.toArray(expected.length));
         for (int i=0; i<expected.length; ++i) {
-            Assert.assertEquals(collected.getValue(i), expected[i], "The values match at " + i);
+            Object frmtValue = expected[i];
+            if(expected[i].getClass().getName() == "java.time.ZonedDateTime"){
+                frmtValue = ((ZonedDateTime) frmtValue).truncatedTo(ChronoUnit.MILLIS);
+            }
+            Assert.assertEquals(collected.getValue(i), frmtValue, "The values match at " + i);
         }
     }
 

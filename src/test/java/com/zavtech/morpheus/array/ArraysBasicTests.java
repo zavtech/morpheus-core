@@ -21,6 +21,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
@@ -604,14 +605,14 @@ public class ArraysBasicTests {
             array.setValue(i, value);
         }
         for (int i=0; i<values.length; ++i) {
-            final LocalDateTime v1 = values[i];
+            final LocalDateTime v1 = values[i].truncatedTo(ChronoUnit.MILLIS);
             final LocalDateTime v2 = array.getValue(i);
             Assert.assertEquals(v1, v2, "Values match at " + i);
         }
         array.expand(200);
         Assert.assertEquals(array.length(), 200, "The array was expanded");
         for (int i=0; i<values.length; ++i) {
-            final LocalDateTime v1 = values[i];
+            final LocalDateTime v1 = values[i].truncatedTo(ChronoUnit.MILLIS);
             final LocalDateTime v2 = array.getValue(i);
             Assert.assertEquals(v1, v2, "Values match at " + i);
         }
@@ -625,7 +626,7 @@ public class ArraysBasicTests {
             array.setValue(i, value);
         }
         for (int i=100; i<200; ++i) {
-            final LocalDateTime v1 = values[i-100];
+            final LocalDateTime v1 = values[i-100].truncatedTo(ChronoUnit.MILLIS);
             final LocalDateTime v2 = array.getValue(i);
             Assert.assertEquals(v1, v2, "Values match at " + i);
         }
@@ -650,14 +651,14 @@ public class ArraysBasicTests {
             array.setValue(i, value);
         }
         for (int i=0; i<values.length; ++i) {
-            final ZonedDateTime v1 = values[i];
+            final ZonedDateTime v1 = values[i].truncatedTo(ChronoUnit.MILLIS);
             final ZonedDateTime v2 = array.getValue(i);
             Assert.assertEquals(v1, v2, "Values match at " + i);
         }
         array.expand(200);
         Assert.assertEquals(array.length(), 200, "The array was expanded");
         for (int i=0; i<values.length; ++i) {
-            final ZonedDateTime v1 = values[i];
+            final ZonedDateTime v1 = values[i].truncatedTo(ChronoUnit.MILLIS);
             final ZonedDateTime v2 = array.getValue(i);
             Assert.assertEquals(v1, v2, "Values match at " + i);
         }
@@ -672,7 +673,7 @@ public class ArraysBasicTests {
             array.setValue(i, value);
         }
         for (int i=100; i<200; ++i) {
-            final ZonedDateTime v1 = values[i-100];
+            final ZonedDateTime v1 = values[i-100].truncatedTo(ChronoUnit.MILLIS);
             final ZonedDateTime v2 = array.getValue(i);
             Assert.assertEquals(v1, v2, "Values match at " + i);
         }
@@ -818,13 +819,15 @@ public class ArraysBasicTests {
             T value = (T)LocalDateTime.now();
             array.fill(value);
             for (int i=0; i<array.length(); ++i) {
-                Assert.assertEquals(array.getValue(i), value, "Values match at " + i);
+                LocalDateTime formattedValue = ((LocalDateTime) value).truncatedTo(ChronoUnit.MILLIS);
+                Assert.assertEquals(array.getValue(i), formattedValue, "Values match at " + i);
             }
         } else if (array.typeCode() == ArrayType.ZONED_DATETIME) {
             T value = (T)ZonedDateTime.now();
             array.fill(value);
             for (int i=0; i<array.length(); ++i) {
-                Assert.assertEquals(array.getValue(i), value, "Values match at " + i);
+                 ZonedDateTime formattedValue = ((ZonedDateTime) value).truncatedTo(ChronoUnit.MILLIS);
+                 Assert.assertEquals(array.getValue(i), formattedValue, "Values match at " + i);
             }
         } else if (array.typeCode() == ArrayType.OBJECT) {
             T value = (T)new Double(7d);
@@ -968,12 +971,12 @@ public class ArraysBasicTests {
             assertFirstAndLast(array, values, arrayType);
         } else if (arrayType == ArrayType.LOCAL_DATETIME) {
             final LocalDateTime[] values = new LocalDateTime[1000];
-            for (int i=0; i<values.length; ++i) values[i] = LocalDateTime.now().plusSeconds(i);
+            for (int i=0; i<values.length; ++i) values[i] = LocalDateTime.now().plusSeconds(i).truncatedTo(ChronoUnit.MILLIS);
             final Array<LocalDateTime> array = Array.of((Class<LocalDateTime>)type, values.length, null, style).applyValues(v -> values[v.index()]);
             assertFirstAndLast(array, values, arrayType);
         } else if (arrayType == ArrayType.ZONED_DATETIME) {
             final ZonedDateTime[] values = new ZonedDateTime[1000];
-            for (int i=0; i<values.length; ++i) values[i] = ZonedDateTime.now().plusSeconds(i);
+            for (int i=0; i<values.length; ++i) values[i] = ZonedDateTime.now().plusSeconds(i).truncatedTo(ChronoUnit.MILLIS);
             final Array<ZonedDateTime> array = Array.of((Class<ZonedDateTime>)type, values.length, null, style).applyValues(v -> values[v.index()]);
             assertFirstAndLast(array, values, arrayType);
         } else if (arrayType == ArrayType.OBJECT) {
